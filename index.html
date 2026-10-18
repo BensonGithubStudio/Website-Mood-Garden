@@ -89,6 +89,8 @@ nav button{display:flex;align-items:center;gap:5px}
 .bar b{display:flex;align-items:center;gap:4px;flex:0 0 100px}
 html,body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 textarea,#card p{-webkit-user-select:text;user-select:text}
+.fab.sec{right:auto;left:16px;background:var(--gl);color:var(--ink);box-shadow:var(--sh);font-size:15px;padding:13px 18px;backdrop-filter:blur(14px)}body.arr #fab{display:none!important}
+@media(max-width:480px){.fab.sec{font-size:0;padding:14px}.fab.sec .ms{font-size:24px}}
 nav{max-width:calc(100% - 16px)}
 #card>div:last-child{flex-wrap:wrap}#card .btn{padding:8px 12px;font-size:14px}
 @media(max-width:480px){nav button{font-size:0;padding:10px 15px;gap:0}nav .ms{font-size:24px}}
@@ -98,7 +100,7 @@ nav{max-width:calc(100% - 16px)}
 
 <header class="top g"><div class="logo"><span class="ms">local_florist</span> Mood Garden</div><div id="date"></div></header>
 <section class="hello glass g"><h1 id="hi"></h1><p data-t="tag"></p><div class="chips"><span id="cnt"></span><span id="mon"></span></div></section>
-<button class="fab g" id="fab">Record Today's Mood</button>
+<button class="fab g" id="fab">Record Today's Mood</button><button class="fab g sec" id="arr"></button>
 <section id="card" hidden></section>
 
 <nav aria-label="Main"><span id="pill"></span><button data-v="garden"><span class="ms">yard</span> Garden</button><button data-v="cal"><span class="ms">calendar_month</span> Calendar</button><button data-v="ins"><span class="ms">insights</span> Insights</button><button data-v="set"><span class="ms">settings</span> Settings</button></nav>
@@ -150,10 +152,10 @@ function flo(k,s){const L='stroke="#8a7a5a" stroke-opacity=".35" stroke-width=".
 /* ---------- i18n ---------- */
 if(!S.lang){const n=(navigator.language||'en').toLowerCase();S.lang=n.startsWith('zh')?'zh':n.startsWith('ja')?'ja':n.startsWith('ko')?'ko':'en'}
 const L={
-en:{fb:"Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.",tag:'Grow your feelings, one flower at a time.',n_garden:'Garden',n_cal:'Calendar',n_ins:'Insights',n_set:'Settings',rec:"Record Today's Mood",hi0:'How are you feeling today?',hi1:'Your flower has been planted!',cnt:n=>n+(n==1?' flower':' flowers'),mon:'This month',monNone:'Nothing planted this month yet',m:['Happy','Excited','Calm','Loved','Sad','Anxious'],f:['Sunflower','Tulip','Daisy','Rose','Bluebell','Lavender'],tg:['Work','Study','Friends','Family','Travel','Personal'],ph:'What made you feel this way today?',editT:d=>d?'Edit '+d:'Edit your day',plant:'Plant My Flower',save:'Save changes',cancel:'Cancel',keep:'Keep it',confirm:'Confirm',noNote:'No note for this day.',edit:'Edit',delete:'Delete',close:'Close',delQ:"Delete this flower and its note? This can't be undone.",removed:'Flower removed',bloomed:'A new flower has bloomed!',pick:'Pick a mood first',saved:'Flower saved',updated:'Entry updated',resetDone:'Garden reset. A fresh start',calHint:"You can plant today's flower any time",wd:['S','M','T','W','T','F','S'],calNote:"Empty buds are days you haven't recorded. That's fine.",insEmpty:"Your insights will grow as you plant flowers. Record today's mood to begin.",insM:'This month',common:(f,p,n)=>`Most common: ${f} (${p}% of ${n} ${n==1?'day':'days'})`,insNone:'No flowers this month yet.',l7:'Last 7 days',total:n=>`${n} ${n==1?'flower':'flowers'} planted in total`,setT:'Settings',rmT:'Reduce motion',rmD:'Skips sway, flying friends and slow camera moves.',on:'On',off:'Off',rsT:'Reset Garden',rsD:'Removes every flower and note from this device.',rsB:'Reset',local:'Your garden is stored only in this browser.',lang:'Language',rs1:'Reset your whole garden?',rs1y:'Yes, continue',rs2:'Last check: every flower and note will be deleted for good.',rs2y:'Delete everything',obH:'Track your feelings, grow a garden',obP:'Pick a mood each day and it blooms as a flower. No streaks, no pressure.',go:'Get started',skip:'Skip'},
-zh:{fb:'你的裝置目前無法顯示 3D 花園，其他功能仍可使用，可以從月曆瀏覽你的花朵。',tag:'一次一朵花，慢慢種出你的心情。',n_garden:'花園',n_cal:'月曆',n_ins:'統計',n_set:'設定',rec:'記錄今日心情',hi0:'今天感覺如何？',hi1:'你的花已經種下了！',cnt:n=>n+' 朵花',mon:'本月',monNone:'這個月還沒有種花',m:['開心','興奮','平靜','被愛','難過','焦慮'],f:['向日葵','鬱金香','雛菊','玫瑰','風鈴草','薰衣草'],tg:['工作','學習','朋友','家人','旅行','個人'],ph:'今天是什麼讓你有這種感覺？',editT:d=>d?'編輯 '+d+' 的紀錄':'編輯今天的紀錄',plant:'種下我的花',save:'儲存變更',cancel:'取消',keep:'保留',confirm:'確認',noNote:'這一天沒有留下文字。',edit:'編輯',delete:'刪除',close:'關閉',delQ:'要刪除這朵花和它的紀錄嗎？刪除後無法復原。',removed:'已刪除花朵',bloomed:'新的花朵綻放了！',pick:'請先選擇一種心情',saved:'花朵已儲存',updated:'紀錄已更新',resetDone:'花園已重置，重新開始吧',calHint:'你隨時都可以種下今天的花',wd:['日','一','二','三','四','五','六'],calNote:'空的花苞代表還沒有記錄的日子，沒關係的。',insEmpty:'種下花朵後，這裡就會出現你的統計。先記錄今天的心情吧。',insM:'本月',common:(f,p,n)=>`最常出現：${f}（${n} 天中的 ${p}%）`,insNone:'這個月還沒有花朵。',l7:'最近 7 天',total:n=>`累計種下 ${n} 朵花`,setT:'設定',rmT:'減少動態效果',rmD:'關閉搖晃、飛行小動物與緩慢的鏡頭移動。',on:'開',off:'關',rsT:'重置花園',rsD:'從這個裝置移除所有花朵和紀錄。',rsB:'重置',local:'你的花園只儲存在這個瀏覽器中。',lang:'語言',rs1:'要重置整座花園嗎？',rs1y:'是，繼續',rs2:'最後確認：所有花朵和紀錄都會被永久刪除。',rs2y:'全部刪除',obH:'記錄心情，種出一座花園',obP:'每天選一種心情，它就會綻放成一朵花。沒有連續打卡，也沒有壓力。',go:'開始使用',skip:'略過'},
-ja:{fb:'お使いの端末では3D庭園を表示できません。ほかの機能は使えます。カレンダーから花を見られます。',tag:'一輪ずつ、気持ちを育てよう。',n_garden:'ガーデン',n_cal:'カレンダー',n_ins:'統計',n_set:'設定',rec:'今日の気分を記録',hi0:'今日の気分はどう？',hi1:'お花を植えました！',cnt:n=>n+'輪',mon:'今月',monNone:'今月はまだ植えていません',m:['うれしい','わくわく','おだやか','愛されてる','かなしい','不安'],f:['ヒマワリ','チューリップ','デイジー','バラ','ブルーベル','ラベンダー'],tg:['仕事','勉強','友だち','家族','旅行','自分時間'],ph:'今日はどうしてそう感じたの？',editT:d=>d?d+'の記録を編集':'今日の記録を編集',plant:'お花を植える',save:'変更を保存',cancel:'キャンセル',keep:'やめる',confirm:'OK',noNote:'この日のメモはありません。',edit:'編集',delete:'削除',close:'閉じる',delQ:'このお花と記録を削除しますか？元に戻せません。',removed:'お花を削除しました',bloomed:'新しいお花が咲きました！',pick:'先に気分を選んでください',saved:'お花を保存しました',updated:'記録を更新しました',resetDone:'庭をリセットしました。また始めましょう',calHint:'今日のお花はいつでも植えられます',wd:['日','月','火','水','木','金','土'],calNote:'空のつぼみは、まだ記録していない日です。気にしなくて大丈夫。',insEmpty:'お花を植えると、ここに統計が育ちます。まず今日の気分を記録してみましょう。',insM:'今月',common:(f,p,n)=>`いちばん多い気分：${f}（${n}日中 ${p}%）`,insNone:'今月はまだお花がありません。',l7:'直近7日間',total:n=>`これまでに${n}輪を植えました`,setT:'設定',rmT:'動きを減らす',rmD:'ゆれ、飛ぶ生きもの、ゆっくりしたカメラ移動をオフにします。',on:'オン',off:'オフ',rsT:'庭をリセット',rsD:'この端末からすべてのお花と記録を消します。',rsB:'リセット',local:'庭のデータはこのブラウザにだけ保存されます。',lang:'言語',rs1:'庭をまるごとリセットしますか？',rs1y:'はい、続ける',rs2:'最終確認：すべてのお花と記録が完全に削除されます。',rs2y:'すべて削除',obH:'気持ちを記録して、庭を育てよう',obP:'毎日の気分を選ぶと、お花になって咲きます。連続記録もプレッシャーもありません。',go:'はじめる',skip:'スキップ'},
-ko:{fb:'이 기기에서는 3D 정원을 표시할 수 없어요. 나머지 기능은 그대로 쓸 수 있고, 달력에서 꽃을 볼 수 있어요.',tag:'꽃 한 송이씩, 마음을 키워요.',n_garden:'정원',n_cal:'달력',n_ins:'통계',n_set:'설정',rec:'오늘의 기분 기록',hi0:'오늘 기분이 어때요?',hi1:'꽃을 심었어요!',cnt:n=>n+'송이',mon:'이번 달',monNone:'이번 달에는 아직 심은 꽃이 없어요',m:['행복','설렘','평온','사랑받음','슬픔','불안'],f:['해바라기','튤립','데이지','장미','블루벨','라벤더'],tg:['일','공부','친구','가족','여행','개인'],ph:'오늘 왜 이런 기분이 들었나요?',editT:d=>d?d+' 기록 수정':'오늘 기록 수정',plant:'내 꽃 심기',save:'변경 저장',cancel:'취소',keep:'그대로 두기',confirm:'확인',noNote:'이 날은 남긴 글이 없어요.',edit:'수정',delete:'삭제',close:'닫기',delQ:'이 꽃과 기록을 삭제할까요? 되돌릴 수 없어요.',removed:'꽃을 삭제했어요',bloomed:'새 꽃이 피었어요!',pick:'먼저 기분을 골라 주세요',saved:'꽃을 저장했어요',updated:'기록을 수정했어요',resetDone:'정원을 초기화했어요. 새로 시작해요',calHint:'오늘의 꽃은 언제든 심을 수 있어요',wd:['일','월','화','수','목','금','토'],calNote:'빈 꽃봉오리는 아직 기록하지 않은 날이에요. 괜찮아요.',insEmpty:'꽃을 심으면 여기에 통계가 자라나요. 먼저 오늘의 기분을 기록해 보세요.',insM:'이번 달',common:(f,p,n)=>`가장 많은 기분: ${f} (${n}일 중 ${p}%)`,insNone:'이번 달에는 아직 꽃이 없어요.',l7:'최근 7일',total:n=>`지금까지 ${n}송이를 심었어요`,setT:'설정',rmT:'움직임 줄이기',rmD:'흔들림, 날아다니는 친구들, 느린 카메라 이동을 끕니다.',on:'켜짐',off:'꺼짐',rsT:'정원 초기화',rsD:'이 기기에서 모든 꽃과 기록을 지워요.',rsB:'초기화',local:'정원 데이터는 이 브라우저에만 저장돼요.',lang:'언어',rs1:'정원 전체를 초기화할까요?',rs1y:'네, 계속',rs2:'마지막 확인: 모든 꽃과 기록이 영구적으로 삭제돼요.',rs2y:'모두 삭제',obH:'기분을 기록하고 정원을 키워요',obP:'매일 기분을 고르면 한 송이 꽃으로 피어나요. 연속 기록도, 부담도 없어요.',go:'시작하기',skip:'건너뛰기'}};
+en:{fb:"Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.",tag:'Grow your feelings, one flower at a time.',n_garden:'Garden',n_cal:'Calendar',n_ins:'Insights',n_set:'Settings',rec:"Record Today's Mood",hi0:'How are you feeling today?',hi1:'Your flower has been planted!',cnt:n=>n+(n==1?' flower':' flowers'),mon:'This month',monNone:'Nothing planted this month yet',m:['Happy','Excited','Calm','Loved','Sad','Anxious'],f:['Sunflower','Tulip','Daisy','Rose','Bluebell','Lavender'],tg:['Work','Study','Friends','Family','Travel','Personal'],ph:'What made you feel this way today?',editT:d=>d?'Edit '+d:'Edit your day',plant:'Plant My Flower',save:'Save changes',cancel:'Cancel',keep:'Keep it',confirm:'Confirm',noNote:'No note for this day.',edit:'Edit',delete:'Delete',close:'Close',delQ:"Delete this flower and its note? This can't be undone.",removed:'Flower removed',bloomed:'A new flower has bloomed!',pick:'Pick a mood first',saved:'Flower saved',updated:'Entry updated',resetDone:'Garden reset. A fresh start',calHint:"You can plant today's flower any time",wd:['S','M','T','W','T','F','S'],calNote:"Empty buds are days you haven't recorded. That's fine.",insEmpty:"Your insights will grow as you plant flowers. Record today's mood to begin.",insM:'This month',common:(f,p,n)=>`Most common: ${f} (${p}% of ${n} ${n==1?'day':'days'})`,insNone:'No flowers this month yet.',l7:'Last 7 days',total:n=>`${n} ${n==1?'flower':'flowers'} planted in total`,setT:'Settings',rmT:'Reduce motion',rmD:'Skips sway, flying friends and slow camera moves.',on:'On',off:'Off',rsT:'Reset Garden',rsD:'Removes every flower and note from this device.',rsB:'Reset',local:'Your garden is stored only in this browser.',lang:'Language',rs1:'Reset your whole garden?',rs1y:'Yes, continue',rs2:'Last check: every flower and note will be deleted for good.',rs2y:'Delete everything',obH:'Track your feelings, grow a garden',obP:'Pick a mood each day and it blooms as a flower. No streaks, no pressure.',go:'Get started',skip:'Skip',arr:'Arrange',done:'Done',moved:'Flower moved',hintArr:'Drag a flower to move it',friendsT:'Garden friends',friendsD:'Each flower invites its own little visitors. Plant more of a mood and more friends will come.',crn:['Bees','Chicks','Ladybugs','Butterflies','Snails','Butterflies']},
+zh:{fb:'你的裝置目前無法顯示 3D 花園，其他功能仍可使用，可以從月曆瀏覽你的花朵。',tag:'一次一朵花，慢慢種出你的心情。',n_garden:'花園',n_cal:'月曆',n_ins:'統計',n_set:'設定',rec:'記錄今日心情',hi0:'今天感覺如何？',hi1:'你的花已經種下了！',cnt:n=>n+' 朵花',mon:'本月',monNone:'這個月還沒有種花',m:['開心','興奮','平靜','被愛','難過','焦慮'],f:['向日葵','鬱金香','雛菊','玫瑰','風鈴草','薰衣草'],tg:['工作','學習','朋友','家人','旅行','個人'],ph:'今天是什麼讓你有這種感覺？',editT:d=>d?'編輯 '+d+' 的紀錄':'編輯今天的紀錄',plant:'種下我的花',save:'儲存變更',cancel:'取消',keep:'保留',confirm:'確認',noNote:'這一天沒有留下文字。',edit:'編輯',delete:'刪除',close:'關閉',delQ:'要刪除這朵花和它的紀錄嗎？刪除後無法復原。',removed:'已刪除花朵',bloomed:'新的花朵綻放了！',pick:'請先選擇一種心情',saved:'花朵已儲存',updated:'紀錄已更新',resetDone:'花園已重置，重新開始吧',calHint:'你隨時都可以種下今天的花',wd:['日','一','二','三','四','五','六'],calNote:'空的花苞代表還沒有記錄的日子，沒關係的。',insEmpty:'種下花朵後，這裡就會出現你的統計。先記錄今天的心情吧。',insM:'本月',common:(f,p,n)=>`最常出現：${f}（${n} 天中的 ${p}%）`,insNone:'這個月還沒有花朵。',l7:'最近 7 天',total:n=>`累計種下 ${n} 朵花`,setT:'設定',rmT:'減少動態效果',rmD:'關閉搖晃、飛行小動物與緩慢的鏡頭移動。',on:'開',off:'關',rsT:'重置花園',rsD:'從這個裝置移除所有花朵和紀錄。',rsB:'重置',local:'你的花園只儲存在這個瀏覽器中。',lang:'語言',rs1:'要重置整座花園嗎？',rs1y:'是，繼續',rs2:'最後確認：所有花朵和紀錄都會被永久刪除。',rs2y:'全部刪除',obH:'記錄心情，種出一座花園',obP:'每天選一種心情，它就會綻放成一朵花。沒有連續打卡，也沒有壓力。',go:'開始使用',skip:'略過',arr:'佈置花園',done:'完成',moved:'花朵位置已儲存',hintArr:'拖曳花朵來移動位置',friendsT:'花園的小夥伴',friendsD:'每種花都會吸引自己的小生物。同一種心情種得越多，來的小夥伴就越多。',crn:['蜜蜂','小雞','瓢蟲','蝴蝶','蝸牛','蝴蝶']},
+ja:{fb:'お使いの端末では3D庭園を表示できません。ほかの機能は使えます。カレンダーから花を見られます。',tag:'一輪ずつ、気持ちを育てよう。',n_garden:'ガーデン',n_cal:'カレンダー',n_ins:'統計',n_set:'設定',rec:'今日の気分を記録',hi0:'今日の気分はどう？',hi1:'お花を植えました！',cnt:n=>n+'輪',mon:'今月',monNone:'今月はまだ植えていません',m:['うれしい','わくわく','おだやか','愛されてる','かなしい','不安'],f:['ヒマワリ','チューリップ','デイジー','バラ','ブルーベル','ラベンダー'],tg:['仕事','勉強','友だち','家族','旅行','自分時間'],ph:'今日はどうしてそう感じたの？',editT:d=>d?d+'の記録を編集':'今日の記録を編集',plant:'お花を植える',save:'変更を保存',cancel:'キャンセル',keep:'やめる',confirm:'OK',noNote:'この日のメモはありません。',edit:'編集',delete:'削除',close:'閉じる',delQ:'このお花と記録を削除しますか？元に戻せません。',removed:'お花を削除しました',bloomed:'新しいお花が咲きました！',pick:'先に気分を選んでください',saved:'お花を保存しました',updated:'記録を更新しました',resetDone:'庭をリセットしました。また始めましょう',calHint:'今日のお花はいつでも植えられます',wd:['日','月','火','水','木','金','土'],calNote:'空のつぼみは、まだ記録していない日です。気にしなくて大丈夫。',insEmpty:'お花を植えると、ここに統計が育ちます。まず今日の気分を記録してみましょう。',insM:'今月',common:(f,p,n)=>`いちばん多い気分：${f}（${n}日中 ${p}%）`,insNone:'今月はまだお花がありません。',l7:'直近7日間',total:n=>`これまでに${n}輪を植えました`,setT:'設定',rmT:'動きを減らす',rmD:'ゆれ、飛ぶ生きもの、ゆっくりしたカメラ移動をオフにします。',on:'オン',off:'オフ',rsT:'庭をリセット',rsD:'この端末からすべてのお花と記録を消します。',rsB:'リセット',local:'庭のデータはこのブラウザにだけ保存されます。',lang:'言語',rs1:'庭をまるごとリセットしますか？',rs1y:'はい、続ける',rs2:'最終確認：すべてのお花と記録が完全に削除されます。',rs2y:'すべて削除',obH:'気持ちを記録して、庭を育てよう',obP:'毎日の気分を選ぶと、お花になって咲きます。連続記録もプレッシャーもありません。',go:'はじめる',skip:'スキップ',arr:'配置を変更',done:'完了',moved:'位置を保存しました',hintArr:'お花をドラッグして移動できます',friendsT:'庭のなかまたち',friendsD:'お花ごとに、集まる生きものが違います。同じ気分を植えるほど、仲間が増えます。',crn:['ミツバチ','ひよこ','てんとう虫','チョウ','カタツムリ','チョウ']},
+ko:{fb:'이 기기에서는 3D 정원을 표시할 수 없어요. 나머지 기능은 그대로 쓸 수 있고, 달력에서 꽃을 볼 수 있어요.',tag:'꽃 한 송이씩, 마음을 키워요.',n_garden:'정원',n_cal:'달력',n_ins:'통계',n_set:'설정',rec:'오늘의 기분 기록',hi0:'오늘 기분이 어때요?',hi1:'꽃을 심었어요!',cnt:n=>n+'송이',mon:'이번 달',monNone:'이번 달에는 아직 심은 꽃이 없어요',m:['행복','설렘','평온','사랑받음','슬픔','불안'],f:['해바라기','튤립','데이지','장미','블루벨','라벤더'],tg:['일','공부','친구','가족','여행','개인'],ph:'오늘 왜 이런 기분이 들었나요?',editT:d=>d?d+' 기록 수정':'오늘 기록 수정',plant:'내 꽃 심기',save:'변경 저장',cancel:'취소',keep:'그대로 두기',confirm:'확인',noNote:'이 날은 남긴 글이 없어요.',edit:'수정',delete:'삭제',close:'닫기',delQ:'이 꽃과 기록을 삭제할까요? 되돌릴 수 없어요.',removed:'꽃을 삭제했어요',bloomed:'새 꽃이 피었어요!',pick:'먼저 기분을 골라 주세요',saved:'꽃을 저장했어요',updated:'기록을 수정했어요',resetDone:'정원을 초기화했어요. 새로 시작해요',calHint:'오늘의 꽃은 언제든 심을 수 있어요',wd:['일','월','화','수','목','금','토'],calNote:'빈 꽃봉오리는 아직 기록하지 않은 날이에요. 괜찮아요.',insEmpty:'꽃을 심으면 여기에 통계가 자라나요. 먼저 오늘의 기분을 기록해 보세요.',insM:'이번 달',common:(f,p,n)=>`가장 많은 기분: ${f} (${n}일 중 ${p}%)`,insNone:'이번 달에는 아직 꽃이 없어요.',l7:'최근 7일',total:n=>`지금까지 ${n}송이를 심었어요`,setT:'설정',rmT:'움직임 줄이기',rmD:'흔들림, 날아다니는 친구들, 느린 카메라 이동을 끕니다.',on:'켜짐',off:'꺼짐',rsT:'정원 초기화',rsD:'이 기기에서 모든 꽃과 기록을 지워요.',rsB:'초기화',local:'정원 데이터는 이 브라우저에만 저장돼요.',lang:'언어',rs1:'정원 전체를 초기화할까요?',rs1y:'네, 계속',rs2:'마지막 확인: 모든 꽃과 기록이 영구적으로 삭제돼요.',rs2y:'모두 삭제',obH:'기분을 기록하고 정원을 키워요',obP:'매일 기분을 고르면 한 송이 꽃으로 피어나요. 연속 기록도, 부담도 없어요.',go:'시작하기',skip:'건너뛰기',arr:'배치하기',done:'완료',moved:'위치를 저장했어요',hintArr:'꽃을 끌어서 옮겨 보세요',friendsT:'정원 친구들',friendsD:'꽃마다 찾아오는 친구가 달라요. 같은 기분을 많이 심을수록 친구도 늘어나요.',crn:['꿀벌','병아리','무당벌레','나비','달팽이','나비']}};
 function tr(k,...a){const v=(L[S.lang]||L.en)[k]??L.en[k];return typeof v=='function'?v(...a):v}
 function LC(){return{en:'en',zh:'zh-TW',ja:'ja',ko:'ko'}[S.lang]||'en'}
 function applyLang(){document.documentElement.lang=S.lang;Object.keys(M).forEach((k,i)=>{M[k].n=tr('m')[i];M[k].f=tr('f')[i]});
@@ -166,11 +168,33 @@ let R,ok=true;
 try{R=new THREE.WebGLRenderer({canvas:$('c'),antialias:true,alpha:true})}catch(e){ok=false;$('fb').hidden=false}
 const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(42,1,.1,120),flowers={};
 const gh=(x,z)=>.22*Math.sin(x*.55)*Math.cos(z*.45)+.12*Math.sin(x*.9+z*.7);
-const SPH=new THREE.SphereGeometry(1,14,10),CYL=new THREE.CylinderGeometry(1,1,1,8),mc={};
-const mat=c=>mc[c]||(mc[c]=new THREE.MeshStandardMaterial({color:c,roughness:.75}));
-function mk(g,c,p,s,r,m){const o=new THREE.Mesh(g,m||mat(c));o.position.set(...p);o.scale.set(...s);if(r)o.rotation.set(...r);o.castShadow=true;return o}
+function shade(g,lo=.72){const p=g.attributes.position,n=g.attributes.normal,a=new Float32Array(p.count*3);for(let i=0;i<p.count;i++){const v=lo+(1-lo)*(n.getY(i)*.5+.5);a[i*3]=a[i*3+1]=a[i*3+2]=v}g.setAttribute('color',new THREE.BufferAttribute(a,3));return g}
+const SPH=shade(new THREE.SphereGeometry(1,28,18)),CYL=shade(new THREE.CylinderGeometry(1,1,1,14),.8),mc={};
+const mat=(c,vc)=>{const k=c+(vc?1:0);return mc[k]||(mc[k]=new THREE.MeshStandardMaterial({color:c,roughness:.88,vertexColors:!!vc,emissive:new THREE.Color(c).multiplyScalar(.13)}))};
+function mk(g,c,p,s,r,m){const o=new THREE.Mesh(g,m||mat(c,!!g.attributes.color));o.position.set(...p);o.scale.set(...s);if(r)o.rotation.set(...r);o.castShadow=true;return o}
 function ring(h,n,r,y,s,tilt,c){for(let i=0;i<n;i++){const a=i/n*6.283,pv=new THREE.Group();pv.rotation.y=a;pv.position.y=y;pv.add(mk(SPH,c,[r,0,0],s,[0,0,tilt]));h.add(pv)}}
-const bellG=new THREE.LatheGeometry([[.02,0],[.09,-.05],[.14,-.14],[.2,-.26],[.17,-.28]].map(p=>new THREE.Vector2(...p)),14);
+const bellG=shade(new THREE.LatheGeometry([[.02,0],[.09,-.05],[.14,-.14],[.2,-.26],[.17,-.28]].map(p=>new THREE.Vector2(...p)),22));
+const TOR=new THREE.TorusGeometry(1,.22,8,18,Math.PI),FS={happy:[.21,.07,.1,'#FFE08A'],excited:[.15,.14,.02,'#FFD6AE'],calm:[.15,.04,.07,'#FFF0B0'],loved:[.14,.17,.02,'#FFCADB'],sad:[.14,0,.02,'#D8E8FA'],anxious:[.13,.38,.02,'#E9E0F8']};
+function addFace(g,k,H){const[R,dy,dz,c]=FS[k],P=new THREE.Group(),F=new THREE.Group(),ink='#4A3535',zf=(x,y)=>Math.sqrt(Math.max(.01,R*R-x*x-y*y))*.97,E=[],C=[],cl=k=='calm'||k=='loved';
+ P.position.set(0,H+dy,dz);P.add(F);F.add(mk(SPH,c,[0,0,0],[R,R,R]));
+ [-1,1].forEach(s=>{const x=s*.4*R,y=.14*R;let e;
+  if(cl)e=mk(TOR,ink,[x,y,zf(x,y)],[.2*R,.2*R,.2*R],[0,0,k=='calm'?Math.PI:0]);
+  else{e=mk(SPH,ink,[x,y,zf(x,y)],[.1*R,.15*R,.06*R]);const h=mk(SPH,'#fff',[.3,.4,.8],[.35,.3,.3]);h.castShadow=false;e.add(h)}
+  e.castShadow=false;e.userData.x0=x;F.add(e);E.push(e);
+  const cx=s*.68*R,ck=mk(SPH,'#F59AB3',[cx,-.12*R,zf(cx,-.12*R)*.95],[.17*R,.1*R,.05*R]);ck.castShadow=false;F.add(ck);C.push(ck)});
+ const my=k=='sad'?-.28:k=='excited'?-.24:k=='anxious'?-.26:-.2,zm=zf(0,my*R);
+ const m=k=='excited'?mk(SPH,'#7A3040',[0,my*R,zm],[.2*R,.14*R,.06*R]):k=='anxious'?mk(SPH,ink,[0,my*R,zm],[.08*R,.06*R,.04*R]):mk(TOR,ink,[0,my*R,zm],k=='sad'?[.15*R,.12*R,.15*R]:[.2*R,.2*R,.2*R],[0,0,k=='sad'?0:Math.PI]);
+ m.castShadow=false;F.add(m);g.add(P);
+ g.userData.P=P;g.userData.fx={P,F,E,C,m,k,cl,nb:1+Math.random()*3,bt:0,ey:E[0].scale.y,mx:m.scale.x,my:m.scale.y,cx:C[0].scale.x}}
+function faceUpdate(f,t,dt){const x=f.userData.fx;if(!x)return;const w=t+f.userData.ph,k=x.k;
+ x.P.rotation.y=Math.atan2(cam.position.x-f.position.x,cam.position.z-f.position.z)-f.rotation.y;
+ if(S.rm)return;
+ x.F.scale.set(1+Math.sin(w*2)*.02,1+Math.sin(w*2+1.5)*.035,1);
+ if(!x.cl){x.nb-=dt;let b=1;if(x.nb<0){x.bt+=dt;b=1-Math.sin(Math.min(1,x.bt/.18)*Math.PI)*.92;if(x.bt>.18){x.bt=0;x.nb=(k=='sad'?4.5:2)+Math.random()*3}}x.E.forEach(e=>e.scale.y=x.ey*b)}
+ if(k=='excited')x.m.scale.y=x.my*(.75+Math.abs(Math.sin(w*3))*.6);
+ if(k=='anxious'){x.E.forEach(e=>e.position.x=e.userData.x0+Math.sin(w*1.7)*.02);x.m.scale.x=x.mx*(1+Math.sin(w*9)*.25)}
+ if(k=='sad')x.m.scale.y=x.my*(1+Math.sin(w*6)*.12);
+ if(x.cl)x.C.forEach(c=>c.scale.x=x.cx*(1+Math.sin(w*2)*.14))}
 function flower(k){
   const g=new THREE.Group(),H={happy:1.6,excited:1.3,calm:.9,loved:1.2,sad:1.4,anxious:1.5}[k],h=new THREE.Group();
   g.add(mk(CYL,'#7DB36F',[0,H/2,0],[.05,H,.05]));
@@ -180,16 +204,16 @@ function flower(k){
   if(k=='excited'){ring(h,6,.1,.15,[.09,.22,.06],-.28,'#F6A35C');ring(h,3,.05,.12,[.08,.2,.05],-.1,'#F9BE86')}
   if(k=='calm'){h.rotation.x=.4;ring(h,13,.2,0,[.16,.025,.045],0,'#FFFFFF');h.add(mk(SPH,'#F5D04A',[0,.02,0],[.1,.07,.1]))}
   if(k=='loved'){ring(h,6,.2,.08,[.1,.14,.04],-.6,'#F29BB5');ring(h,5,.13,.14,[.09,.13,.04],-.5,'#F5ABC2');ring(h,4,.06,.18,[.07,.12,.04],-.3,'#F7C0D0');h.add(mk(SPH,'#E97C9C',[0,.15,0],[.07,.1,.07]))}
-  if(k=='sad'){g.children[0].rotation.z=.12;for(let i=0;i<3;i++){const b=mk(bellG,'#8DB9E8',[Math.cos(i*2.1)*.2,-.02-i*.15,Math.sin(i*2.1)*.2],[1,1,1],null,new THREE.MeshStandardMaterial({color:i?'#8DB9E8':'#A3C8F0',side:2,roughness:.6}));h.add(b)}}
+  if(k=='sad'){g.children[0].rotation.z=.12;for(let i=0;i<3;i++){const b=mk(bellG,'#8DB9E8',[Math.cos(i*2.1)*.2,-.02-i*.15,Math.sin(i*2.1)*.2],[1,1,1],null,new THREE.MeshStandardMaterial({color:i?'#8DB9E8':'#A3C8F0',side:2,roughness:.85,vertexColors:true,emissive:new THREE.Color('#8DB9E8').multiplyScalar(.13)}));h.add(b)}}
   if(k=='anxious'){for(let i=0;i<10;i++)h.add(mk(SPH,i%2?'#B7A2E0':'#9C86D4',[Math.cos(i*2)*.06,-.5+i*.09,Math.sin(i*2)*.06],[.075-i*.003,.09,.075-i*.003]))}
-  g.userData.h=h;g.userData.ph=Math.random()*6;return g}
+  g.userData.h=h;g.userData.ph=Math.random()*6;g.userData.mood=k;return g}
 
 function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined);let best;
   for(let t=0;t<80;t++){const r=1+Math.sqrt(rnd())*5.6,a=rnd()*6.283,x=Math.cos(a)*r,z=Math.sin(a)*r;best={x,z};
-    if(Math.hypot(x+5,z-2.6)>2.1&&ex.every(e=>Math.hypot(e.x-x,e.z-z)>1))break}
+    if(Math.hypot(x+5,z-2.6)>2.1&&Math.hypot(x+2.7,z+5.4)>1.9&&ex.every(e=>Math.hypot(e.x-x,e.z-z)>1))break}
   return{x:best.x,z:best.z,s:.85+rnd()*.5,r:rnd()*6.28}}
 function addFlower(d,grow){const e=S.e[d];if(e.x===undefined){Object.assign(e,pickPos(d));save()}
-  const f=flower(e.mood);f.position.set(e.x,gh(e.x,e.z),e.z);f.rotation.y=e.r;Object.assign(f.userData,{date:d,base:e.s,grow});scene.add(f);flowers[d]=f;setGrow(f,grow)}
+  const f=flower(e.mood);f.position.set(e.x,gh(e.x,e.z),e.z);f.rotation.y=e.r;Object.assign(f.userData,{date:d,base:e.s,grow});scene.add(f);flowers[d]=f;setGrow(f,grow);syncCr()}
 const ez=t=>1-Math.pow(1-Math.min(1,Math.max(0,t)),3);
 function setGrow(f,g){const b=f.userData.base,a=Math.max(.001,ez(g*2))*b;f.scale.set(a,a,a);const h=Math.max(.001,ez((g-.4)/.6));f.userData.h.scale.setScalar(h)}
 
@@ -212,12 +236,20 @@ if(ok){
   const tiny=new THREE.InstancedMesh(SPH,new THREE.MeshStandardMaterial({roughness:.8}),70),dm=new THREE.Object3D(),pal=['#F5C7D5','#FFFFFF','#F5DEA0','#D4C7EA'];
   for(let i=0;i<70;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*7.5,x=Math.cos(a)*r,z=Math.sin(a)*r;dm.position.set(x,gh(x,z)+.08,z);dm.scale.setScalar(.07+Math.random()*.04);dm.updateMatrix();tiny.setMatrixAt(i,dm.matrix);tiny.setColorAt(i,new THREE.Color(pal[i%4]))}
   scene.add(tiny);
+  {const cols=new Float32Array(pp.count*3),c1=new THREE.Color('#98C281'),c2=new THREE.Color('#B8D890'),cc=new THREE.Color();for(let i=0;i<pp.count;i++){const x=pp.getX(i),z=pp.getZ(i),n=(Math.sin(x*.9)*Math.cos(z*1.1)+Math.sin(x*.3+z*.5))*.25+.5;cc.copy(c1).lerp(c2,Math.min(1,Math.max(0,n)));if(Math.hypot(x,z)>7.75)cc.set('#C9A97E');cols.set([cc.r,cc.g,cc.b],i*3)}gg.setAttribute('color',new THREE.BufferAttribute(cols,3));gr.material.vertexColors=true;gr.material.color.set('#ffffff');gr.material.needsUpdate=true}
+  {const gi=new THREE.InstancedMesh(new THREE.SphereGeometry(.09,8,6),new THREE.MeshStandardMaterial({roughness:1}),4),o=new THREE.Object3D();for(let i=0;i<4;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*7.6,x=Math.cos(a)*r,z=Math.sin(a)*r;o.position.set(x,gh(x,z)+.14,z);o.rotation.set((Math.random()-.5)*.5,Math.random()*6,(Math.random()-.5)*.5);{const q=.7+Math.random()*.8;o.scale.set(q,q*1.7,q)}o.updateMatrix();gi.setMatrixAt(i,o.matrix);gi.setColorAt(i,new THREE.Color().setHSL(.27+Math.random()*.06,.45,.5+Math.random()*.12))}scene.add(gi)}
+  [[34,'#A9D3C2',5,.55,9],[46,'#B9CFE6',7,.5,11],[58,'#CFC6E8',8,.6,9]].forEach(([r,c,n,sy,sz],j)=>{for(let i=0;i<n*2;i++){const a=i/(n*2)*6.283+j,s=sz*(.8+Math.random()*.6);scene.add(mk(SPH,c,[Math.cos(a)*r,-3,Math.sin(a)*r],[s*1.4,s*sy*1.3,s]))}});
+  for(let i=0;i<8;i++){const a=i*.785+.3,s=10+Math.random()*6,x=Math.cos(a)*66,z=Math.sin(a)*66,y=s*.4-3;scene.add(mk(new THREE.ConeGeometry(1,1,5),'#C6C2E4',[x,y,z],[s*.9,s,s*.9],[0,Math.random()*3,0]),mk(new THREE.ConeGeometry(1,1,5),'#FFFFFF',[x,y+s*.35,z],[s*.27,s*.3,s*.27]))}
+  [3.2,3.7,4.2,4.7,5.3,5.8].forEach((a,i)=>{const x=Math.cos(a)*7.9,z=Math.sin(a)*7.9,t=new THREE.Group(),c=['#A8D5A2','#F5C7D5','#B9D9C2','#F5DEA0','#F5C7D5','#A8D5A2'][i];t.add(mk(CYL,'#C9A27A',[0,.55,0],[.13,1.1,.13]),mk(SPH,c,[0,1.45,0],[.8,.72,.8]),mk(SPH,c,[.4,1.15,.2],[.5,.45,.5]),mk(SPH,c,[-.35,1.85,-.1],[.5,.45,.5]));t.position.set(x,gh(x,z)-.05,z);t.scale.setScalar(.9+i%3*.12);scene.add(t)});
+  {const hs=new THREE.Group(),bx=new THREE.BoxGeometry(1,1,1);hs.add(mk(bx,'#FBEFDD',[0,.55,0],[1.7,1.1,1.3]),mk(new THREE.ConeGeometry(1,1,4),'#F29BB5',[0,1.55,0],[1.6,.95,1.3],[0,Math.PI/4,0]),mk(bx,'#B58B66',[0,.3,.66],[.34,.6,.06]),mk(bx,'#B9D8EB',[-.52,.65,.66],[.3,.3,.05]),mk(bx,'#B9D8EB',[.52,.65,.66],[.3,.3,.05]),mk(bx,'#E3C9A8',[.5,1.55,-.2],[.18,.5,.18]));hs.position.set(-2.7,gh(-2.7,-5.4),-5.4);hs.rotation.y=.45;scene.add(hs)}
+  {const rim=new THREE.DirectionalLight(0xFFC9DC,.35);rim.position.set(-6,4,-8);scene.add(rim)}
+  {const n=45,ar=new Float32Array(n*3);for(let i=0;i<n;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*8;ar.set([Math.cos(a)*r,.6+Math.random()*3,Math.sin(a)*r],i*3)}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(ar,3));window.mt=new THREE.Points(g,new THREE.PointsMaterial({color:'#FFF1B8',size:.16,transparent:true,opacity:.8,depthWrite:false,blending:THREE.AdditiveBlending}));scene.add(window.mt)}
   const wg=new THREE.PlaneGeometry(.34,.26);wg.translate(.17,0,0);
-  for(let i=0;i<4;i++){const b=new THREE.Group(),c=['#F5C7D5','#F5DEA0','#B9D8EB','#D4C7EA'][i],m=new THREE.MeshBasicMaterial({color:c,side:2});const w1=new THREE.Mesh(wg,m),w2=new THREE.Mesh(wg,m);w2.rotation.y=Math.PI;b.add(w1,w2);b.userData={w:[w1,w2],i,bee:false};scene.add(b);bf.push(b)}
-  for(let i=0;i<2;i++){const b=new THREE.Group();b.add(mk(SPH,'#F5D04A',[0,0,0],[.09,.08,.12]),mk(SPH,'#5B4A3A',[0,0,-.07],[.085,.075,.04]));b.userData={i:i+5,bee:true};scene.add(b);bf.push(b)}
+  for(let i=0;i<0;i++){const b=new THREE.Group(),c=['#F5C7D5','#F5DEA0','#B9D8EB','#D4C7EA'][i],m=new THREE.MeshBasicMaterial({color:c,side:2});const w1=new THREE.Mesh(wg,m),w2=new THREE.Mesh(wg,m);w2.rotation.y=Math.PI;b.add(w1,w2);b.userData={w:[w1,w2],i,bee:false};scene.add(b);bf.push(b)}
+  for(let i=0;i<0;i++){const b=new THREE.Group();b.add(mk(SPH,'#F5D04A',[0,0,0],[.09,.08,.12]),mk(SPH,'#5B4A3A',[0,0,-.07],[.085,.075,.04]));b.userData={i:i+5,bee:true};scene.add(b);bf.push(b)}
 }
-let th=.75,ph=1,rad=innerWidth<760?17:13,radG=rad;const tg=new THREE.Vector3(0,.4,0),tgG=tg.clone();
-function resize(){if(!ok)return;R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
+let th=.75,ph=1,rad=innerWidth<760?28:14,radG=rad;const tg=new THREE.Vector3(0,.4,0),tgG=tg.clone();
+function resize(){if(!ok)return;R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.fov=innerWidth<innerHeight?58:42;cam.updateProjectionMatrix()}
 addEventListener('resize',resize);resize();
 function beeStep(b,dt,t){const u=b.userData,p=b.position;
  if(!u.tg){u.tg=new THREE.Vector3();u.v=new THREE.Vector3();u.hold=0;u.pick=1;p.set((Math.random()-.5)*10,1.2,(Math.random()-.5)*10)}
@@ -231,51 +263,82 @@ function beeStep(b,dt,t){const u=b.userData,p=b.position;
   const d=u.tg.clone().sub(p).normalize().multiplyScalar(1.4+Math.random()*.02+Math.sin(t*2+u.i)*.4);u.v.lerp(d,1-Math.pow(.03,dt));p.addScaledVector(u.v,dt)}
  p.y+=Math.sin(t*14+u.i)*.004;p.x+=Math.sin(t*7+u.i*3)*.003;
  if(u.v.length()>.15){let a=Math.atan2(u.v.x,u.v.z)-b.rotation.y;a=Math.atan2(Math.sin(a),Math.cos(a));b.rotation.y+=a*Math.min(1,dt*6)}}
+const cr=[],CONE=new THREE.ConeGeometry(1,1,8),CT={bee:{sp:1.5,fly:1,h:.5},butterfly:{sp:.85,fly:1,h:.9},ladybug:{sp:.28},snail:{sp:.1},bird:{sp:.8}},CM={happy:'bee',excited:'bird',calm:'ladybug',loved:'butterfly',sad:'snail',anxious:'butterfly'};
+let arrange=false,drag=null,dm=0;
+const selRing=new THREE.Mesh(new THREE.TorusGeometry(.5,.05,8,32),new THREE.MeshBasicMaterial({color:'#F29BB5'}));selRing.rotation.x=Math.PI/2;selRing.visible=false;scene.add(selRing);
+function flowersOf(m){return Object.values(flowers).filter(f=>f.userData.mood==m)}
+function makeCr(m){const type=CM[m],g=new THREE.Group(),ns=o=>{o.castShadow=false;return o},a=(...o)=>o.forEach(x=>{ns(x);g.add(x)}),pv=(x,y,z)=>{const p=new THREE.Group();p.position.set(x,y,z);g.add(p);return p};
+ if(type=='bee'){a(mk(SPH,'#F5D04A',[0,0,0],[.09,.08,.12]),mk(SPH,'#5B4A3A',[0,.01,-.06],[.085,.075,.035]),mk(SPH,'#5B4A3A',[0,0,.1],[.055,.05,.045]));const l=pv(.04,.07,0),r=pv(-.04,.07,0);l.add(ns(mk(SPH,'#EAF6FF',[.05,0,0],[.06,.012,.04])));r.add(ns(mk(SPH,'#EAF6FF',[-.05,0,0],[.06,.012,.04])));g.userData.w=[l,r]}
+ else if(type=='butterfly'){const c=m=='loved'?'#F5A8C4':'#B7A2E0',c2=m=='loved'?'#FBD3E1':'#D9CDF2';a(mk(SPH,'#5B4A3A',[0,0,0],[.025,.025,.09]));const l=pv(.01,.02,0),r=pv(-.01,.02,0);[[l,1],[r,-1]].forEach(([p,s])=>{p.add(ns(mk(SPH,c,[s*.11,0,.03],[.12,.012,.09])),ns(mk(SPH,c2,[s*.08,0,-.06],[.08,.012,.06])))});g.userData.w=[l,r]}
+ else if(type=='ladybug'){a(mk(SPH,'#F26B6B',[0,.045,0],[.075,.055,.09]),mk(SPH,'#3D3333',[0,.035,.085],[.045,.04,.035]),mk(SPH,'#3D3333',[.03,.092,.01],[.018,.012,.018]),mk(SPH,'#3D3333',[-.03,.092,.01],[.018,.012,.018]),mk(SPH,'#3D3333',[0,.098,-.04],[.018,.012,.018]))}
+ else if(type=='snail'){a(mk(SPH,'#F3E3CF',[0,.03,0],[.055,.035,.16]),mk(SPH,'#F3E3CF',[0,.07,.14],[.045,.05,.045]),mk(SPH,'#9FC3EA',[0,.12,-.03],[.1,.1,.1]),mk(SPH,'#7FA8D8',[0,.125,-.03],[.06,.06,.105]),mk(SPH,'#4A3535',[.02,.1,.18],[.01,.012,.01]),mk(SPH,'#4A3535',[-.02,.1,.18],[.01,.012,.01]))}
+ else{a(mk(SPH,'#F9C77A',[0,.13,0],[.13,.12,.13]),mk(CONE,'#F08A4B',[0,.12,.14],[.03,.06,.03],[Math.PI/2,0,0]),mk(SPH,'#4A3535',[.05,.16,.1],[.018,.026,.015]),mk(SPH,'#4A3535',[-.05,.16,.1],[.018,.026,.015]),mk(SPH,'#F59AB3',[.08,.12,.09],[.025,.018,.01]),mk(SPH,'#F59AB3',[-.08,.12,.09],[.025,.018,.01]),mk(SPH,'#F2B25F',[0,.1,-.13],[.05,.05,.04]));const l=pv(.12,.13,0),r=pv(-.12,.13,0);l.add(ns(mk(SPH,'#F2B25F',[.04,-.02,0],[.05,.07,.04])));r.add(ns(mk(SPH,'#F2B25F',[-.04,-.02,0],[.05,.07,.04])));g.userData.w=[l,r]}
+ g.userData.type=type;g.userData.mood=m;g.userData.i=Math.random()*9;g.scale.setScalar(type=='butterfly'?1.3:type=='bee'?1.2:1.15);return g}
+function syncCr(){Object.keys(M).forEach(m=>{const L=flowersOf(m),n=Math.min(3,Math.ceil(L.length/2)),cur=cr.filter(c=>c.userData.mood==m);
+  while(cur.length>n){const c=cur.pop();scene.remove(c);cr.splice(cr.indexOf(c),1)}
+  while(cur.length<n){const c=makeCr(m),f=L[Math.random()*L.length|0],u=c.userData,fl=CT[u.type].fly;c.position.set(f.position.x+(Math.random()-.5)*1.2,fl?f.position.y+1.6:f.position.y,f.position.z+(Math.random()-.5)*1.2);u.tg=c.position.clone();u.v=new THREE.Vector3();u.hold=0;u.pick=1;scene.add(c);cr.push(c);cur.push(c)}})}
+function crStep(c,dt,t){const u=c.userData,T=CT[u.type],p=c.position,fly=T.fly,L=flowersOf(u.mood);
+ if(u.hold>0){u.hold-=dt;u.v.multiplyScalar(.85)}
+ else{const dxz=Math.hypot(u.tg.x-p.x,u.tg.z-p.z);
+  if(u.pick||(fly?p.distanceTo(u.tg):dxz)<.25){
+   if(!u.pick&&u.fl){u.hold=(fly?.6:1.5)+Math.random()*2;u.fl=0}
+   else{u.pick=0;if(L.length&&Math.random()<.85){const f=L[Math.random()*L.length|0],a=Math.random()*6.283,r=.3+Math.random()*.5;u.tg.set(f.position.x+Math.cos(a)*r,f.position.y+(fly?1+Math.random()*T.h:0),f.position.z+Math.sin(a)*r);u.fl=1}else{const a=Math.random()*6.283,r=Math.random()*6.2;u.tg.set(Math.cos(a)*r,fly?.8+Math.random()*1.5:0,Math.sin(a)*r);u.fl=0}}}
+  const d=u.tg.clone().sub(p);if(!fly)d.y=0;d.normalize().multiplyScalar(T.sp*(1+Math.sin(t*(fly?2:1)+u.i)*.25));u.v.lerp(d,1-Math.pow(.05,dt));p.addScaledVector(u.v,dt)}
+ const sp=u.v.length();
+ if(!fly)p.y=gh(p.x,p.z)+(u.type=='bird'?Math.abs(Math.sin(t*9+u.i))*.12*Math.min(1,sp/.4):0);
+ else p.y+=Math.sin(t*(u.type=='bee'?18:6)+u.i)*(u.type=='bee'?.004:.006);
+ if(sp>.04){let a=Math.atan2(u.v.x,u.v.z)-c.rotation.y;a=Math.atan2(Math.sin(a),Math.cos(a));c.rotation.y+=a*Math.min(1,dt*6)}
+ const w=u.w;if(w){const s=u.type=='bee'?Math.sin(t*50+u.i)*.7:u.type=='butterfly'?(.3+(Math.sin(t*11+u.i)+1)*.45):Math.sin(t*14+u.i)*.5*Math.min(1,sp/.3);w[0].rotation.z=s;w[1].rotation.z=-s}}
+function setArrange(on){arrange=on;document.body.classList.toggle('arr',on);$('card').hidden=true;if(on){tgG.set(0,.4,0);radG=Math.min(radG,innerWidth<760?26:16);toast(tr('hintArr'))}else{selRing.visible=false;drag=null}refresh()}
+$('arr').onclick=()=>setArrange(!arrange);
 const clock=new THREE.Clock();
 function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
   tg.lerp(tgG,k);rad+=(radG-rad)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
-  for(const d in flowers){const f=flowers[d],u=f.userData;if(!rm){f.rotation.z=Math.sin(t*1.3+u.ph)*.035;u.h.rotation.z=Math.sin(t*1.7+u.ph)*.05}
+  for(const d in flowers){const f=flowers[d],u=f.userData;faceUpdate(f,t,dt);if(!rm){f.rotation.z=Math.sin(t*1.3+u.ph)*.035;u.h.rotation.z=Math.sin(t*1.7+u.ph)*.05}
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
-  if(!rm){cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>30)c.position.x=-30});
+  if(!rm){if(window.mt){mt.rotation.y+=dt*.04;mt.material.opacity=.65+Math.sin(t*1.5)*.25}cr.forEach(c=>crStep(c,dt,t));cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>30)c.position.x=-30});
     bf.forEach(b=>{const u=b.userData;if(u.bee){beeStep(b,dt,t);return}const s=.28,a=t*s+u.i*2,x=Math.cos(a)*5.2*(u.bee?.8:1),z=Math.sin(a*1.3)*4.4,y=(u.bee?1:1.5)+Math.sin(t*1.1+u.i)*.35;b.position.set(x,y,z);b.rotation.y=-Math.atan2(-Math.sin(a*1.3)*1.3*4.4,-Math.sin(a)*5.2)+Math.PI/2;if(!u.bee){const w=Math.sin(t*16+u.i)*.9;u.w[0].rotation.z=w;u.w[1].rotation.z=-w}})}
   if(P){P.t+=rm?dt*8:dt;const f=flowers[P.d];setGrow(f,Math.min(1,(P.t-1.2)/3));
     P.seed.visible=P.t<1.1;P.seed.position.y=Math.max(.05,2-P.t*2.2)+f.position.y;
     if(sparkle){const a=sparkle.geometry.attributes.position;for(let i=0;i<a.count;i++)a.setY(i,a.getY(i)+dt*.4);a.needsUpdate=true;sparkle.material.opacity=Math.max(0,Math.min(1,(P.t-.9)*2,(5-P.t)))}
     if(P.t>3.9&&!P.toast){P.toast=1;toast(tr('bloomed'))}
-    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;radG=innerWidth<760?17:13;tgG.set(0,.4,0)}}
+    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;radG=innerWidth<760?28:14;tgG.set(0,.4,0)}}
   if(ok)R.render(scene,cam)}
 if(ok)frame();
 
 /* ---------- camera input ---------- */
 const cv=$('c'),pts=new Map(),ray=new THREE.Raycaster(),mv=new THREE.Vector2();let pd=0,moved=0,pinch=0;
 function pick(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?o.userData.date:null}
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;if(arrange&&pts.size==1){const d=pick(e);if(d){drag=d;dm=0;hover=null;const f0=flowers[d];selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
 cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
   if(!p){const d=pick(e);hover=d;cv.style.cursor=d?'pointer':'grab';return}
-  if(pts.size==2){pts.set(e.pointerId,e);const[a,b]=[...pts.values()],n=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);radG=Math.min(22,Math.max(4.5,radG*pinch/n));pinch=n;moved=99;return}
-  const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);th-=dx*.006;ph=Math.min(1.4,Math.max(.35,ph-dy*.005));pts.set(e.pointerId,e)});
-cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(moved<6&&!pts.size){const d=pick(e);if(d)detail(d);else $('card').hidden=true}});
+  if(drag){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;if(dr.y<-.01){const k=-o.y/dr.y;let x=o.x+dr.x*k,z=o.z+dr.z*k;const l=Math.hypot(x,z);if(l>7){x*=7/l;z*=7/l}f.position.set(x,gh(x,z),z);dm++;selRing.position.set(x,gh(x,z)+.05,z)}}pts.set(e.pointerId,e);return}
+  if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);th-=((c.clientX+d.clientX)/2-ox)*.006;ph=Math.min(1.4,Math.max(.35,ph-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(42,Math.max(4.5,radG*od/nd));moved=99;return}
+  const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType!='mouse'||e.buttons&2)pan(dx,dy);else{th-=dx*.006;ph=Math.min(1.4,Math.max(.35,ph-dy*.005))}pts.set(e.pointerId,e)});
+cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(drag){const f=flowers[drag],en=S.e[drag];if(f&&en&&dm>2){en.x=f.position.x;en.z=f.position.z;save();toast(tr('moved'))}drag=null;selRing.visible=false;return}if(moved<6&&!pts.size){const d=pick(e);if(d)detail(d);else $('card').hidden=true}});
 cv.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
-cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(22,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+function pan(dx,dy){const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;[tg,tgG].forEach(v=>{v.x+=mx;v.z+=mz;const l=Math.hypot(v.x,v.z);if(l>9){v.x*=9/l;v.z*=9/l}})}
+cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(42,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
 
 /* ---------- UI ---------- */
 function toast(m){const t=document.createElement('div');t.className='toast';t.innerHTML=ic('local_florist')+' '+m;document.body.append(t);setTimeout(()=>t.remove(),3700)}
 function ask(msg,yes){return new Promise(r=>{$('dm').textContent=msg;$('dy').textContent=yes||tr('confirm');$('dlg').hidden=false;$('dy').onclick=()=>{$('dlg').hidden=true;r(1)};$('dn').onclick=()=>{$('dlg').hidden=true;r(0)}})}
 function movePill(anim){const b=document.querySelector('nav button[aria-current=true]'),p=$('pill');if(!b)return;p.style.transition=anim?'':'none';p.style.width=b.offsetWidth+'px';p.style.transform='translateX('+b.offsetLeft+'px)'}
 addEventListener('resize',()=>movePill(false));if(document.fonts)document.fonts.ready.then(()=>movePill(false));
-function show(v){document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>$('p-'+x).hidden=x!=v);$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
+function show(v){if(v!='garden'&&arrange)setArrange(false);document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>$('p-'+x).hidden=x!=v);$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
   $('date').textContent=n.toLocaleDateString(LC(),{weekday:'short',month:'short',day:'numeric'});
   $('hi').innerHTML=ic('local_florist')+(S.e[today()]?tr('hi1'):tr('hi0'));
   $('cnt').innerHTML=ic('eco')+' '+tr('cnt',en.length);
   $('mon').innerHTML=mo.length?tr('mon')+' '+Object.entries(c).map(([k,v])=>flo(k,18)+'×'+v).join(' '):tr('monNone');
-  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec')}
+  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec');$('arr').innerHTML=ic(arrange?'check_circle':'open_with')+' '+tr(arrange?'done':'arr');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'))}
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
   c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ce">${ic('edit')} ${tr('edit')}</button><button class="btn r" id="cd">${ic('delete')} ${tr('delete')}</button><button class="btn" id="cx" style="margin-left:auto">${ic('close')} ${tr('close')}</button></div>`;
-  $('ce').onclick=()=>openModal(d);$('cx').onclick=()=>{c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?17:13};
-  $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];save();c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?17:13;refresh();toast(tr('removed'))}}}
+  $('ce').onclick=()=>openModal(d);$('cx').onclick=()=>{c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?28:14};
+  $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?28:14;refresh();toast(tr('removed'))}}}
 let ed,sel,tg2=[];
 function openModal(d){ed=d||today();const e=S.e[ed];sel=e?e.mood:null;tg2=e?[...(e.tags||[])]:[];
   $('mt').textContent=e?tr('editT',ed==today()?'':fmt(ed)):tr('hi0');$('ms').textContent=e?tr('save'):tr('plant');$('txt').value=e?e.text||'':'';
@@ -307,11 +370,11 @@ function renderIns(){const en=ents(),mk=today().slice(0,7),mo=en.filter(([d])=>d
   h+=Object.entries(M).map(([k,m])=>{const v=c[k]||0;return`<div class="bar"><b>${flo(k,20)} ${m.n}</b><div style="width:${v/mx*55+3}%;background:${m.c}"></div><span>${v}</span></div>`}).join('');
   h+='<h2 style="margin-top:18px">'+tr('l7')+'</h2><div class="wk">';
   for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d),e=S.e[k];h+=`<div><i style="${e?'background:'+M[e.mood].c+'55':''}">${e?face(e.mood,28):''}</i>${d.toLocaleDateString(LC(),{weekday:'short'})}</div>`}
-  $('p-ins').innerHTML=h+`</div><p style="margin-top:16px">${ic('eco')} ${tr('total',en.length)}</p>`}
+  $('p-ins').innerHTML=h+`</div><p style="margin-top:16px">${ic('eco')} ${tr('total',en.length)}</p><h2 style="margin-top:18px">${tr('friendsT')}</h2><p style="font-size:13px;opacity:.75">${tr('friendsD')}</p>${Object.keys(M).map((k,i)=>`<div class="bar" style="margin:5px 0"><b style="flex:0 0 112px">${flo(k,20)} ${M[k].f}</b><span>→ ${tr('crn')[i]} ×${cr.filter(c=>c.userData.mood==k).length}</span></div>`).join('')}`}
 function renderSet(){$('p-set').innerHTML=`<h2>${tr('setT')}</h2><div class="row" style="flex-direction:column;align-items:flex-start"><span>${tr('lang')}</span><div class="tags" id="lg" style="margin:0">${[['en','English'],['zh','繁體中文'],['ja','日本語'],['ko','한국어']].map(([c,n])=>`<button class="tag" data-l="${c}" aria-pressed="${S.lang==c}">${n}</button>`).join('')}</div></div><div class="row"><span>${tr('rmT')}<br><small>${tr('rmD')}</small></span><button class="btn" id="rm" aria-pressed="${S.rm}">${S.rm?tr('on'):tr('off')}</button></div><div class="row"><span>${tr('rsT')}<br><small>${tr('rsD')}</small></span><button class="btn r" id="rs">${tr('rsB')}</button></div><p style="font-size:13px;opacity:.7;margin-top:10px">${tr('local')}</p>`;
   $('lg').onclick=e=>{const b=e.target.closest('[data-l]');if(b){S.lang=b.dataset.l;save();applyLang()}};
   $('rm').onclick=()=>{S.rm=!S.rm;save();renderSet()};
-  $('rs').onclick=async()=>{if(await ask(tr('rs1'),tr('rs1y'))&&await ask(tr('rs2'),tr('rs2y'))){for(const d in flowers)scene.remove(flowers[d]);for(const d in flowers)delete flowers[d];S.e={};save();show('garden');toast(tr('resetDone'))}}}
+  $('rs').onclick=async()=>{if(await ask(tr('rs1'),tr('rs1y'))&&await ask(tr('rs2'),tr('rs2y'))){for(const d in flowers)scene.remove(flowers[d]);for(const d in flowers)delete flowers[d];S.e={};syncCr();save();show('garden');toast(tr('resetDone'))}}}
 /* ---------- boot ---------- */
 if(ok)ents().forEach(([d])=>addFlower(d,1));
 $('obc').innerHTML=['happy','calm','loved','sad'].map(k=>`<span>${face(k,22)} ${M[k].n}</span>`).join('');
