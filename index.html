@@ -23,7 +23,9 @@ button:focus-visible,textarea:focus-visible{outline:3px solid #8DB9E8;outline-of
 .fab:hover{transform:scale(1.05) rotate(-1deg)}
 nav{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;gap:4px;padding:6px;border-radius:99px;background:var(--gl);backdrop-filter:blur(14px);box-shadow:var(--sh)}
 nav button{padding:9px 16px;border-radius:99px;font-size:14px}
-nav button[aria-current=true]{background:var(--pink)}
+nav button{position:relative;z-index:1}
+#pill{position:absolute;z-index:0;top:6px;bottom:6px;left:0;width:0;border-radius:99px;background:var(--pink);box-shadow:0 3px 10px #f29bb544;transition:transform .45s cubic-bezier(.34,1.4,.5,1),width .35s}
+@media(prefers-reduced-motion:reduce){#pill{transition:none}}
 @media(min-width:1000px){nav{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}.fab{bottom:28px}}
 @media(max-width:759px){.hello{right:16px;max-width:none}.hello p{display:none}.fab{right:16px}}
 @media(max-width:480px){.logo{font-size:17px;padding:6px 12px}#date{font-size:12px;padding:6px 11px}}
@@ -97,7 +99,7 @@ nav{max-width:calc(100% - 16px)}
 <button class="fab g" id="fab">Record Today's Mood</button>
 <section id="card" hidden></section>
 
-<nav aria-label="Main"><button data-v="garden"><span class="ms">yard</span> Garden</button><button data-v="cal"><span class="ms">calendar_month</span> Calendar</button><button data-v="ins"><span class="ms">insights</span> Insights</button><button data-v="set"><span class="ms">settings</span> Settings</button></nav>
+<nav aria-label="Main"><span id="pill"></span><button data-v="garden"><span class="ms">yard</span> Garden</button><button data-v="cal"><span class="ms">calendar_month</span> Calendar</button><button data-v="ins"><span class="ms">insights</span> Insights</button><button data-v="set"><span class="ms">settings</span> Settings</button></nav>
 <section id="p-cal" class="panel glass" hidden></section>
 <section id="p-ins" class="panel glass" hidden></section>
 <section id="p-set" class="panel glass" hidden></section>
@@ -231,7 +233,9 @@ cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(22,Math.max(4.5
 /* ---------- UI ---------- */
 function toast(m){const t=document.createElement('div');t.className='toast';t.innerHTML=ic('local_florist')+' '+m;document.body.append(t);setTimeout(()=>t.remove(),3700)}
 function ask(msg,yes){return new Promise(r=>{$('dm').textContent=msg;$('dy').textContent=yes||'Confirm';$('dlg').hidden=false;$('dy').onclick=()=>{$('dlg').hidden=true;r(1)};$('dn').onclick=()=>{$('dlg').hidden=true;r(0)}})}
-function show(v){document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));['cal','ins','set'].forEach(x=>$('p-'+x).hidden=x!=v);$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
+function movePill(anim){const b=document.querySelector('nav button[aria-current=true]'),p=$('pill');if(!b)return;p.style.transition=anim?'':'none';p.style.width=b.offsetWidth+'px';p.style.transform='translateX('+b.offsetLeft+'px)'}
+addEventListener('resize',()=>movePill(false));if(document.fonts)document.fonts.ready.then(()=>movePill(false));
+function show(v){document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>$('p-'+x).hidden=x!=v);$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
   $('date').textContent=n.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'});
@@ -285,5 +289,5 @@ $('obc').innerHTML=['happy','calm','loved','sad'].map(k=>`<span>${face(k,22)} ${
 document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-label',b.lastChild.textContent.trim()));
 const closeOb=()=>{$('ob').hidden=true;S.ob=1;save()};
 $('go').onclick=()=>{closeOb();openModal()};$('skip').onclick=closeOb;if(S.ob)$('ob').hidden=true;
-show('garden');
+show('garden');window.pillReady=true;
 </script></body></html>
