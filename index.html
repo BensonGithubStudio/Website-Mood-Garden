@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Mood Garden</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F5EF;--pink:#F5C7D5;--yel:#F5DEA0;--mint:#B9D9C2;--sky:#B9D8EB;--lav:#D4C7EA;--ink:#5B5A55;--gl:rgba(255,252,247,.8);--sh:0 10px 30px rgba(120,100,90,.18)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden}
+body{font:600 15px/1.45 Nunito,system-ui,sans-serif;color:var(--ink);background:linear-gradient(#86B6DA,#B4D3E2 55%,#D6DDD0);padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+h1,h2,.logo,.fab,.big{font-family:Fredoka,Nunito,sans-serif;font-weight:600}
+canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none;display:block}
+button{font:inherit;color:inherit;border:0;cursor:pointer;background:none}
+button:focus-visible,textarea:focus-visible{outline:3px solid #8DB9E8;outline-offset:2px}
+.glass{background:var(--gl);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:28px;box-shadow:var(--sh);border:1px solid #fff9}
+.top{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.logo{font-size:22px;white-space:nowrap;background:var(--gl);padding:8px 16px;border-radius:99px;box-shadow:var(--sh)}
+#date{white-space:nowrap;background:var(--gl);padding:8px 14px;border-radius:99px;font-size:13px}
+.hello{position:fixed;left:16px;top:calc(env(safe-area-inset-top,0px) + 72px);padding:16px 20px;max-width:310px}
+.hello h1{font-size:19px;line-height:1.2}.hello p{margin:4px 0 10px;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chips span{background:#fff;border-radius:99px;padding:3px 11px;font-size:12.5px}
+.fab{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);background:#F29BB5;color:#fff;padding:15px 24px;border-radius:99px;font-size:17px;box-shadow:0 10px 24px #f29bb577;transition:transform .2s}
+.fab:hover{transform:scale(1.05) rotate(-1deg)}
+nav{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;gap:4px;padding:6px;border-radius:99px;background:var(--gl);backdrop-filter:blur(14px);box-shadow:var(--sh)}
+nav button{padding:9px 16px;border-radius:99px;font-size:14px}
+nav button[aria-current=true]{background:var(--pink)}
+@media(min-width:1000px){nav{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}.fab{bottom:28px}}
+@media(max-width:759px){.hello{right:16px;max-width:none}.hello p{display:none}.fab{right:16px}}
+@media(max-width:480px){.logo{font-size:17px;padding:6px 12px}#date{font-size:12px;padding:6px 11px}}
+body:not([data-v=garden]) .g{display:none}
+.panel{position:fixed;z-index:3;left:50%;top:50%;transform:translate(-50%,-48%);width:min(520px,calc(100% - 28px));max-height:calc(100% - 170px);overflow:auto;padding:22px}
+@media(min-width:1000px){.panel{top:calc(50% + 28px)}}
+.panel h2{font-size:24px;margin-bottom:12px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.cal .w{font-size:12px;opacity:.6}
+.d{aspect-ratio:1;border-radius:16px;background:#ffffff88;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.d i{font-style:normal;font-size:20px;margin-top:2px}
+.d.e i{width:12px;height:12px;border-radius:50% 50% 50% 0;background:#ddd3c4;opacity:.7;margin-top:5px}
+.d.t{outline:3px solid var(--yel)}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.mh button{background:#fff;width:34px;height:34px;border-radius:50%}
+.bar{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}.bar b{flex:0 0 78px;font-weight:700}
+.bar div{height:16px;border-radius:99px;transition:width .6s}
+.wk{display:flex;gap:6px;justify-content:space-between;margin-top:6px}
+.wk div{flex:1;text-align:center;font-size:11px}.wk i{display:grid;place-items:center;aspect-ratio:1;border-radius:50%;font-style:normal;font-size:18px;background:#fff9;margin-bottom:2px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px dashed #d9cfbe}
+.btn{background:#fff;padding:9px 16px;border-radius:99px;box-shadow:0 3px 10px #0001}.btn.p{background:#F29BB5;color:#fff}.btn.r{color:#b5484f}
+.scrim{position:fixed;inset:0;z-index:20;background:#5b5a5555;display:grid;place-items:center;padding:14px}
+.scrim[hidden],[hidden]{display:none!important}
+.sheet{background:#FFFCF7;border-radius:32px;padding:22px;width:min(520px,100%);max-height:100%;overflow:auto;box-shadow:var(--sh)}
+.moods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.mc{border-radius:24px;padding:12px 4px;background:#fff;border:3px solid transparent;text-align:center;transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.mc b{display:block;font-size:34px;line-height:1.2}.mc span{font-size:13px}.mc small{display:block;font-size:11px;opacity:.7}
+.mc:hover{transform:translateY(-3px)}.mc[aria-pressed=true]{transform:scale(1.07) rotate(-2deg);border-color:var(--c);background:color-mix(in srgb,var(--c) 22%,#fff)}
+textarea{width:100%;border:2px solid #eadfcd;border-radius:18px;padding:10px 14px;font:inherit;color:inherit;background:#fff;resize:none;height:76px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 14px}.tag{background:#fff;padding:5px 13px;border-radius:99px;border:2px solid #eadfcd;font-size:13px}.tag[aria-pressed=true]{background:var(--lav);border-color:#b7a2e0}
+#card{position:fixed;z-index:6;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 86px);width:min(310px,calc(100% - 32px));background:#FFFBF0;padding:18px 20px;border-radius:6px 22px 6px 22px;transform:rotate(1.2deg);box-shadow:var(--sh);border:2px dashed #e7d9b9}
+@media(min-width:1000px){#card{bottom:90px}}
+#card h2{font-size:21px}#card p{margin:8px 0;font-style:italic}
+.toast{position:fixed;z-index:30;left:50%;top:22%;transform:translateX(-50%);background:#fffc;padding:12px 22px;border-radius:99px;box-shadow:var(--sh);font-family:Fredoka;font-size:19px;animation:tw 3.6s forwards}
+@keyframes tw{0%{opacity:0;top:26%}12%,80%{opacity:1;top:22%}100%{opacity:0}}
+#fb{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:30px;font-size:17px}
+#ob{position:fixed;inset:0;z-index:40;background:linear-gradient(#9FCBEA,#D6ECF4 45%,#BFE0A8 46%,#A6D58F);overflow:hidden}
+.cl{position:absolute;background:#fff;border-radius:99px;box-shadow:inset 0 -8px 14px #cde4f2;width:130px;height:46px}
+.bud{position:absolute;left:50%;top:15%;width:min(240px,60vw);aspect-ratio:1;transform:translateX(-50%);animation:bob 3.5s ease-in-out infinite}
+@keyframes bob{50%{transform:translateX(-50%) translateY(-10px) rotate(2deg)}}
+.bud .hd{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE6EE,#F5C7D5 70%);box-shadow:inset -10px -14px 24px #e9a0b955,0 16px 30px #0002}
+.bud .hd:before,.bud .hd:after{content:"";position:absolute;top:44%;width:9%;height:11%;border-radius:50%;background:#5b3a3a}
+.bud .hd:before{left:30%}.bud .hd:after{right:30%}
+.bud .sm{position:absolute;left:41%;top:55%;width:18%;height:9%;border-bottom:5px solid #5b3a3a;border-radius:0 0 50% 50%}
+.bud .ck{position:absolute;top:56%;width:13%;height:9%;border-radius:50%;background:#f29bb588}
+.bud .st{position:absolute;left:47%;top:96%;width:6%;height:120%;background:#9CCB8A;border-radius:99px}
+.ob-s{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:34px 34px 0 0;padding:26px 24px calc(env(safe-area-inset-bottom,0px) + 24px);display:grid;gap:12px;justify-items:center;text-align:center}
+.ob-s h1{font-size:30px;line-height:1.1}
+@media(min-width:760px){.ob-s{left:50%;transform:translateX(-50%);width:460px}}
+@media(prefers-reduced-motion:reduce){.bud,.toast{animation:none}.toast{opacity:1}}
+</style></head><body data-v="garden">
+<canvas id="c" aria-label="3D mood garden"></canvas>
+<div id="fb" hidden>Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.</div>
+
+<header class="top g"><div class="logo">🌷 Mood Garden</div><div id="date"></div></header>
+<section class="hello glass g"><h1 id="hi"></h1><p>Grow your feelings, one flower at a time.</p><div class="chips"><span id="cnt"></span><span id="mon"></span></div></section>
+<button class="fab g" id="fab">Record Today's Mood</button>
+<section id="card" hidden></section>
+
+<nav aria-label="Main"><button data-v="garden">🌱 Garden</button><button data-v="cal">📅 Calendar</button><button data-v="ins">🌼 Insights</button><button data-v="set">⚙️ Settings</button></nav>
+<section id="p-cal" class="panel glass" hidden></section>
+<section id="p-ins" class="panel glass" hidden></section>
+<section id="p-set" class="panel glass" hidden></section>
+
+<div class="scrim" id="modal" hidden><div class="sheet" role="dialog" aria-label="Mood check-in">
+<h2 id="mt">How are you feeling today?</h2><div class="moods" id="moods"></div>
+<textarea id="txt" placeholder="What made you feel this way today?" maxlength="400"></textarea>
+<div class="tags" id="tags"></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mx">Cancel</button><button class="btn p" id="ms">Plant My Flower</button></div></div></div>
+<div class="scrim" id="dlg" hidden><div class="sheet" style="width:min(340px,100%)"><p id="dm" style="margin-bottom:16px"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="dn">Keep it</button><button class="btn r" id="dy">Confirm</button></div></div></div>
+
+<div id="ob"><div class="cl" style="left:6%;top:9%"></div><div class="cl" style="right:4%;top:20%;width:100px"></div>
+<div class="bud"><div class="st"></div><div class="hd"></div><div class="sm"></div><div class="ck" style="left:20%"></div><div class="ck" style="right:20%"></div></div>
+<div class="ob-s"><h1>Track your feelings, grow a garden</h1><p>Pick a mood each day and it blooms as a flower. No streaks, no pressure.</p>
+<div class="chips"><span>😊 Happy</span><span>😌 Calm</span><span>🥰 Loved</span><span>😢 Sad</span></div><button class="btn p big" id="go" style="font-size:18px;padding:12px 30px">Get started</button><button id="skip" style="font-size:13px">Skip</button></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const M={happy:{n:'Happy',e:'😊',c:'#F5D04A',f:'Sunflower',i:'🌻'},excited:{n:'Excited',e:'🤩',c:'#F6A35C',f:'Tulip',i:'🌷'},calm:{n:'Calm',e:'😌',c:'#A9D8A8',f:'Daisy',i:'🌼'},loved:{n:'Loved',e:'🥰',c:'#F29BB5',f:'Rose',i:'🌹'},sad:{n:'Sad',e:'😢',c:'#8DB9E8',f:'Bluebell',i:'🔔'},anxious:{n:'Anxious',e:'😰',c:'#B7A2E0',f:'Lavender',i:'🪻'}};
+const TAGS=['Work','Study','Friends','Family','Travel','Personal'],KEY='moodgarden.v1';
+let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+S.e=S.e||{};if(S.rm===undefined)S.rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>dk(new Date()),fmt=k=>new Date(k+'T12:00').toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+const ents=()=>Object.entries(S.e).sort((a,b)=>a[0]<b[0]?-1:1);
+
+/* ---------- 3D ---------- */
+let R,ok=true;
+try{R=new THREE.WebGLRenderer({canvas:$('c'),antialias:true,alpha:true})}catch(e){ok=false;$('fb').hidden=false}
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(42,1,.1,120),flowers={};
+const gh=(x,z)=>.22*Math.sin(x*.55)*Math.cos(z*.45)+.12*Math.sin(x*.9+z*.7);
+const SPH=new THREE.SphereGeometry(1,14,10),CYL=new THREE.CylinderGeometry(1,1,1,8),mc={};
+const mat=c=>mc[c]||(mc[c]=new THREE.MeshStandardMaterial({color:c,roughness:.75}));
+function mk(g,c,p,s,r,m){const o=new THREE.Mesh(g,m||mat(c));o.position.set(...p);o.scale.set(...s);if(r)o.rotation.set(...r);o.castShadow=true;return o}
+function ring(h,n,r,y,s,tilt,c){for(let i=0;i<n;i++){const a=i/n*6.283,pv=new THREE.Group();pv.rotation.y=a;pv.position.y=y;pv.add(mk(SPH,c,[r,0,0],s,[0,0,tilt]));h.add(pv)}}
+const bellG=new THREE.LatheGeometry([[.02,0],[.09,-.05],[.14,-.14],[.2,-.26],[.17,-.28]].map(p=>new THREE.Vector2(...p)),14);
+function flower(k){
+  const g=new THREE.Group(),H={happy:1.6,excited:1.3,calm:.9,loved:1.2,sad:1.4,anxious:1.5}[k],h=new THREE.Group();
+  g.add(mk(CYL,'#7DB36F',[0,H/2,0],[.05,H,.05]));
+  [1,-1].forEach((s,i)=>g.add(mk(SPH,'#8CC27D',[s*.22,H*.28+i*.18,0],[.24,.04,.1],[0,0,s*.45])));
+  h.position.y=H;g.add(h);
+  if(k=='happy'){h.rotation.x=.45;ring(h,16,.3,0,[.2,.035,.075],0,'#F5D04A');ring(h,12,.24,.02,[.17,.035,.07],0,'#F2B93B');h.add(mk(SPH,'#7A5236',[0,.03,0],[.2,.07,.2]))}
+  if(k=='excited'){ring(h,6,.1,.15,[.09,.22,.06],-.28,'#F6A35C');ring(h,3,.05,.12,[.08,.2,.05],-.1,'#F9BE86')}
+  if(k=='calm'){h.rotation.x=.4;ring(h,13,.2,0,[.16,.025,.045],0,'#FFFFFF');h.add(mk(SPH,'#F5D04A',[0,.02,0],[.1,.07,.1]))}
+  if(k=='loved'){ring(h,6,.2,.08,[.1,.14,.04],-.6,'#F29BB5');ring(h,5,.13,.14,[.09,.13,.04],-.5,'#F5ABC2');ring(h,4,.06,.18,[.07,.12,.04],-.3,'#F7C0D0');h.add(mk(SPH,'#E97C9C',[0,.15,0],[.07,.1,.07]))}
+  if(k=='sad'){g.children[0].rotation.z=.12;for(let i=0;i<3;i++){const b=mk(bellG,'#8DB9E8',[Math.cos(i*2.1)*.2,-.02-i*.15,Math.sin(i*2.1)*.2],[1,1,1],null,new THREE.MeshStandardMaterial({color:i?'#8DB9E8':'#A3C8F0',side:2,roughness:.6}));h.add(b)}}
+  if(k=='anxious'){for(let i=0;i<10;i++)h.add(mk(SPH,i%2?'#B7A2E0':'#9C86D4',[Math.cos(i*2)*.06,-.5+i*.09,Math.sin(i*2)*.06],[.075-i*.003,.09,.075-i*.003]))}
+  g.userData.h=h;g.userData.ph=Math.random()*6;return g}
+
+function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined);let best;
+  for(let t=0;t<80;t++){const r=1+Math.sqrt(rnd())*5.6,a=rnd()*6.283,x=Math.cos(a)*r,z=Math.sin(a)*r;best={x,z};
+    if(Math.hypot(x+5,z-2.6)>2.1&&ex.every(e=>Math.hypot(e.x-x,e.z-z)>1))break}
+  return{x:best.x,z:best.z,s:.85+rnd()*.5,r:rnd()*6.28}}
+function addFlower(d,grow){const e=S.e[d];if(e.x===undefined){Object.assign(e,pickPos(d));save()}
+  const f=flower(e.mood);f.position.set(e.x,gh(e.x,e.z),e.z);f.rotation.y=e.r;Object.assign(f.userData,{date:d,base:e.s,grow});scene.add(f);flowers[d]=f;setGrow(f,grow)}
+const ez=t=>1-Math.pow(1-Math.min(1,Math.max(0,t)),3);
+function setGrow(f,g){const b=f.userData.base,a=Math.max(.001,ez(g*2))*b;f.scale.set(a,a,a);const h=Math.max(.001,ez((g-.4)/.6));f.userData.h.scale.setScalar(h)}
+
+const spare=[],bf=[],cl=[];let sparkle=null,P=null,hover=null;
+if(ok){
+  R.setPixelRatio(Math.min(devicePixelRatio,2));R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;
+  scene.fog=new THREE.Fog('#C4D9E0',30,75);
+  scene.add(new THREE.HemisphereLight(0xFFF1DC,0xA9C9B2,.5));
+  const sun=new THREE.DirectionalLight(0xFFE6C4,.7);sun.position.set(6,11,5);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-10,right:10,top:10,bottom:-10});sun.shadow.bias=-.0008;scene.add(sun);
+  const gg=new THREE.PlaneGeometry(17,17,56,56);gg.rotateX(-Math.PI/2);const pp=gg.attributes.position;
+  for(let i=0;i<pp.count;i++){let x=pp.getX(i),z=pp.getZ(i),r=Math.hypot(x,z);if(r>8){x*=8/r;z*=8/r}pp.setXYZ(i,x,r>8?-.15:gh(x,z),z)}
+  gg.computeVertexNormals();const gr=new THREE.Mesh(gg,new THREE.MeshStandardMaterial({color:'#9CC487',roughness:1}));gr.receiveShadow=true;scene.add(gr);
+  scene.add(mk(new THREE.CylinderGeometry(8.1,7,1.4,64),'#E3C9A8',[0,-.85,0],[1,1,1]));
+  for(let i=0;i<7;i++){const a=i*.9+.4;scene.add(mk(SPH,['#B9D9C2','#A5CFB0','#C6E2C8'][i%3],[Math.cos(a)*24,-2,Math.sin(a)*24-4],[8+i%3*2,3.6+i%2*2,6]))}
+  for(let i=0;i<6;i++){const c=new THREE.Group();[[0,0,1.4],[1.3,-.2,1.1],[-1.3,-.2,1.1],[.5,.5,1]].forEach(p=>c.add(mk(SPH,'#EAF0F4',[p[0],p[1],0],[p[2],p[2]*.7,p[2]*.8])));c.children.forEach(m=>m.castShadow=false);c.position.set(-26+i*10,8+i%3*2,-16-i%2*6);c.userData.s=.4+i*.05;scene.add(c);cl.push(c)}
+  const pond=mk(CYL,'#9FD0EA',[-5,gh(-5,2.6)+.05,2.6],[1.6,.06,1.3]);pond.castShadow=false;scene.add(pond);
+  [[3.2,-5.2],[5.6,-1.5],[-2,-6]].forEach(([x,z],i)=>{const m=new THREE.Group();m.add(mk(CYL,'#FFF3E0',[0,.18,0],[.07,.36,.07]),mk(SPH,'#F29BB5',[0,.38,0],[.26,.17,.26]),mk(SPH,'#fff',[.1,.5,.1],[.05,.03,.05]));m.position.set(x,gh(x,z),z);m.scale.setScalar(1+i*.2);scene.add(m)});
+  [[-3.4,4.9,.5],[6,3,.35],[-6.2,-2.4,.45]].forEach(([x,z,s])=>{const r=mk(new THREE.IcosahedronGeometry(1,0),'#D9D2CE',[x,gh(x,z)+s*.4,z],[s,s*.7,s*.85],[.3,.6,0]);scene.add(r)});
+  for(let i=0;i<8;i++){const a=3.5+i*.32,x=Math.cos(a)*7.4,z=Math.sin(a)*7.4;scene.add(mk(new THREE.BoxGeometry(1,1,1),'#EBD3AC',[x,gh(x,z)+.35,z],[.14,.7,.14],[0,-a,0]));if(i<7){const b=a+.16;scene.add(mk(new THREE.BoxGeometry(1,1,1),'#E2C79B',[Math.cos(b)*7.4,gh(x,z)+.5,Math.sin(b)*7.4],[.06,.09,.8],[0,-b+1.5708,0]))}}
+  const tiny=new THREE.InstancedMesh(SPH,new THREE.MeshStandardMaterial({roughness:.8}),70),dm=new THREE.Object3D(),pal=['#F5C7D5','#FFFFFF','#F5DEA0','#D4C7EA'];
+  for(let i=0;i<70;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*7.5,x=Math.cos(a)*r,z=Math.sin(a)*r;dm.position.set(x,gh(x,z)+.08,z);dm.scale.setScalar(.07+Math.random()*.04);dm.updateMatrix();tiny.setMatrixAt(i,dm.matrix);tiny.setColorAt(i,new THREE.Color(pal[i%4]))}
+  scene.add(tiny);
+  const wg=new THREE.PlaneGeometry(.34,.26);wg.translate(.17,0,0);
+  for(let i=0;i<4;i++){const b=new THREE.Group(),c=['#F5C7D5','#F5DEA0','#B9D8EB','#D4C7EA'][i],m=new THREE.MeshBasicMaterial({color:c,side:2});const w1=new THREE.Mesh(wg,m),w2=new THREE.Mesh(wg,m);w2.rotation.y=Math.PI;b.add(w1,w2);b.userData={w:[w1,w2],i,bee:false};scene.add(b);bf.push(b)}
+  for(let i=0;i<2;i++){const b=new THREE.Group();b.add(mk(SPH,'#F5D04A',[0,0,0],[.09,.08,.12]),mk(SPH,'#5B4A3A',[0,0,-.07],[.085,.075,.04]));b.userData={i:i+5,bee:true};scene.add(b);bf.push(b)}
+}
+let th=.75,ph=1,rad=innerWidth<760?17:13,radG=rad;const tg=new THREE.Vector3(0,.4,0),tgG=tg.clone();
+function resize(){if(!ok)return;R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+const clock=new THREE.Clock();
+function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
+  tg.lerp(tgG,k);rad+=(radG-rad)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
+  for(const d in flowers){const f=flowers[d],u=f.userData;if(!rm){f.rotation.z=Math.sin(t*1.3+u.ph)*.035;u.h.rotation.z=Math.sin(t*1.7+u.ph)*.05}
+    if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
+  if(!rm){cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>30)c.position.x=-30});
+    bf.forEach(b=>{const u=b.userData,s=u.bee?.7:.28,a=t*s+u.i*2,x=Math.cos(a)*5.2*(u.bee?.8:1),z=Math.sin(a*1.3)*4.4,y=(u.bee?1:1.5)+Math.sin(t*1.1+u.i)*.35;b.position.set(x,y,z);b.rotation.y=-Math.atan2(-Math.sin(a*1.3)*1.3*4.4,-Math.sin(a)*5.2)+Math.PI/2;if(!u.bee){const w=Math.sin(t*16+u.i)*.9;u.w[0].rotation.z=w;u.w[1].rotation.z=-w}})}
+  if(P){P.t+=rm?dt*8:dt;const f=flowers[P.d];setGrow(f,Math.min(1,(P.t-1.2)/3));
+    P.seed.visible=P.t<1.1;P.seed.position.y=Math.max(.05,2-P.t*2.2)+f.position.y;
+    if(sparkle){const a=sparkle.geometry.attributes.position;for(let i=0;i<a.count;i++)a.setY(i,a.getY(i)+dt*.4);a.needsUpdate=true;sparkle.material.opacity=Math.max(0,Math.min(1,(P.t-.9)*2,(5-P.t)))}
+    if(P.t>3.9&&!P.toast){P.toast=1;toast('A new flower has bloomed! 🌷')}
+    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;radG=innerWidth<760?17:13;tgG.set(0,.4,0)}}
+  if(ok)R.render(scene,cam)}
+if(ok)frame();
+
+/* ---------- camera input ---------- */
+const cv=$('c'),pts=new Map(),ray=new THREE.Raycaster(),mv=new THREE.Vector2();let pd=0,moved=0,pinch=0;
+function pick(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?o.userData.date:null}
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
+cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
+  if(!p){const d=pick(e);hover=d;cv.style.cursor=d?'pointer':'grab';return}
+  if(pts.size==2){pts.set(e.pointerId,e);const[a,b]=[...pts.values()],n=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);radG=Math.min(22,Math.max(4.5,radG*pinch/n));pinch=n;moved=99;return}
+  const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);th-=dx*.006;ph=Math.min(1.4,Math.max(.35,ph-dy*.005));pts.set(e.pointerId,e)});
+cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(moved<6&&!pts.size){const d=pick(e);if(d)detail(d);else $('card').hidden=true}});
+cv.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
+cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(22,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
+
+/* ---------- UI ---------- */
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),3700)}
+function ask(msg,yes){return new Promise(r=>{$('dm').textContent=msg;$('dy').textContent=yes||'Confirm';$('dlg').hidden=false;$('dy').onclick=()=>{$('dlg').hidden=true;r(1)};$('dn').onclick=()=>{$('dlg').hidden=true;r(0)}})}
+function show(v){document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));['cal','ins','set'].forEach(x=>$('p-'+x).hidden=x!=v);$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
+  $('date').textContent=n.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'});
+  $('hi').textContent=S.e[today()]?'Your flower has been planted! 🌷':'How are you feeling today?';
+  $('cnt').textContent='🌱 '+en.length+(en.length==1?' flower':' flowers');
+  $('mon').textContent=mo.length?'This month: '+Object.entries(c).map(([k,v])=>M[k].i+'×'+v).join(' '):'Nothing planted this month yet';
+  $('fab').hidden=!!S.e[today()];$('fab').textContent='Record Today\'s Mood'}
+function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
+  const m=M[e.mood],c=$('card');c.hidden=false;
+  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2>${m.i} ${m.f} · ${m.e} ${m.n}</h2>${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">No note for this day.</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ce">Edit</button><button class="btn r" id="cd">Delete</button><button class="btn" id="cx" style="margin-left:auto">Close</button></div>`;
+  $('ce').onclick=()=>openModal(d);$('cx').onclick=()=>{c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?17:13};
+  $('cd').onclick=async()=>{if(await ask('Delete this flower and its note? This can\'t be undone.','Delete')){if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];save();c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?17:13;refresh();toast('Flower removed')}}}
+let ed,sel,tg2=[];
+function openModal(d){ed=d||today();const e=S.e[ed];sel=e?e.mood:null;tg2=e?[...(e.tags||[])]:[];
+  $('mt').textContent=e?'Edit your '+(ed==today()?'day':fmt(ed)):'How are you feeling today?';$('ms').textContent=e?'Save changes':'Plant My Flower';$('txt').value=e?e.text||'':'';
+  $('moods').innerHTML=Object.entries(M).map(([k,m])=>`<button class="mc" data-k="${k}" style="--c:${m.c}" aria-pressed="${k==sel}"><b>${m.e}</b><span>${m.n}</span><small>${m.f}</small></button>`).join('');
+  $('tags').innerHTML=TAGS.map(t=>`<button class="tag" aria-pressed="${tg2.includes(t)}">${t}</button>`).join('');
+  $('moods').onclick=ev=>{const b=ev.target.closest('.mc');if(!b)return;sel=b.dataset.k;$('moods').querySelectorAll('.mc').forEach(x=>x.setAttribute('aria-pressed',x==b))};
+  $('tags').onclick=ev=>{const b=ev.target.closest('.tag');if(!b)return;const t=b.textContent,i=tg2.indexOf(t);i<0?tg2.push(t):tg2.splice(i,1);b.setAttribute('aria-pressed',i<0)};
+  $('modal').hidden=false}
+$('fab').onclick=()=>openModal();$('mx').onclick=()=>$('modal').hidden=true;
+$('ms').onclick=()=>{if(!sel){toast('Pick a mood first 🌈');return}
+  const e=S.e[ed],isNew=!e;S.e[ed]={...(e||{}),mood:sel,text:$('txt').value.trim(),tags:tg2};save();$('modal').hidden=true;$('card').hidden=true;show('garden');
+  if(isNew){if(!ok){toast('Flower saved 🌷');return}addFlower(ed,0);const f=flowers[ed],hole=mk(CYL,'#7A5A3A',[f.position.x,f.position.y+.01,f.position.z],[.3,.02,.3]),seed=mk(SPH,'#5B4A3A',[f.position.x,3,f.position.z],[.07,.09,.07]);scene.add(hole,seed);
+    const n=30,ar=new Float32Array(n*3);for(let i=0;i<n;i++){ar[i*3]=f.position.x+(Math.random()-.5)*1.4;ar[i*3+1]=f.position.y+Math.random()*1.8;ar[i*3+2]=f.position.z+(Math.random()-.5)*1.4}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(ar,3));sparkle=new THREE.Points(g,new THREE.PointsMaterial({color:'#FFE9A0',size:.14,transparent:true,opacity:0,depthWrite:false}));scene.add(sparkle);
+    P={d:ed,t:0,seed,hole};tgG.set(f.position.x,f.position.y+.6,f.position.z);radG=6;
+  }else{const o=flowers[ed];if(o){scene.remove(o);delete flowers[ed]}addFlower(ed,1);toast('Entry updated')}
+  refresh()};
+let cm=new Date();cm.setDate(1);
+function renderCal(){const y=cm.getFullYear(),m=cm.getMonth(),first=cm.getDay(),n=new Date(y,m+1,0).getDate(),t=today();
+  let h=`<div class="mh"><button id="pv" aria-label="Previous month">‹</button><h2 style="margin:0">${cm.toLocaleDateString('en',{month:'long',year:'numeric'})}</h2><button id="nx" aria-label="Next month">›</button></div><div class="cal">`+'SMTWTFS'.split('').map(x=>`<div class="w">${x}</div>`).join('')+'<div></div>'.repeat(first);
+  for(let d=1;d<=n;d++){const k=dk(new Date(y,m,d)),e=S.e[k];h+=`<button class="d ${e?'':'e'} ${k==t?'t':''}" data-k="${k}" aria-label="${k}">${d}<i>${e?M[e.mood].i:''}</i></button>`}
+  $('p-cal').innerHTML=h+'</div><p style="margin-top:12px;font-size:13px;opacity:.75">Empty buds are days you haven\'t recorded. That\'s fine.</p>';
+  $('pv').onclick=()=>{cm.setMonth(m-1);renderCal()};$('nx').onclick=()=>{cm.setMonth(m+1);renderCal()};
+  $('p-cal').querySelectorAll('.d').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(S.e[k])detail(k);else if(k==t){show('garden');openModal()}else toast('You can plant today\'s flower any time 🌱')})}
+function renderIns(){const en=ents(),mk=today().slice(0,7),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
+  if(!en.length){$('p-ins').innerHTML='<h2>Insights</h2><p>Your insights will grow as you plant flowers. Record today\'s mood to begin.</p>';return}
+  const top=Object.entries(c).sort((a,b)=>b[1]-a[1])[0],mx=Math.max(1,...Object.values(c));
+  let h=`<h2>This month</h2><p>${top?`Most common: ${M[top[0]].i} ${M[top[0]].n} (${Math.round(top[1]/mo.length*100)}% of ${mo.length} ${mo.length==1?'day':'days'})`:'No flowers this month yet.'}</p>`;
+  h+=Object.entries(M).map(([k,m])=>{const v=c[k]||0;return`<div class="bar"><b>${m.i} ${m.n}</b><div style="width:${v/mx*55+3}%;background:${m.c}"></div><span>${v}</span></div>`}).join('');
+  h+='<h2 style="margin-top:18px">Last 7 days</h2><div class="wk">';
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d),e=S.e[k];h+=`<div><i style="${e?'background:'+M[e.mood].c+'55':''}">${e?M[e.mood].i:''}</i>${d.toLocaleDateString('en',{weekday:'short'})}</div>`}
+  $('p-ins').innerHTML=h+`</div><p style="margin-top:16px">🌱 ${en.length} ${en.length==1?'flower':'flowers'} planted in total</p>`}
+function renderSet(){$('p-set').innerHTML=`<h2>Settings</h2><div class="row"><span>Reduce motion<br><small>Skips sway, flying friends and slow camera moves.</small></span><button class="btn" id="rm" aria-pressed="${S.rm}">${S.rm?'On':'Off'}</button></div><div class="row"><span>Reset Garden<br><small>Removes every flower and note from this device.</small></span><button class="btn r" id="rs">Reset</button></div><p style="font-size:13px;opacity:.7;margin-top:10px">Your garden is stored only in this browser.</p>`;
+  $('rm').onclick=()=>{S.rm=!S.rm;save();renderSet()};
+  $('rs').onclick=async()=>{if(await ask('Reset your whole garden?','Yes, continue')&&await ask('Last check: every flower and note will be deleted for good.','Delete everything')){for(const d in flowers)scene.remove(flowers[d]);for(const d in flowers)delete flowers[d];S.e={};save();show('garden');toast('Garden reset. A fresh start 🌱')}}}
+/* ---------- boot ---------- */
+if(ok)ents().forEach(([d])=>addFlower(d,1));
+const closeOb=()=>{$('ob').hidden=true;S.ob=1;save()};
+$('go').onclick=()=>{closeOb();openModal()};$('skip').onclick=closeOb;if(S.ob)$('ob').hidden=true;
+show('garden');
+</script></body></html>
