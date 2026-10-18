@@ -92,10 +92,10 @@ nav{max-width:calc(100% - 16px)}
 @media(max-width:480px){nav button{font-size:0;padding:10px 15px;gap:0}nav .ms{font-size:24px}}
 </style></head><body data-v="garden">
 <canvas id="c" aria-label="3D mood garden"></canvas>
-<div id="fb" hidden>Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.</div>
+<div id="fb" hidden data-t="fb"></div>
 
 <header class="top g"><div class="logo"><span class="ms">local_florist</span> Mood Garden</div><div id="date"></div></header>
-<section class="hello glass g"><h1 id="hi"></h1><p>Grow your feelings, one flower at a time.</p><div class="chips"><span id="cnt"></span><span id="mon"></span></div></section>
+<section class="hello glass g"><h1 id="hi"></h1><p data-t="tag"></p><div class="chips"><span id="cnt"></span><span id="mon"></span></div></section>
 <button class="fab g" id="fab">Record Today's Mood</button>
 <section id="card" hidden></section>
 
@@ -108,13 +108,13 @@ nav{max-width:calc(100% - 16px)}
 <h2 id="mt">How are you feeling today?</h2><div class="moods" id="moods"></div>
 <textarea id="txt" placeholder="What made you feel this way today?" maxlength="400"></textarea>
 <div class="tags" id="tags"></div>
-<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mx">Cancel</button><button class="btn p" id="ms">Plant My Flower</button></div></div></div>
-<div class="scrim" id="dlg" hidden><div class="sheet" style="width:min(340px,100%)"><p id="dm" style="margin-bottom:16px"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="dn">Keep it</button><button class="btn r" id="dy">Confirm</button></div></div></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mx" data-t="cancel"></button><button class="btn p" id="ms">Plant My Flower</button></div></div></div>
+<div class="scrim" id="dlg" hidden><div class="sheet" style="width:min(340px,100%)"><p id="dm" style="margin-bottom:16px"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="dn" data-t="keep"></button><button class="btn r" id="dy">Confirm</button></div></div></div>
 
 <div id="ob"><div class="cl" style="left:6%;top:9%"></div><div class="cl" style="right:4%;top:20%;width:100px"></div>
 <div class="bud"><div class="st"></div><div class="hd"></div><div class="sm"></div><div class="ck" style="left:20%"></div><div class="ck" style="right:20%"></div></div>
-<div class="ob-s"><h1>Track your feelings, grow a garden</h1><p>Pick a mood each day and it blooms as a flower. No streaks, no pressure.</p>
-<div class="chips" id="obc"></div><button class="btn p big" id="go" style="font-size:18px;padding:12px 30px">Get started</button><button id="skip" style="font-size:13px">Skip</button></div></div>
+<div class="ob-s"><h1 data-t="obH"></h1><p data-t="obP"></p>
+<div class="chips" id="obc"></div><button class="btn p big" id="go" data-t="go" style="font-size:18px;padding:12px 30px"></button><button id="skip" data-t="skip" style="font-size:13px"></button></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -125,7 +125,7 @@ let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 S.e=S.e||{};if(S.rm===undefined)S.rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-const today=()=>dk(new Date()),fmt=k=>new Date(k+'T12:00').toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+const today=()=>dk(new Date()),fmt=k=>new Date(k+'T12:00').toLocaleDateString(LC(),{weekday:'short',month:'short',day:'numeric',year:'numeric'});
 const ents=()=>Object.entries(S.e).sort((a,b)=>a[0]<b[0]?-1:1);
 const ic=n=>`<span class="ms" aria-hidden="true">${n}</span>`,SV=(s,b)=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true" style="vertical-align:middle;flex:none">${b}</svg>`;
 function face(k,s){const I='#5B4A4A',sk=`stroke="${I}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`,dot=(x,y,r=2.2)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${I}"/>`,H='<path d="M13 21.5l-4.2-4.2a2.4 2.4 0 013.4-3.4l.8.8.8-.8a2.4 2.4 0 013.4 3.4z" fill="#E4577E"/>';
@@ -145,6 +145,20 @@ function flo(k,s){const L='stroke="#8a7a5a" stroke-opacity=".35" stroke-width=".
  sad:`<path d="M10 38q2-24 16-27" ${G} stroke-width="2.4"/>${bell(28,11)}${bell(20,20)}${bell(13,29)}`,
  anxious:`<path d="M20 38V8" ${G} stroke-width="2.4"/>`+Array.from({length:7},(_,i)=>`<ellipse cx="${20+(i%2?3.2:-3.2)}" cy="${8+i*4.3}" rx="3.2" ry="3.8" fill="${i%2?'#B7A2E0':'#9C86D4'}" ${L}/>`).join('')}[k];return SV(s,b)}
 
+/* ---------- i18n ---------- */
+if(!S.lang){const n=(navigator.language||'en').toLowerCase();S.lang=n.startsWith('zh')?'zh':n.startsWith('ja')?'ja':n.startsWith('ko')?'ko':'en'}
+const L={
+en:{fb:"Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.",tag:'Grow your feelings, one flower at a time.',n_garden:'Garden',n_cal:'Calendar',n_ins:'Insights',n_set:'Settings',rec:"Record Today's Mood",hi0:'How are you feeling today?',hi1:'Your flower has been planted!',cnt:n=>n+(n==1?' flower':' flowers'),mon:'This month',monNone:'Nothing planted this month yet',m:['Happy','Excited','Calm','Loved','Sad','Anxious'],f:['Sunflower','Tulip','Daisy','Rose','Bluebell','Lavender'],tg:['Work','Study','Friends','Family','Travel','Personal'],ph:'What made you feel this way today?',editT:d=>d?'Edit '+d:'Edit your day',plant:'Plant My Flower',save:'Save changes',cancel:'Cancel',keep:'Keep it',confirm:'Confirm',noNote:'No note for this day.',edit:'Edit',delete:'Delete',close:'Close',delQ:"Delete this flower and its note? This can't be undone.",removed:'Flower removed',bloomed:'A new flower has bloomed!',pick:'Pick a mood first',saved:'Flower saved',updated:'Entry updated',resetDone:'Garden reset. A fresh start',calHint:"You can plant today's flower any time",wd:['S','M','T','W','T','F','S'],calNote:"Empty buds are days you haven't recorded. That's fine.",insEmpty:"Your insights will grow as you plant flowers. Record today's mood to begin.",insM:'This month',common:(f,p,n)=>`Most common: ${f} (${p}% of ${n} ${n==1?'day':'days'})`,insNone:'No flowers this month yet.',l7:'Last 7 days',total:n=>`${n} ${n==1?'flower':'flowers'} planted in total`,setT:'Settings',rmT:'Reduce motion',rmD:'Skips sway, flying friends and slow camera moves.',on:'On',off:'Off',rsT:'Reset Garden',rsD:'Removes every flower and note from this device.',rsB:'Reset',local:'Your garden is stored only in this browser.',lang:'Language',rs1:'Reset your whole garden?',rs1y:'Yes, continue',rs2:'Last check: every flower and note will be deleted for good.',rs2y:'Delete everything',obH:'Track your feelings, grow a garden',obP:'Pick a mood each day and it blooms as a flower. No streaks, no pressure.',go:'Get started',skip:'Skip'},
+zh:{fb:'你的裝置目前無法顯示 3D 花園，其他功能仍可使用，可以從月曆瀏覽你的花朵。',tag:'一次一朵花，慢慢種出你的心情。',n_garden:'花園',n_cal:'月曆',n_ins:'統計',n_set:'設定',rec:'記錄今日心情',hi0:'今天感覺如何？',hi1:'你的花已經種下了！',cnt:n=>n+' 朵花',mon:'本月',monNone:'這個月還沒有種花',m:['開心','興奮','平靜','被愛','難過','焦慮'],f:['向日葵','鬱金香','雛菊','玫瑰','風鈴草','薰衣草'],tg:['工作','學習','朋友','家人','旅行','個人'],ph:'今天是什麼讓你有這種感覺？',editT:d=>d?'編輯 '+d+' 的紀錄':'編輯今天的紀錄',plant:'種下我的花',save:'儲存變更',cancel:'取消',keep:'保留',confirm:'確認',noNote:'這一天沒有留下文字。',edit:'編輯',delete:'刪除',close:'關閉',delQ:'要刪除這朵花和它的紀錄嗎？刪除後無法復原。',removed:'已刪除花朵',bloomed:'新的花朵綻放了！',pick:'請先選擇一種心情',saved:'花朵已儲存',updated:'紀錄已更新',resetDone:'花園已重置，重新開始吧',calHint:'你隨時都可以種下今天的花',wd:['日','一','二','三','四','五','六'],calNote:'空的花苞代表還沒有記錄的日子，沒關係的。',insEmpty:'種下花朵後，這裡就會出現你的統計。先記錄今天的心情吧。',insM:'本月',common:(f,p,n)=>`最常出現：${f}（${n} 天中的 ${p}%）`,insNone:'這個月還沒有花朵。',l7:'最近 7 天',total:n=>`累計種下 ${n} 朵花`,setT:'設定',rmT:'減少動態效果',rmD:'關閉搖晃、飛行小動物與緩慢的鏡頭移動。',on:'開',off:'關',rsT:'重置花園',rsD:'從這個裝置移除所有花朵和紀錄。',rsB:'重置',local:'你的花園只儲存在這個瀏覽器中。',lang:'語言',rs1:'要重置整座花園嗎？',rs1y:'是，繼續',rs2:'最後確認：所有花朵和紀錄都會被永久刪除。',rs2y:'全部刪除',obH:'記錄心情，種出一座花園',obP:'每天選一種心情，它就會綻放成一朵花。沒有連續打卡，也沒有壓力。',go:'開始使用',skip:'略過'},
+ja:{fb:'お使いの端末では3D庭園を表示できません。ほかの機能は使えます。カレンダーから花を見られます。',tag:'一輪ずつ、気持ちを育てよう。',n_garden:'ガーデン',n_cal:'カレンダー',n_ins:'統計',n_set:'設定',rec:'今日の気分を記録',hi0:'今日の気分はどう？',hi1:'お花を植えました！',cnt:n=>n+'輪',mon:'今月',monNone:'今月はまだ植えていません',m:['うれしい','わくわく','おだやか','愛されてる','かなしい','不安'],f:['ヒマワリ','チューリップ','デイジー','バラ','ブルーベル','ラベンダー'],tg:['仕事','勉強','友だち','家族','旅行','自分時間'],ph:'今日はどうしてそう感じたの？',editT:d=>d?d+'の記録を編集':'今日の記録を編集',plant:'お花を植える',save:'変更を保存',cancel:'キャンセル',keep:'やめる',confirm:'OK',noNote:'この日のメモはありません。',edit:'編集',delete:'削除',close:'閉じる',delQ:'このお花と記録を削除しますか？元に戻せません。',removed:'お花を削除しました',bloomed:'新しいお花が咲きました！',pick:'先に気分を選んでください',saved:'お花を保存しました',updated:'記録を更新しました',resetDone:'庭をリセットしました。また始めましょう',calHint:'今日のお花はいつでも植えられます',wd:['日','月','火','水','木','金','土'],calNote:'空のつぼみは、まだ記録していない日です。気にしなくて大丈夫。',insEmpty:'お花を植えると、ここに統計が育ちます。まず今日の気分を記録してみましょう。',insM:'今月',common:(f,p,n)=>`いちばん多い気分：${f}（${n}日中 ${p}%）`,insNone:'今月はまだお花がありません。',l7:'直近7日間',total:n=>`これまでに${n}輪を植えました`,setT:'設定',rmT:'動きを減らす',rmD:'ゆれ、飛ぶ生きもの、ゆっくりしたカメラ移動をオフにします。',on:'オン',off:'オフ',rsT:'庭をリセット',rsD:'この端末からすべてのお花と記録を消します。',rsB:'リセット',local:'庭のデータはこのブラウザにだけ保存されます。',lang:'言語',rs1:'庭をまるごとリセットしますか？',rs1y:'はい、続ける',rs2:'最終確認：すべてのお花と記録が完全に削除されます。',rs2y:'すべて削除',obH:'気持ちを記録して、庭を育てよう',obP:'毎日の気分を選ぶと、お花になって咲きます。連続記録もプレッシャーもありません。',go:'はじめる',skip:'スキップ'},
+ko:{fb:'이 기기에서는 3D 정원을 표시할 수 없어요. 나머지 기능은 그대로 쓸 수 있고, 달력에서 꽃을 볼 수 있어요.',tag:'꽃 한 송이씩, 마음을 키워요.',n_garden:'정원',n_cal:'달력',n_ins:'통계',n_set:'설정',rec:'오늘의 기분 기록',hi0:'오늘 기분이 어때요?',hi1:'꽃을 심었어요!',cnt:n=>n+'송이',mon:'이번 달',monNone:'이번 달에는 아직 심은 꽃이 없어요',m:['행복','설렘','평온','사랑받음','슬픔','불안'],f:['해바라기','튤립','데이지','장미','블루벨','라벤더'],tg:['일','공부','친구','가족','여행','개인'],ph:'오늘 왜 이런 기분이 들었나요?',editT:d=>d?d+' 기록 수정':'오늘 기록 수정',plant:'내 꽃 심기',save:'변경 저장',cancel:'취소',keep:'그대로 두기',confirm:'확인',noNote:'이 날은 남긴 글이 없어요.',edit:'수정',delete:'삭제',close:'닫기',delQ:'이 꽃과 기록을 삭제할까요? 되돌릴 수 없어요.',removed:'꽃을 삭제했어요',bloomed:'새 꽃이 피었어요!',pick:'먼저 기분을 골라 주세요',saved:'꽃을 저장했어요',updated:'기록을 수정했어요',resetDone:'정원을 초기화했어요. 새로 시작해요',calHint:'오늘의 꽃은 언제든 심을 수 있어요',wd:['일','월','화','수','목','금','토'],calNote:'빈 꽃봉오리는 아직 기록하지 않은 날이에요. 괜찮아요.',insEmpty:'꽃을 심으면 여기에 통계가 자라나요. 먼저 오늘의 기분을 기록해 보세요.',insM:'이번 달',common:(f,p,n)=>`가장 많은 기분: ${f} (${n}일 중 ${p}%)`,insNone:'이번 달에는 아직 꽃이 없어요.',l7:'최근 7일',total:n=>`지금까지 ${n}송이를 심었어요`,setT:'설정',rmT:'움직임 줄이기',rmD:'흔들림, 날아다니는 친구들, 느린 카메라 이동을 끕니다.',on:'켜짐',off:'꺼짐',rsT:'정원 초기화',rsD:'이 기기에서 모든 꽃과 기록을 지워요.',rsB:'초기화',local:'정원 데이터는 이 브라우저에만 저장돼요.',lang:'언어',rs1:'정원 전체를 초기화할까요?',rs1y:'네, 계속',rs2:'마지막 확인: 모든 꽃과 기록이 영구적으로 삭제돼요.',rs2y:'모두 삭제',obH:'기분을 기록하고 정원을 키워요',obP:'매일 기분을 고르면 한 송이 꽃으로 피어나요. 연속 기록도, 부담도 없어요.',go:'시작하기',skip:'건너뛰기'}};
+function tr(k,...a){const v=(L[S.lang]||L.en)[k]??L.en[k];return typeof v=='function'?v(...a):v}
+function LC(){return{en:'en',zh:'zh-TW',ja:'ja',ko:'ko'}[S.lang]||'en'}
+function applyLang(){document.documentElement.lang=S.lang;Object.keys(M).forEach((k,i)=>{M[k].n=tr('m')[i];M[k].f=tr('f')[i]});
+ document.querySelectorAll('[data-t]').forEach(e=>e.textContent=tr(e.dataset.t));
+ document.querySelectorAll('nav button').forEach(b=>{const n=tr('n_'+b.dataset.v);b.lastChild.textContent=' '+n;b.setAttribute('aria-label',n)});
+ $('txt').placeholder=tr('ph');$('obc').innerHTML=['happy','calm','loved','sad'].map(k=>`<span>${face(k,22)} ${M[k].n}</span>`).join('');
+ refresh();const v=document.body.dataset.v;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();movePill(false)}
 /* ---------- 3D ---------- */
 let R,ok=true;
 try{R=new THREE.WebGLRenderer({canvas:$('c'),antialias:true,alpha:true})}catch(e){ok=false;$('fb').hidden=false}
@@ -213,7 +227,7 @@ function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta()
   if(P){P.t+=rm?dt*8:dt;const f=flowers[P.d];setGrow(f,Math.min(1,(P.t-1.2)/3));
     P.seed.visible=P.t<1.1;P.seed.position.y=Math.max(.05,2-P.t*2.2)+f.position.y;
     if(sparkle){const a=sparkle.geometry.attributes.position;for(let i=0;i<a.count;i++)a.setY(i,a.getY(i)+dt*.4);a.needsUpdate=true;sparkle.material.opacity=Math.max(0,Math.min(1,(P.t-.9)*2,(5-P.t)))}
-    if(P.t>3.9&&!P.toast){P.toast=1;toast('A new flower has bloomed!')}
+    if(P.t>3.9&&!P.toast){P.toast=1;toast(tr('bloomed'))}
     if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;radG=innerWidth<760?17:13;tgG.set(0,.4,0)}}
   if(ok)R.render(scene,cam)}
 if(ok)frame();
@@ -232,62 +246,63 @@ cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(22,Math.max(4.5
 
 /* ---------- UI ---------- */
 function toast(m){const t=document.createElement('div');t.className='toast';t.innerHTML=ic('local_florist')+' '+m;document.body.append(t);setTimeout(()=>t.remove(),3700)}
-function ask(msg,yes){return new Promise(r=>{$('dm').textContent=msg;$('dy').textContent=yes||'Confirm';$('dlg').hidden=false;$('dy').onclick=()=>{$('dlg').hidden=true;r(1)};$('dn').onclick=()=>{$('dlg').hidden=true;r(0)}})}
+function ask(msg,yes){return new Promise(r=>{$('dm').textContent=msg;$('dy').textContent=yes||tr('confirm');$('dlg').hidden=false;$('dy').onclick=()=>{$('dlg').hidden=true;r(1)};$('dn').onclick=()=>{$('dlg').hidden=true;r(0)}})}
 function movePill(anim){const b=document.querySelector('nav button[aria-current=true]'),p=$('pill');if(!b)return;p.style.transition=anim?'':'none';p.style.width=b.offsetWidth+'px';p.style.transform='translateX('+b.offsetLeft+'px)'}
 addEventListener('resize',()=>movePill(false));if(document.fonts)document.fonts.ready.then(()=>movePill(false));
 function show(v){document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>$('p-'+x).hidden=x!=v);$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
-  $('date').textContent=n.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'});
-  $('hi').innerHTML=ic('local_florist')+(S.e[today()]?'Your flower has been planted!':'How are you feeling today?');
-  $('cnt').innerHTML=ic('eco')+' '+en.length+(en.length==1?' flower':' flowers');
-  $('mon').innerHTML=mo.length?'This month '+Object.entries(c).map(([k,v])=>flo(k,18)+'×'+v).join(' '):'Nothing planted this month yet';
-  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' Record Today\'s Mood'}
+  $('date').textContent=n.toLocaleDateString(LC(),{weekday:'short',month:'short',day:'numeric'});
+  $('hi').innerHTML=ic('local_florist')+(S.e[today()]?tr('hi1'):tr('hi0'));
+  $('cnt').innerHTML=ic('eco')+' '+tr('cnt',en.length);
+  $('mon').innerHTML=mo.length?tr('mon')+' '+Object.entries(c).map(([k,v])=>flo(k,18)+'×'+v).join(' '):tr('monNone');
+  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec')}
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
-  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">No note for this day.</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ce">${ic('edit')} Edit</button><button class="btn r" id="cd">${ic('delete')} Delete</button><button class="btn" id="cx" style="margin-left:auto">${ic('close')} Close</button></div>`;
+  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ce">${ic('edit')} ${tr('edit')}</button><button class="btn r" id="cd">${ic('delete')} ${tr('delete')}</button><button class="btn" id="cx" style="margin-left:auto">${ic('close')} ${tr('close')}</button></div>`;
   $('ce').onclick=()=>openModal(d);$('cx').onclick=()=>{c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?17:13};
-  $('cd').onclick=async()=>{if(await ask('Delete this flower and its note? This can\'t be undone.','Delete')){if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];save();c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?17:13;refresh();toast('Flower removed')}}}
+  $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];save();c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?17:13;refresh();toast(tr('removed'))}}}
 let ed,sel,tg2=[];
 function openModal(d){ed=d||today();const e=S.e[ed];sel=e?e.mood:null;tg2=e?[...(e.tags||[])]:[];
-  $('mt').textContent=e?'Edit your '+(ed==today()?'day':fmt(ed)):'How are you feeling today?';$('ms').textContent=e?'Save changes':'Plant My Flower';$('txt').value=e?e.text||'':'';
+  $('mt').textContent=e?tr('editT',ed==today()?'':fmt(ed)):tr('hi0');$('ms').textContent=e?tr('save'):tr('plant');$('txt').value=e?e.text||'':'';
   $('moods').innerHTML=Object.entries(M).map(([k,m])=>`<button class="mc" data-k="${k}" style="--c:${m.c}" aria-pressed="${k==sel}"><b>${face(k,56)}</b><span>${m.n}</span><small>${flo(k,16)} ${m.f}</small></button>`).join('');
-  $('tags').innerHTML=TAGS.map(t=>`<button class="tag" aria-pressed="${tg2.includes(t)}">${t}</button>`).join('');
+  $('tags').innerHTML=TAGS.map(t=>`<button class="tag" data-v="${t}" aria-pressed="${tg2.includes(t)}">${tr('tg')[TAGS.indexOf(t)]}</button>`).join('');
   $('moods').onclick=ev=>{const b=ev.target.closest('.mc');if(!b)return;sel=b.dataset.k;$('moods').querySelectorAll('.mc').forEach(x=>x.setAttribute('aria-pressed',x==b))};
-  $('tags').onclick=ev=>{const b=ev.target.closest('.tag');if(!b)return;const t=b.textContent,i=tg2.indexOf(t);i<0?tg2.push(t):tg2.splice(i,1);b.setAttribute('aria-pressed',i<0)};
+  $('tags').onclick=ev=>{const b=ev.target.closest('.tag');if(!b)return;const t=b.dataset.v,i=tg2.indexOf(t);i<0?tg2.push(t):tg2.splice(i,1);b.setAttribute('aria-pressed',i<0)};
   $('modal').hidden=false}
 $('fab').onclick=()=>openModal();$('mx').onclick=()=>$('modal').hidden=true;
-$('ms').onclick=()=>{if(!sel){toast('Pick a mood first');return}
+$('ms').onclick=()=>{if(!sel){toast(tr('pick'));return}
   const e=S.e[ed],isNew=!e;S.e[ed]={...(e||{}),mood:sel,text:$('txt').value.trim(),tags:tg2};save();$('modal').hidden=true;$('card').hidden=true;show('garden');
-  if(isNew){if(!ok){toast('Flower saved');return}addFlower(ed,0);const f=flowers[ed],hole=mk(CYL,'#7A5A3A',[f.position.x,f.position.y+.01,f.position.z],[.3,.02,.3]),seed=mk(SPH,'#5B4A3A',[f.position.x,3,f.position.z],[.07,.09,.07]);scene.add(hole,seed);
+  if(isNew){if(!ok){toast(tr('saved'));return}addFlower(ed,0);const f=flowers[ed],hole=mk(CYL,'#7A5A3A',[f.position.x,f.position.y+.01,f.position.z],[.3,.02,.3]),seed=mk(SPH,'#5B4A3A',[f.position.x,3,f.position.z],[.07,.09,.07]);scene.add(hole,seed);
     const n=30,ar=new Float32Array(n*3);for(let i=0;i<n;i++){ar[i*3]=f.position.x+(Math.random()-.5)*1.4;ar[i*3+1]=f.position.y+Math.random()*1.8;ar[i*3+2]=f.position.z+(Math.random()-.5)*1.4}
     const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(ar,3));sparkle=new THREE.Points(g,new THREE.PointsMaterial({color:'#FFE9A0',size:.14,transparent:true,opacity:0,depthWrite:false}));scene.add(sparkle);
     P={d:ed,t:0,seed,hole};tgG.set(f.position.x,f.position.y+.6,f.position.z);radG=6;
-  }else{const o=flowers[ed];if(o){scene.remove(o);delete flowers[ed]}addFlower(ed,1);toast('Entry updated')}
+  }else{const o=flowers[ed];if(o){scene.remove(o);delete flowers[ed]}addFlower(ed,1);toast(tr('updated'))}
   refresh()};
 let cm=new Date();cm.setDate(1);
 function renderCal(){const y=cm.getFullYear(),m=cm.getMonth(),first=cm.getDay(),n=new Date(y,m+1,0).getDate(),t=today();
-  let h=`<div class="mh"><button id="pv" aria-label="Previous month">${ic('chevron_left')}</button><h2 style="margin:0">${cm.toLocaleDateString('en',{month:'long',year:'numeric'})}</h2><button id="nx" aria-label="Next month">${ic('chevron_right')}</button></div><div class="cal">`+'SMTWTFS'.split('').map(x=>`<div class="w">${x}</div>`).join('')+'<div></div>'.repeat(first);
+  let h=`<div class="mh"><button id="pv" aria-label="Previous month">${ic('chevron_left')}</button><h2 style="margin:0">${cm.toLocaleDateString(LC(),{month:'long',year:'numeric'})}</h2><button id="nx" aria-label="Next month">${ic('chevron_right')}</button></div><div class="cal">`+tr('wd').map(x=>`<div class="w">${x}</div>`).join('')+'<div></div>'.repeat(first);
   for(let d=1;d<=n;d++){const k=dk(new Date(y,m,d)),e=S.e[k];h+=`<button class="d ${e?'':'e'} ${k==t?'t':''}" data-k="${k}" aria-label="${k}">${d}<i>${e?flo(e.mood,24):''}</i></button>`}
-  $('p-cal').innerHTML=h+'</div><p style="margin-top:12px;font-size:13px;opacity:.75">Empty buds are days you haven\'t recorded. That\'s fine.</p>';
+  $('p-cal').innerHTML=h+'</div><p style="margin-top:12px;font-size:13px;opacity:.75">'+tr('calNote')+'</p>';
   $('pv').onclick=()=>{cm.setMonth(m-1);renderCal()};$('nx').onclick=()=>{cm.setMonth(m+1);renderCal()};
-  $('p-cal').querySelectorAll('.d').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(S.e[k])detail(k);else if(k==t){show('garden');openModal()}else toast('You can plant today\'s flower any time')})}
+  $('p-cal').querySelectorAll('.d').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(S.e[k])detail(k);else if(k==t){show('garden');openModal()}else toast(tr('calHint'))})}
 function renderIns(){const en=ents(),mk=today().slice(0,7),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
-  if(!en.length){$('p-ins').innerHTML='<h2>Insights</h2><p>Your insights will grow as you plant flowers. Record today\'s mood to begin.</p>';return}
+  if(!en.length){$('p-ins').innerHTML='<h2>'+tr('n_ins')+'</h2><p>'+tr('insEmpty')+'</p>';return}
   const top=Object.entries(c).sort((a,b)=>b[1]-a[1])[0],mx=Math.max(1,...Object.values(c));
-  let h=`<h2>This month</h2><p>${top?`Most common: ${flo(top[0],20)} ${M[top[0]].n} (${Math.round(top[1]/mo.length*100)}% of ${mo.length} ${mo.length==1?'day':'days'})`:'No flowers this month yet.'}</p>`;
+  let h=`<h2>${tr('insM')}</h2><p>${top?tr('common',flo(top[0],20)+' '+M[top[0]].n,Math.round(top[1]/mo.length*100),mo.length):tr('insNone')}</p>`;
   h+=Object.entries(M).map(([k,m])=>{const v=c[k]||0;return`<div class="bar"><b>${flo(k,20)} ${m.n}</b><div style="width:${v/mx*55+3}%;background:${m.c}"></div><span>${v}</span></div>`}).join('');
-  h+='<h2 style="margin-top:18px">Last 7 days</h2><div class="wk">';
-  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d),e=S.e[k];h+=`<div><i style="${e?'background:'+M[e.mood].c+'55':''}">${e?face(e.mood,28):''}</i>${d.toLocaleDateString('en',{weekday:'short'})}</div>`}
-  $('p-ins').innerHTML=h+`</div><p style="margin-top:16px">${ic('eco')} ${en.length} ${en.length==1?'flower':'flowers'} planted in total</p>`}
-function renderSet(){$('p-set').innerHTML=`<h2>Settings</h2><div class="row"><span>Reduce motion<br><small>Skips sway, flying friends and slow camera moves.</small></span><button class="btn" id="rm" aria-pressed="${S.rm}">${S.rm?'On':'Off'}</button></div><div class="row"><span>Reset Garden<br><small>Removes every flower and note from this device.</small></span><button class="btn r" id="rs">Reset</button></div><p style="font-size:13px;opacity:.7;margin-top:10px">Your garden is stored only in this browser.</p>`;
+  h+='<h2 style="margin-top:18px">'+tr('l7')+'</h2><div class="wk">';
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d),e=S.e[k];h+=`<div><i style="${e?'background:'+M[e.mood].c+'55':''}">${e?face(e.mood,28):''}</i>${d.toLocaleDateString(LC(),{weekday:'short'})}</div>`}
+  $('p-ins').innerHTML=h+`</div><p style="margin-top:16px">${ic('eco')} ${tr('total',en.length)}</p>`}
+function renderSet(){$('p-set').innerHTML=`<h2>${tr('setT')}</h2><div class="row" style="flex-direction:column;align-items:flex-start"><span>${tr('lang')}</span><div class="tags" id="lg" style="margin:0">${[['en','English'],['zh','繁體中文'],['ja','日本語'],['ko','한국어']].map(([c,n])=>`<button class="tag" data-l="${c}" aria-pressed="${S.lang==c}">${n}</button>`).join('')}</div></div><div class="row"><span>${tr('rmT')}<br><small>${tr('rmD')}</small></span><button class="btn" id="rm" aria-pressed="${S.rm}">${S.rm?tr('on'):tr('off')}</button></div><div class="row"><span>${tr('rsT')}<br><small>${tr('rsD')}</small></span><button class="btn r" id="rs">${tr('rsB')}</button></div><p style="font-size:13px;opacity:.7;margin-top:10px">${tr('local')}</p>`;
+  $('lg').onclick=e=>{const b=e.target.closest('[data-l]');if(b){S.lang=b.dataset.l;save();applyLang()}};
   $('rm').onclick=()=>{S.rm=!S.rm;save();renderSet()};
-  $('rs').onclick=async()=>{if(await ask('Reset your whole garden?','Yes, continue')&&await ask('Last check: every flower and note will be deleted for good.','Delete everything')){for(const d in flowers)scene.remove(flowers[d]);for(const d in flowers)delete flowers[d];S.e={};save();show('garden');toast('Garden reset. A fresh start')}}}
+  $('rs').onclick=async()=>{if(await ask(tr('rs1'),tr('rs1y'))&&await ask(tr('rs2'),tr('rs2y'))){for(const d in flowers)scene.remove(flowers[d]);for(const d in flowers)delete flowers[d];S.e={};save();show('garden');toast(tr('resetDone'))}}}
 /* ---------- boot ---------- */
 if(ok)ents().forEach(([d])=>addFlower(d,1));
 $('obc').innerHTML=['happy','calm','loved','sad'].map(k=>`<span>${face(k,22)} ${M[k].n}</span>`).join('');
 document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-label',b.lastChild.textContent.trim()));
 const closeOb=()=>{$('ob').hidden=true;S.ob=1;save()};
 $('go').onclick=()=>{closeOb();openModal()};$('skip').onclick=closeOb;if(S.ob)$('ob').hidden=true;
-show('garden');window.pillReady=true;
+applyLang();show('garden');window.pillReady=true;
 </script></body></html>
