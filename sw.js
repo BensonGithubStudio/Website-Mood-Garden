@@ -1,0 +1,86 @@
+/*
+ * 情緒花園 Service Worker
+ *
+ * 快取策略（不會擋住更新）：
+ *  - 網頁本身（HTML）：網路優先，且每次都向伺服器重新驗證（cache: 'no-cache'）。
+ *    只有離線時才使用快取的版本，所以你推送新版本後，使用者下次開啟就會拿到新版。
+ *  - 圖示、字型、Three.js 等其他檔案：先用快取（速度快、可離線），
+ *    同時在背景更新，下次開啟就是最新的。
+ *  - 新的 service worker 會立刻接手（skipWaiting + clients.claim），舊快取會自動清除。
+ *
+ * 一般更新網頁內容時，不需要改這個檔案。
+ * 只有在你換了圖示或想強制清空所有舊快取時，才把 VERSION 改成新的值。
+ */
+const VERSION = 'v1';
+const CACHE = 'mood-garden-' + VERSION;
+
+// 預先快取的檔案（相對於本檔案所在的資料夾）。任何一個找不到也不會讓安裝失敗。
+const PRECACHE = [
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/apple-touch-icon.png'
+];
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE).then((cache) =>
+      Promise.allSettled(PRECACHE.map((url) => cache.add(new Request(url, { cache: 'reload' }))))
+    )
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    for (const key of await caches.keys()) {
+      if (key.startsWith('mood-garden-') && key !== CACHE) await caches.delete(key);
+    }
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET' || !req.url.startsWith('http')) return;
+
+  if (req.mode === 'navigate') {
+    event.respondWith(networkFirst(req));
+    return;
+  }
+  event.respondWith(staleWhileRevalidate(event, req));
+});
+
+async function networkFirst(req) {
+  const cache = await caches.open(CACHE);
+  try {
+    const res = await fetch(req, { cache: 'no-cache' });
+    if (res && res.ok) cache.put(req, res.clone());
+    return res;
+  } catch (err) {
+    return (
+      (await cache.match(req)) ||
+      (await cache.match('./index.html')) ||
+      (await cache.match('./')) ||
+      Response.error()
+    );
+  }
+}
+
+async function staleWhileRevalidate(event, req) {
+  const cache = await caches.open(CACHE);
+  const hit = await cache.match(req);
+  const network = fetch(req)
+    .then((res) => {
+      if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone());
+      return res;
+    })
+    .catch(() => hit);
+  if (hit) {
+    event.waitUntil(network.catch(() => {}));
+    return hit;
+  }
+  return network;
+}
