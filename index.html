@@ -97,8 +97,7 @@ nav button{display:flex;align-items:center;gap:5px}
 .bar b{display:flex;align-items:center;gap:4px;flex:0 0 100px}
 html,body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 textarea,#card p{-webkit-user-select:text;user-select:text}
-.fab.sec{right:auto;left:16px;background:var(--gl);color:var(--ink);box-shadow:var(--sh);font-size:15px;padding:13px 18px;backdrop-filter:blur(14px)}body.arr #fab{display:none!important}
-@media(max-width:480px){.fab.sec{font-size:0;padding:14px}.fab.sec .ms{font-size:24px}}
+.fab.sec{right:auto;left:16px;background:var(--gl);color:var(--ink);box-shadow:var(--sh);font-size:0;padding:0;width:52px;height:52px;display:inline-flex;align-items:center;justify-content:center;backdrop-filter:blur(14px)}.fab.sec .ms{font-size:26px;vertical-align:0}body.arr #fab{display:none!important}
 #wxc:empty{display:none}
 nav button{font-size:0;padding:10px 16px;gap:0}nav .ms{font-size:24px}
 nav{max-width:calc(100% - 16px)}
@@ -432,7 +431,7 @@ function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter
   $('hi').innerHTML=ic('local_florist')+(S.e[today()]?tr('hi1'):tr('hi0'));
   $('cnt').innerHTML=ic('eco')+' '+tr('cnt',en.length);
   $('mon').innerHTML=mo.length?tr('mon')+' '+Object.entries(c).map(([k,v])=>flo(k,18)+'×'+v).join(' '):tr('monNone');
-  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with')+' '+tr(arrange?'done':'arr');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'))}
+  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'));$('arr').title=tr(arrange?'done':'arr')}
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
   c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
