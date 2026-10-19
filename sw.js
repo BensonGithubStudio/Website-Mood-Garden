@@ -11,7 +11,7 @@
  * 一般更新網頁內容時，不需要改這個檔案。
  * 只有在你換了圖示或想強制清空所有舊快取時，才把 VERSION 改成新的值。
  */
-const VERSION = 'v1.0.0';
+const VERSION = 'v2.0.0';
 const CACHE = 'mood-garden-' + VERSION;
 
 // 預先快取的檔案（相對於本檔案所在的資料夾）。任何一個找不到也不會讓安裝失敗。
