@@ -121,6 +121,16 @@ nav{max-width:calc(100% - 16px)}
 .sw{flex:none;width:48px;height:28px;border-radius:99px;background:#d9d2c6;position:relative;transition:background .3s ease}
 .sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 5px #0003;transition:transform .3s cubic-bezier(.34,1.35,.64,1)}
 .sw[aria-checked=true]{background:#F29BB5}.sw[aria-checked=true]:after{transform:translateX(20px)}
+.si.vol{padding-top:2px;padding-bottom:12px;gap:8px}
+.si.vol .vi{flex:none;font-size:20px;opacity:.55;margin-left:2px}
+.vr{flex:1;min-width:0;height:28px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer}
+.vr::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:linear-gradient(to right,#F29BB5 var(--p,50%),#d9d2c6 var(--p,50%))}
+.vr::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-8px;border-radius:50%;background:#fff;box-shadow:0 2px 5px #0003}
+.vr::-moz-range-track{height:6px;border-radius:99px;background:#d9d2c6}
+.vr::-moz-range-progress{height:6px;border-radius:99px;background:#F29BB5}
+.vr::-moz-range-thumb{width:22px;height:22px;border:0;border-radius:50%;background:#fff;box-shadow:0 2px 5px #0003}
+.vr:disabled{opacity:.35;cursor:default}
+.vo{flex:none;width:30px;text-align:right;font-size:13px;opacity:.65;font-variant-numeric:tabular-nums}
 .sn{font-size:12.5px;opacity:.65;margin:14px 10px 0;text-align:center}
 </style></head><body data-v="garden">
 <canvas id="c" aria-label="3D mood garden"></canvas>
@@ -173,6 +183,7 @@ const SNDS={},SB={},RAW={},WB={};
 let AC=null,sndUnlocked=false,ambKey=null,ambCur=null,ambTok=0;
 const sfxOn=()=>{try{return S.snd!==false}catch(e){return true}};
 const ambOn=()=>{try{return S.amb!==false}catch(e){return true}};
+function sndVolSync(){try{SND.vol.sfx=(S.vs==null?70:S.vs)/100;SND.vol.amb=(S.va==null?35:S.va)/100}catch(e){}}   /* 把設定裡的音量滑桿值（0–100）同步到播放用的音量 */
 function acx(){
   try{
     if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}
@@ -201,7 +212,7 @@ function sndPreload(onTick){
 }
 function sfx(name,fallback){
   try{
-    if(!sfxOn())return;
+    if(!sfxOn())return;sndVolSync();
     const k=SB[name]?name:(fallback&&SB[fallback]?fallback:null);
     if(k&&acx()){
       const s=AC.createBufferSource(),g=AC.createGain();
@@ -232,7 +243,7 @@ function wbStart(k,buf){
   const g=AC.createGain();g.gain.value=0;g.connect(AC.destination);
   const s=AC.createBufferSource();s.buffer=buf;s.loop=true;s.connect(g);s.start();
   g.gain.setTargetAtTime(SND.vol.amb,AC.currentTime,.4);
-  return{key:k,stop(now){
+  return{key:k,gain(v){try{g.gain.setTargetAtTime(v,AC.currentTime,.05)}catch(e){}},stop(now){
     try{if(now){s.stop()}else{g.gain.setTargetAtTime(0,AC.currentTime,.4);s.stop(AC.currentTime+2.5)}}catch(e){}
   }};
 }
@@ -241,7 +252,7 @@ function elStart(k){
   if(r.a.paused)r.a.volume=0;
   const p=r.a.play();if(p&&p.catch)p.catch(()=>{});
   sndFade(r.a,SND.vol.amb);
-  const h={key:k,stop(now){
+  const h={key:k,gain(v){clearInterval(r.a._f);r.a.volume=Math.max(0,Math.min(1,v))},stop(now){
     if(now)r.a.pause();
     else sndFade(r.a,0,()=>{if(ambCur!==h)r.a.pause()});
   }};
@@ -249,7 +260,7 @@ function elStart(k){
 }
 function ambApply(){
   try{
-    const want=(ambOn()&&sndUnlocked&&!document.hidden&&ambKey)?ambKey:null;
+    sndVolSync();const want=(ambOn()&&sndUnlocked&&!document.hidden&&ambKey)?ambKey:null;
     if(ambCur&&ambCur.key===want)return;
     const my=++ambTok,old=ambCur;ambCur=null;
     if(old)old.stop(document.hidden);
@@ -573,13 +584,13 @@ if(ok){
   for(let i=0;i<0;i++){const b=new THREE.Group(),c=['#F5C7D5','#F5DEA0','#B9D8EB','#D4C7EA'][i],m=new THREE.MeshBasicMaterial({color:c,side:2});const w1=new THREE.Mesh(wg,m),w2=new THREE.Mesh(wg,m);w2.rotation.y=Math.PI;b.add(w1,w2);b.userData={w:[w1,w2],i,bee:false};scene.add(b);bf.push(b)}
   for(let i=0;i<0;i++){const b=new THREE.Group();b.add(mk(SPH,'#F5D04A',[0,0,0],[.09,.08,.12]),mk(SPH,'#5B4A3A',[0,0,-.07],[.085,.075,.04]));b.userData={i:i+5,bee:true};scene.add(b);bf.push(b)}
 }
-let th=.75,ph=1,rad=innerWidth<760?28:14,radG=rad;const tg=new THREE.Vector3(0,.4,0),tgG=tg.clone();
+let th=.75,ph=1,thG=.75,phG=1,rad=innerWidth<760?28:14,radG=rad;/* thG/phG：旋轉的目標角度，th/ph 會慢慢追上去 */const tg=new THREE.Vector3(0,.4,0),tgG=tg.clone();
 function resize(){if(!ok)return;R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.fov=innerWidth<innerHeight?58:42;cam.updateProjectionMatrix()}
 addEventListener('resize',resize);resize();
 /* 預設視角：橫向螢幕沿著兩座花園的連線看；偏方形或直向螢幕改成從 G1 往 G2 看過去，這樣兩座花園都在畫面裡 */
 const homeCalc=()=>{const t=Math.tan(cam.fov*Math.PI/360),as=innerWidth/innerHeight,dh=19.2*.93/(t*as),dr=Math.max(10.8/(t*as),19.3*.54/t);return{h:dh<=dr,d:Math.min(60,Math.max(18,Math.min(dh,dr)))}};
 const homeRad=()=>homeCalc().d,home=()=>{tgG.set(MX,.4,0);radG=homeRad()};
-if(ok){const hc=homeCalc();th=hc.h?.4:-1.15;tg.set(MX,.4,0);tgG.copy(tg);rad=radG=hc.d}
+if(ok){const hc=homeCalc();th=thG=hc.h?.4:-1.15;phG=ph;tg.set(MX,.4,0);tgG.copy(tg);rad=radG=hc.d}
 function beeStep(b,dt,t){const u=b.userData,p=b.position;
  if(!u.tg){u.tg=new THREE.Vector3();u.v=new THREE.Vector3();u.hold=0;u.pick=1;p.set((Math.random()-.5)*10,1.2,(Math.random()-.5)*10)}
  if(u.hold>0){u.hold-=dt;u.v.multiplyScalar(.9)}
@@ -702,7 +713,7 @@ function actStep(g,u,dt,t,type){const a=u.act,P=g.position;a.t+=dt;const f=Math.
  return true}
 const clock=new THREE.Clock();
 function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
-  tg.lerp(tgG,k);rad+=(radG-rad)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
+  tg.lerp(tgG,k);rad+=(radG-rad)*k;th+=(thG-th)*k;ph+=(phG-ph)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
   for(const d in flowers){const f=flowers[d],u=f.userData;faceUpdate(f,t,dt);if(u.dr)u.dr.visible=WX.wet>.25&&u.st===1;if(u.dry)u.dry.visible=WX.wet>.25&&u.st===0;if(!rm){const w=.5+WX.wind*1.1;f.rotation.z=Math.sin(t*(1+w*.5)+u.ph)*.03*w;u.h.rotation.z=u.hy.rotation.z=Math.sin(t*(1.4+w*.6)+u.ph)*.045*w}
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
   if(!rm){if(window.mts)mts.forEach((p,j)=>{p.rotation.y+=dt*(.03+j*.02);p.position.y=Math.sin(t*.5+j*2)*.15;p.material.opacity=window.glowF*(.55+Math.sin(t*1.7+j*2.4)*.35)});cr.forEach(c=>crStep(c,dt,t));cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>50)c.position.x=-32});
@@ -727,8 +738,8 @@ cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
     dragOK=!sky&&legalSpot(x,z,drag);                      /* 空中、橋上、柵欄外、障礙物、別朵花上都不行 */
     f.position.set(x,gh(x,z)+(dragOK?0:.3),z);dm++;selRing.position.set(x,gh(x,z)+.05,z);selRing.material.color.set(dragOK?'#F29BB5':'#E8685F')}
   pts.set(e.pointerId,e);return}
-  if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);th-=((c.clientX+d.clientX)/2-ox)*.006;ph=Math.min(1.4,Math.max(.35,ph-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(64,Math.max(4.5,radG*od/nd));moved=99;return}
-  const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType!='mouse'||e.buttons&4)pan(dx,dy);else{th-=dx*.006;ph=Math.min(1.4,Math.max(.35,ph-dy*.005))}pts.set(e.pointerId,e)});
+  if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);thG-=((c.clientX+d.clientX)/2-ox)*.006;phG=Math.min(1.4,Math.max(.35,phG-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(64,Math.max(4.5,radG*od/nd));moved=99;return}
+  const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType!='mouse'||e.buttons&4)pan(dx,dy);else{thG-=dx*.006;phG=Math.min(1.4,Math.max(.35,phG-dy*.005))}pts.set(e.pointerId,e)});
 cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
     if(f&&en){if(dm>2&&dragOK){en.x=f.position.x;en.z=f.position.z;f.position.y=gh(en.x,en.z);save();sfx('move');toast(tr('moved'))}
       else{slideBack(d,dragO);if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
@@ -736,7 +747,7 @@ cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(drag){const d=dra
 cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('mousedown',e=>{if(e.button==1)e.preventDefault()});
-function pan(dx,dy){const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;[tg,tgG].forEach(v=>{v.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,v.x+mx));v.z=Math.min(10,Math.max(-10,v.z+mz))})}
+function pan(dx,dy){const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;[tgG].forEach(v=>{v.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,v.x+mx));v.z=Math.min(10,Math.max(-10,v.z+mz))})}
 cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(64,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
 
 /* ---------- UI ---------- */
@@ -793,15 +804,19 @@ function renderSet(){
   const y=($('p-set').querySelector('.sbody')||{}).scrollTop||0;
   const sw=(k,on)=>`<button class="sw" role="switch" data-k="${k}" aria-checked="${on}" aria-label="${tr(k+'T')}"></button>`;
   const row=(ic,k,on)=>`<div class="si"><span class="sic ms">${ic}</span><span class="sx"><b>${tr(k+'T')}</b><small>${tr(k+'D')}</small></span>${sw(k,on)}</div>`;
+  const vol=(k,on)=>{const v=k=='sfx'?(S.vs==null?70:S.vs):(S.va==null?35:S.va);return`<div class="si vol"><span class="ms vi">volume_down</span><input type="range" class="vr" min="0" max="100" step="1" value="${v}" data-v="${k}" ${on?'':'disabled'} aria-label="${tr(k+'T')}"><span class="ms vi">volume_up</span><output class="vo">${v}</output></div>`};
   const seg=(id,at,list,cur)=>`<div class="tags" id="${id}">${list.map(([c,n])=>`<button class="tag" ${at}="${c}" aria-pressed="${cur==c}">${n}</button>`).join('')}</div>`;
   $('p-set').innerHTML=`<h2>${tr('setT')}</h2><div class="sbody">
 <div class="sg">${tr('lang')}</div><div class="sc"><div class="si col">${seg('lg','data-l',[['en','English'],['zh','繁體中文'],['ja','日本語'],['ko','한국어']],S.lang)}</div></div>
 <div class="sg">${tr('secLook')}</div><div class="sc"><div class="si col"><span class="sx"><b>${tr('tmT')}</b><small>${tr('tmD')}</small></span>${seg('tm','data-m',[['auto',tr('tmA')],['day',tr('tmDay')],['night',tr('tmN')]],S.tm||'auto')}</div>${row('partly_cloudy_day','wx',!S.wxo)}${row('motion_photos_off','rm',!!S.rm)}</div>
-<div class="sg">${tr('secSnd')}</div><div class="sc">${row('touch_app','sfx',S.snd!==false)}${row('music_note','amb',S.amb!==false)}</div>
+<div class="sg">${tr('secSnd')}</div><div class="sc">${row('touch_app','sfx',S.snd!==false)}${vol('sfx',S.snd!==false)}${row('music_note','amb',S.amb!==false)}${vol('amb',S.amb!==false)}</div>
 <div class="sg">${tr('secData')}</div><div class="sc"><div class="si"><span class="sic ms" style="background:#fbe0e0;color:#b5484f">delete_sweep</span><span class="sx"><b>${tr('rsT')}</b><small>${tr('rsD')}</small></span><button class="btn r" id="rs">${tr('rsB')}</button></div></div>
 <p class="sn">${tr('local')}</p></div>`;
   $('p-set').querySelector('.sbody').scrollTop=y;
   $('lg').onclick=e=>{const b=e.target.closest('[data-l]');if(b){S.lang=b.dataset.l;save();applyLang()}};
+  $('p-set').querySelectorAll('.vr').forEach(r=>{const k=r.dataset.v,o=r.parentNode.querySelector('.vo'),show=()=>{r.style.setProperty('--p',r.value+'%');o.textContent=r.value};
+    r.oninput=()=>{const v=+r.value;show();if(k=='sfx')S.vs=v;else S.va=v;sndVolSync();if(k=='amb'&&ambCur&&ambCur.gain)ambCur.gain(SND.vol.amb)};   // 背景音：拖曳時即時跟著變大小聲
+    r.onchange=()=>{save();if(k=='sfx')sfx('click')};show()});   // 音效：放開時播一聲讓你聽聽看
   $('tm').onclick=e=>{const b=e.target.closest('[data-m]');if(b){S.tm=b.dataset.m;save();if(window.applyTime)applyTime();renderSet()}};
   $('p-set').querySelectorAll('.sw').forEach(b=>b.onclick=()=>{
     const k=b.dataset.k;
@@ -811,6 +826,7 @@ function renderSet(){
     else if(k=='amb')S.amb=S.amb===false;
     save();ambApply();
     b.setAttribute('aria-checked',String({wx:!S.wxo,rm:!!S.rm,sfx:S.snd!==false,amb:S.amb!==false}[k]));
+    $('p-set').querySelectorAll('.vr').forEach(r=>r.disabled=r.dataset.v=='sfx'?S.snd===false:S.amb===false);
   });
   $('rs').onclick=async()=>{if(await ask(tr('rs1'),tr('rs1y'))&&await ask(tr('rs2'),tr('rs2y'))){sfx('delete');for(const d in flowers)scene.remove(flowers[d]);for(const d in flowers)delete flowers[d];S.e={};syncCr();S.wx=null;setWeather(null);save();show('garden');toast(tr('resetDone'))}}}
 /* ---------- boot ---------- */
