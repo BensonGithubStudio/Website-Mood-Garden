@@ -160,7 +160,7 @@ const SND={
   vol:{sfx:.7,amb:.35},
   sfx:{
     click:'audio/sfx/click.wav',animal:'audio/sfx/animal.wav',flower:'audio/sfx/flower.wav',
-    plant:'audio/sfx/plant.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',
+    plant:'audio/sfx/plant.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',deny:'audio/sfx/deny.wav',
     animal_bee:'audio/sfx/animal_bee.wav',animal_bird:'audio/sfx/animal_bird.wav',animal_ladybug:'audio/sfx/animal_ladybug.wav',
     animal_butterfly:'audio/sfx/animal_butterfly.wav',animal_snail:'audio/sfx/animal_snail.wav',animal_frog:'audio/sfx/animal_frog.wav'
   },
@@ -303,10 +303,10 @@ function flo(k,s){const L='stroke="#8a7a5a" stroke-opacity=".35" stroke-width=".
 /* ---------- i18n ---------- */
 if(!S.lang){const n=(navigator.language||'en').toLowerCase();S.lang=n.startsWith('zh')?'zh':n.startsWith('ja')?'ja':n.startsWith('ko')?'ko':'en'}
 const L={
-en:{fb:"Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.",tag:'Grow your feelings, one flower at a time.',n_garden:'Garden',n_cal:'Calendar',n_ins:'Insights',n_set:'Settings',rec:"Record Today's Mood",hi0:'How are you feeling today?',hi1:'Your flower has been planted!',cnt:n=>n+(n==1?' flower':' flowers'),mon:'This month',monNone:'Nothing planted this month yet',m:['Happy','Excited','Calm','Loved','Sad','Anxious'],f:['Sunflower','Tulip','Daisy','Rose','Bluebell','Lavender'],tg:['Work','Study','Friends','Family','Travel','Personal'],ph:'What made you feel this way today?',editT:d=>d?'Edit '+d:'Edit your day',plant:'Plant My Flower',save:'Save changes',cancel:'Cancel',keep:'Keep it',confirm:'Confirm',noNote:'No note for this day.',edit:'Edit',delete:'Delete',close:'Close',delQ:"Delete this flower and its note? This can't be undone.",removed:'Flower removed',bloomed:'A new flower has bloomed!',pick:'Pick a mood first',saved:'Flower saved',updated:'Entry updated',resetDone:'Garden reset. A fresh start',calHint:"You can plant today's flower any time",wd:['S','M','T','W','T','F','S'],calNote:"Empty buds are days you haven't recorded. That's fine.",insEmpty:"Your insights will grow as you plant flowers. Record today's mood to begin.",insM:'This month',common:(f,p,n)=>`Most common: ${f} (${p}% of ${n} ${n==1?'day':'days'})`,insNone:'No flowers this month yet.',l7:'Last 7 days',total:n=>`${n} ${n==1?'flower':'flowers'} planted in total`,setT:'Settings',rmT:'Reduce motion',rmD:'Skips sway, flying friends and slow camera moves.',on:'On',off:'Off',rsT:'Reset Garden',rsD:'Removes every flower and note from this device.',rsB:'Reset',local:'Your garden is stored only in this browser.',lang:'Language',rs1:'Reset your whole garden?',rs1y:'Yes, continue',rs2:'Last check: every flower and note will be deleted for good.',rs2y:'Delete everything',obH:'Track your feelings, grow a garden',obP:'Pick a mood each day and it blooms as a flower. No streaks, no pressure.',go:'Get started',skip:'Skip',arr:'Arrange',done:'Done',moved:'Flower moved',hintArr:'Drag a flower to move it',friendsT:'Garden friends',friendsD:'Each flower invites its own little visitors. Plant more of a mood and more friends will come.',crn:['Bees','Chicks','Ladybugs','Butterflies','Snails','Butterflies'],tmT:'Time of day',tmD:'Follows your local time, or pick a fixed look.',tmA:'Auto',tmDay:'Day',tmN:'Night',ld:['Travelling to your garden…','First time here — finding the way, hang on','The soil is a bit hard, loosening it up'],ldReady:'Your garden is ready',ldGo:'Enter the garden',ldSkip:'Skip',sfxT:'Sound effects',sfxD:'Taps, flowers and little creatures.',ambT:'Ambient sound',ambD:'Looping weather audio in the background.',secLook:'Look & feel',secSnd:'Sound',secData:'Data',sndT:'Sound',sndD:'Click sounds and weather ambience.',wxT:'Weather',wxD:'The garden weather follows the mood you record.',wxn:['Fresh breeze','Rainbow','Breezy','Petal rain','Light rain','Clouds & wind']},
-zh:{fb:'你的裝置目前無法顯示 3D 花園，其他功能仍可使用，可以從月曆瀏覽你的花朵。',tag:'一次一朵花，慢慢種出你的心情。',n_garden:'花園',n_cal:'月曆',n_ins:'統計',n_set:'設定',rec:'記錄今日心情',hi0:'今天感覺如何？',hi1:'你的花已經種下了！',cnt:n=>n+' 朵花',mon:'本月',monNone:'這個月還沒有種花',m:['開心','興奮','平靜','被愛','難過','焦慮'],f:['向日葵','鬱金香','雛菊','玫瑰','風鈴草','薰衣草'],tg:['工作','學習','朋友','家人','旅行','個人'],ph:'今天是什麼讓你有這種感覺？',editT:d=>d?'編輯 '+d+' 的紀錄':'編輯今天的紀錄',plant:'種下我的花',save:'儲存變更',cancel:'取消',keep:'保留',confirm:'確認',noNote:'這一天沒有留下文字。',edit:'編輯',delete:'刪除',close:'關閉',delQ:'要刪除這朵花和它的紀錄嗎？刪除後無法復原。',removed:'已刪除花朵',bloomed:'新的花朵綻放了！',pick:'請先選擇一種心情',saved:'花朵已儲存',updated:'紀錄已更新',resetDone:'花園已重置，重新開始吧',calHint:'你隨時都可以種下今天的花',wd:['日','一','二','三','四','五','六'],calNote:'空的花苞代表還沒有記錄的日子，沒關係的。',insEmpty:'種下花朵後，這裡就會出現你的統計。先記錄今天的心情吧。',insM:'本月',common:(f,p,n)=>`最常出現：${f}（${n} 天中的 ${p}%）`,insNone:'這個月還沒有花朵。',l7:'最近 7 天',total:n=>`累計種下 ${n} 朵花`,setT:'設定',rmT:'減少動態效果',rmD:'關閉搖晃、飛行小動物與緩慢的鏡頭移動。',on:'開',off:'關',rsT:'重置花園',rsD:'從這個裝置移除所有花朵和紀錄。',rsB:'重置',local:'你的花園只儲存在這個瀏覽器中。',lang:'語言',rs1:'要重置整座花園嗎？',rs1y:'是，繼續',rs2:'最後確認：所有花朵和紀錄都會被永久刪除。',rs2y:'全部刪除',obH:'記錄心情，種出一座花園',obP:'每天選一種心情，它就會綻放成一朵花。沒有連續打卡，也沒有壓力。',go:'開始使用',skip:'略過',arr:'佈置花園',done:'完成',moved:'花朵位置已儲存',hintArr:'拖曳花朵來移動位置',friendsT:'花園的小夥伴',friendsD:'每種花都會吸引自己的小生物。同一種心情種得越多，來的小夥伴就越多。',crn:['蜜蜂','小雞','瓢蟲','蝴蝶','蝸牛','蝴蝶'],tmT:'日夜變化',tmD:'依照你的當地時間，也可以固定成白天或夜晚。',tmA:'自動',tmDay:'白天',tmN:'夜晚',ld:['正在旅行至你的花園…','第一次來需要找路，再等等喔','土有點硬，我需要鬆個土'],ldReady:'花園準備好了',ldGo:'進入花園',ldSkip:'先進去看看',sfxT:'音效',sfxD:'按鈕、花朵與小動物的互動聲。',ambT:'背景音',ambD:'依天氣循環播放的環境音。',secLook:'外觀',secSnd:'聲音',secData:'資料',sndT:'音效',sndD:'按鈕、花朵與天氣的環境音效。',wxT:'天氣',wxD:'花園的天氣會跟著你記錄的心情變化。',wxn:['清風','彩虹','微風','花瓣雨','小雨','烏雲與微風']},
-ja:{fb:'お使いの端末では3D庭園を表示できません。ほかの機能は使えます。カレンダーから花を見られます。',tag:'一輪ずつ、気持ちを育てよう。',n_garden:'ガーデン',n_cal:'カレンダー',n_ins:'統計',n_set:'設定',rec:'今日の気分を記録',hi0:'今日の気分はどう？',hi1:'お花を植えました！',cnt:n=>n+'輪',mon:'今月',monNone:'今月はまだ植えていません',m:['うれしい','わくわく','おだやか','愛されてる','かなしい','不安'],f:['ヒマワリ','チューリップ','デイジー','バラ','ブルーベル','ラベンダー'],tg:['仕事','勉強','友だち','家族','旅行','自分時間'],ph:'今日はどうしてそう感じたの？',editT:d=>d?d+'の記録を編集':'今日の記録を編集',plant:'お花を植える',save:'変更を保存',cancel:'キャンセル',keep:'やめる',confirm:'OK',noNote:'この日のメモはありません。',edit:'編集',delete:'削除',close:'閉じる',delQ:'このお花と記録を削除しますか？元に戻せません。',removed:'お花を削除しました',bloomed:'新しいお花が咲きました！',pick:'先に気分を選んでください',saved:'お花を保存しました',updated:'記録を更新しました',resetDone:'庭をリセットしました。また始めましょう',calHint:'今日のお花はいつでも植えられます',wd:['日','月','火','水','木','金','土'],calNote:'空のつぼみは、まだ記録していない日です。気にしなくて大丈夫。',insEmpty:'お花を植えると、ここに統計が育ちます。まず今日の気分を記録してみましょう。',insM:'今月',common:(f,p,n)=>`いちばん多い気分：${f}（${n}日中 ${p}%）`,insNone:'今月はまだお花がありません。',l7:'直近7日間',total:n=>`これまでに${n}輪を植えました`,setT:'設定',rmT:'動きを減らす',rmD:'ゆれ、飛ぶ生きもの、ゆっくりしたカメラ移動をオフにします。',on:'オン',off:'オフ',rsT:'庭をリセット',rsD:'この端末からすべてのお花と記録を消します。',rsB:'リセット',local:'庭のデータはこのブラウザにだけ保存されます。',lang:'言語',rs1:'庭をまるごとリセットしますか？',rs1y:'はい、続ける',rs2:'最終確認：すべてのお花と記録が完全に削除されます。',rs2y:'すべて削除',obH:'気持ちを記録して、庭を育てよう',obP:'毎日の気分を選ぶと、お花になって咲きます。連続記録もプレッシャーもありません。',go:'はじめる',skip:'スキップ',arr:'配置を変更',done:'完了',moved:'位置を保存しました',hintArr:'お花をドラッグして移動できます',friendsT:'庭のなかまたち',friendsD:'お花ごとに、集まる生きものが違います。同じ気分を植えるほど、仲間が増えます。',crn:['ミツバチ','ひよこ','てんとう虫','チョウ','カタツムリ','チョウ'],tmT:'時間帯',tmD:'現在の時刻に合わせます。固定もできます。',tmA:'自動',tmDay:'昼',tmN:'夜',ld:['あなたの庭へ旅をしています…','初めてなので道を探しています。もう少し待ってね','土が少し硬いので、ほぐしています'],ldReady:'庭の準備ができました',ldGo:'庭に入る',ldSkip:'スキップ',sfxT:'効果音',sfxD:'ボタン、花、小さな生き物の音。',ambT:'環境音',ambD:'天気に合わせて流れるループ音。',secLook:'表示',secSnd:'サウンド',secData:'データ',sndT:'サウンド',sndD:'操作音と天気の環境音。',wxT:'天気',wxD:'記録した気分に合わせて庭の天気が変わります。',wxn:['爽やかな風','にじ','そよ風','花びらの雨','小雨','雲と風']},
-ko:{fb:'이 기기에서는 3D 정원을 표시할 수 없어요. 나머지 기능은 그대로 쓸 수 있고, 달력에서 꽃을 볼 수 있어요.',tag:'꽃 한 송이씩, 마음을 키워요.',n_garden:'정원',n_cal:'달력',n_ins:'통계',n_set:'설정',rec:'오늘의 기분 기록',hi0:'오늘 기분이 어때요?',hi1:'꽃을 심었어요!',cnt:n=>n+'송이',mon:'이번 달',monNone:'이번 달에는 아직 심은 꽃이 없어요',m:['행복','설렘','평온','사랑받음','슬픔','불안'],f:['해바라기','튤립','데이지','장미','블루벨','라벤더'],tg:['일','공부','친구','가족','여행','개인'],ph:'오늘 왜 이런 기분이 들었나요?',editT:d=>d?d+' 기록 수정':'오늘 기록 수정',plant:'내 꽃 심기',save:'변경 저장',cancel:'취소',keep:'그대로 두기',confirm:'확인',noNote:'이 날은 남긴 글이 없어요.',edit:'수정',delete:'삭제',close:'닫기',delQ:'이 꽃과 기록을 삭제할까요? 되돌릴 수 없어요.',removed:'꽃을 삭제했어요',bloomed:'새 꽃이 피었어요!',pick:'먼저 기분을 골라 주세요',saved:'꽃을 저장했어요',updated:'기록을 수정했어요',resetDone:'정원을 초기화했어요. 새로 시작해요',calHint:'오늘의 꽃은 언제든 심을 수 있어요',wd:['일','월','화','수','목','금','토'],calNote:'빈 꽃봉오리는 아직 기록하지 않은 날이에요. 괜찮아요.',insEmpty:'꽃을 심으면 여기에 통계가 자라나요. 먼저 오늘의 기분을 기록해 보세요.',insM:'이번 달',common:(f,p,n)=>`가장 많은 기분: ${f} (${n}일 중 ${p}%)`,insNone:'이번 달에는 아직 꽃이 없어요.',l7:'최근 7일',total:n=>`지금까지 ${n}송이를 심었어요`,setT:'설정',rmT:'움직임 줄이기',rmD:'흔들림, 날아다니는 친구들, 느린 카메라 이동을 끕니다.',on:'켜짐',off:'꺼짐',rsT:'정원 초기화',rsD:'이 기기에서 모든 꽃과 기록을 지워요.',rsB:'초기화',local:'정원 데이터는 이 브라우저에만 저장돼요.',lang:'언어',rs1:'정원 전체를 초기화할까요?',rs1y:'네, 계속',rs2:'마지막 확인: 모든 꽃과 기록이 영구적으로 삭제돼요.',rs2y:'모두 삭제',obH:'기분을 기록하고 정원을 키워요',obP:'매일 기분을 고르면 한 송이 꽃으로 피어나요. 연속 기록도, 부담도 없어요.',go:'시작하기',skip:'건너뛰기',arr:'배치하기',done:'완료',moved:'위치를 저장했어요',hintArr:'꽃을 끌어서 옮겨 보세요',friendsT:'정원 친구들',friendsD:'꽃마다 찾아오는 친구가 달라요. 같은 기분을 많이 심을수록 친구도 늘어나요.',crn:['꿀벌','병아리','무당벌레','나비','달팽이','나비'],tmT:'시간대',tmD:'현재 시각에 맞춰요. 고정할 수도 있어요.',tmA:'자동',tmDay:'낮',tmN:'밤',ld:['당신의 정원으로 여행하는 중…','처음이라 길을 찾고 있어요, 조금만 기다려 주세요','흙이 조금 단단해서 풀어주는 중이에요'],ldReady:'정원이 준비되었어요',ldGo:'정원으로 들어가기',ldSkip:'건너뛰기',sfxT:'효과음',sfxD:'버튼, 꽃, 작은 동물의 소리.',ambT:'배경음',ambD:'날씨에 맞춰 반복 재생되는 환경음.',secLook:'화면',secSnd:'사운드',secData:'데이터',sndT:'사운드',sndD:'버튼 효과음과 날씨 환경음.',wxT:'날씨',wxD:'기록한 기분에 따라 정원 날씨가 바뀜어요.',wxn:['상쾌한 바람','무지개','산들바람','꽃비','보슬비','구름과 바람']}};
+en:{fb:"Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.",tag:'Grow your feelings, one flower at a time.',n_garden:'Garden',n_cal:'Calendar',n_ins:'Insights',n_set:'Settings',rec:"Record Today's Mood",hi0:'How are you feeling today?',hi1:'Your flower has been planted!',cnt:n=>n+(n==1?' flower':' flowers'),mon:'This month',monNone:'Nothing planted this month yet',m:['Happy','Excited','Calm','Loved','Sad','Anxious'],f:['Sunflower','Tulip','Daisy','Rose','Bluebell','Lavender'],tg:['Work','Study','Friends','Family','Travel','Personal'],ph:'What made you feel this way today?',editT:d=>d?'Edit '+d:'Edit your day',plant:'Plant My Flower',save:'Save changes',cancel:'Cancel',keep:'Keep it',confirm:'Confirm',noNote:'No note for this day.',edit:'Edit',delete:'Delete',close:'Close',delQ:"Delete this flower and its note? This can't be undone.",removed:'Flower removed',bloomed:'A new flower has bloomed!',pick:'Pick a mood first',saved:'Flower saved',updated:'Entry updated',resetDone:'Garden reset. A fresh start',calHint:"You can plant today's flower any time",wd:['S','M','T','W','T','F','S'],calNote:"Empty buds are days you haven't recorded. That's fine.",insEmpty:"Your insights will grow as you plant flowers. Record today's mood to begin.",insM:'This month',common:(f,p,n)=>`Most common: ${f} (${p}% of ${n} ${n==1?'day':'days'})`,insNone:'No flowers this month yet.',l7:'Last 7 days',total:n=>`${n} ${n==1?'flower':'flowers'} planted in total`,setT:'Settings',rmT:'Reduce motion',rmD:'Skips sway, flying friends and slow camera moves.',on:'On',off:'Off',rsT:'Reset Garden',rsD:'Removes every flower and note from this device.',rsB:'Reset',local:'Your garden is stored only in this browser.',lang:'Language',rs1:'Reset your whole garden?',rs1y:'Yes, continue',rs2:'Last check: every flower and note will be deleted for good.',rs2y:'Delete everything',obH:'Track your feelings, grow a garden',obP:'Pick a mood each day and it blooms as a flower. No streaks, no pressure.',go:'Get started',skip:'Skip',arr:'Arrange',done:'Done',moved:'Flower moved',hintArr:'Drag a flower to move it, even to the other garden',badSpot:"Can't move it to that spot",friendsT:'Garden friends',friendsD:'Each flower invites its own little visitors. Plant more of a mood and more friends will come.',crn:['Bees','Chicks','Ladybugs','Butterflies','Snails','Butterflies'],tmT:'Time of day',tmD:'Follows your local time, or pick a fixed look.',tmA:'Auto',tmDay:'Day',tmN:'Night',ld:['Travelling to your garden…','First time here — finding the way, hang on','The soil is a bit hard, loosening it up'],ldReady:'Your garden is ready',ldGo:'Enter the garden',ldSkip:'Skip',sfxT:'Sound effects',sfxD:'Taps, flowers and little creatures.',ambT:'Ambient sound',ambD:'Looping weather audio in the background.',secLook:'Look & feel',secSnd:'Sound',secData:'Data',sndT:'Sound',sndD:'Click sounds and weather ambience.',wxT:'Weather',wxD:'The garden weather follows the mood you record.',wxn:['Fresh breeze','Rainbow','Breezy','Petal rain','Light rain','Clouds & wind']},
+zh:{fb:'你的裝置目前無法顯示 3D 花園，其他功能仍可使用，可以從月曆瀏覽你的花朵。',tag:'一次一朵花，慢慢種出你的心情。',n_garden:'花園',n_cal:'月曆',n_ins:'統計',n_set:'設定',rec:'記錄今日心情',hi0:'今天感覺如何？',hi1:'你的花已經種下了！',cnt:n=>n+' 朵花',mon:'本月',monNone:'這個月還沒有種花',m:['開心','興奮','平靜','被愛','難過','焦慮'],f:['向日葵','鬱金香','雛菊','玫瑰','風鈴草','薰衣草'],tg:['工作','學習','朋友','家人','旅行','個人'],ph:'今天是什麼讓你有這種感覺？',editT:d=>d?'編輯 '+d+' 的紀錄':'編輯今天的紀錄',plant:'種下我的花',save:'儲存變更',cancel:'取消',keep:'保留',confirm:'確認',noNote:'這一天沒有留下文字。',edit:'編輯',delete:'刪除',close:'關閉',delQ:'要刪除這朵花和它的紀錄嗎？刪除後無法復原。',removed:'已刪除花朵',bloomed:'新的花朵綻放了！',pick:'請先選擇一種心情',saved:'花朵已儲存',updated:'紀錄已更新',resetDone:'花園已重置，重新開始吧',calHint:'你隨時都可以種下今天的花',wd:['日','一','二','三','四','五','六'],calNote:'空的花苞代表還沒有記錄的日子，沒關係的。',insEmpty:'種下花朵後，這裡就會出現你的統計。先記錄今天的心情吧。',insM:'本月',common:(f,p,n)=>`最常出現：${f}（${n} 天中的 ${p}%）`,insNone:'這個月還沒有花朵。',l7:'最近 7 天',total:n=>`累計種下 ${n} 朵花`,setT:'設定',rmT:'減少動態效果',rmD:'關閉搖晃、飛行小動物與緩慢的鏡頭移動。',on:'開',off:'關',rsT:'重置花園',rsD:'從這個裝置移除所有花朵和紀錄。',rsB:'重置',local:'你的花園只儲存在這個瀏覽器中。',lang:'語言',rs1:'要重置整座花園嗎？',rs1y:'是，繼續',rs2:'最後確認：所有花朵和紀錄都會被永久刪除。',rs2y:'全部刪除',obH:'記錄心情，種出一座花園',obP:'每天選一種心情，它就會綻放成一朵花。沒有連續打卡，也沒有壓力。',go:'開始使用',skip:'略過',arr:'佈置花園',done:'完成',moved:'花朵位置已儲存',hintArr:'拖曳花朵來移動位置，也可以搬到另一座花園',badSpot:'無法移動到這個位置',friendsT:'花園的小夥伴',friendsD:'每種花都會吸引自己的小生物。同一種心情種得越多，來的小夥伴就越多。',crn:['蜜蜂','小雞','瓢蟲','蝴蝶','蝸牛','蝴蝶'],tmT:'日夜變化',tmD:'依照你的當地時間，也可以固定成白天或夜晚。',tmA:'自動',tmDay:'白天',tmN:'夜晚',ld:['正在旅行至你的花園…','第一次來需要找路，再等等喔','土有點硬，我需要鬆個土'],ldReady:'花園準備好了',ldGo:'進入花園',ldSkip:'先進去看看',sfxT:'音效',sfxD:'按鈕、花朵與小動物的互動聲。',ambT:'背景音',ambD:'依天氣循環播放的環境音。',secLook:'外觀',secSnd:'聲音',secData:'資料',sndT:'音效',sndD:'按鈕、花朵與天氣的環境音效。',wxT:'天氣',wxD:'花園的天氣會跟著你記錄的心情變化。',wxn:['清風','彩虹','微風','花瓣雨','小雨','烏雲與微風']},
+ja:{fb:'お使いの端末では3D庭園を表示できません。ほかの機能は使えます。カレンダーから花を見られます。',tag:'一輪ずつ、気持ちを育てよう。',n_garden:'ガーデン',n_cal:'カレンダー',n_ins:'統計',n_set:'設定',rec:'今日の気分を記録',hi0:'今日の気分はどう？',hi1:'お花を植えました！',cnt:n=>n+'輪',mon:'今月',monNone:'今月はまだ植えていません',m:['うれしい','わくわく','おだやか','愛されてる','かなしい','不安'],f:['ヒマワリ','チューリップ','デイジー','バラ','ブルーベル','ラベンダー'],tg:['仕事','勉強','友だち','家族','旅行','自分時間'],ph:'今日はどうしてそう感じたの？',editT:d=>d?d+'の記録を編集':'今日の記録を編集',plant:'お花を植える',save:'変更を保存',cancel:'キャンセル',keep:'やめる',confirm:'OK',noNote:'この日のメモはありません。',edit:'編集',delete:'削除',close:'閉じる',delQ:'このお花と記録を削除しますか？元に戻せません。',removed:'お花を削除しました',bloomed:'新しいお花が咲きました！',pick:'先に気分を選んでください',saved:'お花を保存しました',updated:'記録を更新しました',resetDone:'庭をリセットしました。また始めましょう',calHint:'今日のお花はいつでも植えられます',wd:['日','月','火','水','木','金','土'],calNote:'空のつぼみは、まだ記録していない日です。気にしなくて大丈夫。',insEmpty:'お花を植えると、ここに統計が育ちます。まず今日の気分を記録してみましょう。',insM:'今月',common:(f,p,n)=>`いちばん多い気分：${f}（${n}日中 ${p}%）`,insNone:'今月はまだお花がありません。',l7:'直近7日間',total:n=>`これまでに${n}輪を植えました`,setT:'設定',rmT:'動きを減らす',rmD:'ゆれ、飛ぶ生きもの、ゆっくりしたカメラ移動をオフにします。',on:'オン',off:'オフ',rsT:'庭をリセット',rsD:'この端末からすべてのお花と記録を消します。',rsB:'リセット',local:'庭のデータはこのブラウザにだけ保存されます。',lang:'言語',rs1:'庭をまるごとリセットしますか？',rs1y:'はい、続ける',rs2:'最終確認：すべてのお花と記録が完全に削除されます。',rs2y:'すべて削除',obH:'気持ちを記録して、庭を育てよう',obP:'毎日の気分を選ぶと、お花になって咲きます。連続記録もプレッシャーもありません。',go:'はじめる',skip:'スキップ',arr:'配置を変更',done:'完了',moved:'位置を保存しました',hintArr:'お花をドラッグして移動できます。もうひとつの庭にも運べます',badSpot:'その場所には移動できません',friendsT:'庭のなかまたち',friendsD:'お花ごとに、集まる生きものが違います。同じ気分を植えるほど、仲間が増えます。',crn:['ミツバチ','ひよこ','てんとう虫','チョウ','カタツムリ','チョウ'],tmT:'時間帯',tmD:'現在の時刻に合わせます。固定もできます。',tmA:'自動',tmDay:'昼',tmN:'夜',ld:['あなたの庭へ旅をしています…','初めてなので道を探しています。もう少し待ってね','土が少し硬いので、ほぐしています'],ldReady:'庭の準備ができました',ldGo:'庭に入る',ldSkip:'スキップ',sfxT:'効果音',sfxD:'ボタン、花、小さな生き物の音。',ambT:'環境音',ambD:'天気に合わせて流れるループ音。',secLook:'表示',secSnd:'サウンド',secData:'データ',sndT:'サウンド',sndD:'操作音と天気の環境音。',wxT:'天気',wxD:'記録した気分に合わせて庭の天気が変わります。',wxn:['爽やかな風','にじ','そよ風','花びらの雨','小雨','雲と風']},
+ko:{fb:'이 기기에서는 3D 정원을 표시할 수 없어요. 나머지 기능은 그대로 쓸 수 있고, 달력에서 꽃을 볼 수 있어요.',tag:'꽃 한 송이씩, 마음을 키워요.',n_garden:'정원',n_cal:'달력',n_ins:'통계',n_set:'설정',rec:'오늘의 기분 기록',hi0:'오늘 기분이 어때요?',hi1:'꽃을 심었어요!',cnt:n=>n+'송이',mon:'이번 달',monNone:'이번 달에는 아직 심은 꽃이 없어요',m:['행복','설렘','평온','사랑받음','슬픔','불안'],f:['해바라기','튤립','데이지','장미','블루벨','라벤더'],tg:['일','공부','친구','가족','여행','개인'],ph:'오늘 왜 이런 기분이 들었나요?',editT:d=>d?d+' 기록 수정':'오늘 기록 수정',plant:'내 꽃 심기',save:'변경 저장',cancel:'취소',keep:'그대로 두기',confirm:'확인',noNote:'이 날은 남긴 글이 없어요.',edit:'수정',delete:'삭제',close:'닫기',delQ:'이 꽃과 기록을 삭제할까요? 되돌릴 수 없어요.',removed:'꽃을 삭제했어요',bloomed:'새 꽃이 피었어요!',pick:'먼저 기분을 골라 주세요',saved:'꽃을 저장했어요',updated:'기록을 수정했어요',resetDone:'정원을 초기화했어요. 새로 시작해요',calHint:'오늘의 꽃은 언제든 심을 수 있어요',wd:['일','월','화','수','목','금','토'],calNote:'빈 꽃봉오리는 아직 기록하지 않은 날이에요. 괜찮아요.',insEmpty:'꽃을 심으면 여기에 통계가 자라나요. 먼저 오늘의 기분을 기록해 보세요.',insM:'이번 달',common:(f,p,n)=>`가장 많은 기분: ${f} (${n}일 중 ${p}%)`,insNone:'이번 달에는 아직 꽃이 없어요.',l7:'최근 7일',total:n=>`지금까지 ${n}송이를 심었어요`,setT:'설정',rmT:'움직임 줄이기',rmD:'흔들림, 날아다니는 친구들, 느린 카메라 이동을 끕니다.',on:'켜짐',off:'꺼짐',rsT:'정원 초기화',rsD:'이 기기에서 모든 꽃과 기록을 지워요.',rsB:'초기화',local:'정원 데이터는 이 브라우저에만 저장돼요.',lang:'언어',rs1:'정원 전체를 초기화할까요?',rs1y:'네, 계속',rs2:'마지막 확인: 모든 꽃과 기록이 영구적으로 삭제돼요.',rs2y:'모두 삭제',obH:'기분을 기록하고 정원을 키워요',obP:'매일 기분을 고르면 한 송이 꽃으로 피어나요. 연속 기록도, 부담도 없어요.',go:'시작하기',skip:'건너뛰기',arr:'배치하기',done:'완료',moved:'위치를 저장했어요',hintArr:'꽃을 끌어서 옮겨 보세요. 다른 정원으로도 옮길 수 있어요',badSpot:'그 위치로는 옮길 수 없어요',friendsT:'정원 친구들',friendsD:'꽃마다 찾아오는 친구가 달라요. 같은 기분을 많이 심을수록 친구도 늘어나요.',crn:['꿀벌','병아리','무당벌레','나비','달팽이','나비'],tmT:'시간대',tmD:'현재 시각에 맞춰요. 고정할 수도 있어요.',tmA:'자동',tmDay:'낮',tmN:'밤',ld:['당신의 정원으로 여행하는 중…','처음이라 길을 찾고 있어요, 조금만 기다려 주세요','흙이 조금 단단해서 풀어주는 중이에요'],ldReady:'정원이 준비되었어요',ldGo:'정원으로 들어가기',ldSkip:'건너뛰기',sfxT:'효과음',sfxD:'버튼, 꽃, 작은 동물의 소리.',ambT:'배경음',ambD:'날씨에 맞춰 반복 재생되는 환경음.',secLook:'화면',secSnd:'사운드',secData:'데이터',sndT:'사운드',sndD:'버튼 효과음과 날씨 환경음.',wxT:'날씨',wxD:'기록한 기분에 따라 정원 날씨가 바뀜어요.',wxn:['상쾌한 바람','무지개','산들바람','꽃비','보슬비','구름과 바람']}};
 function tr(k,...a){const v=(L[S.lang]||L.en)[k]??L.en[k];return typeof v=='function'?v(...a):v}
 function LC(){return{en:'en',zh:'zh-TW',ja:'ja',ko:'ko'}[S.lang]||'en'}
 function applyLang(){document.documentElement.lang=S.lang;Object.keys(M).forEach((k,i)=>{M[k].n=tr('m')[i];M[k].f=tr('f')[i]});
@@ -317,8 +317,49 @@ function applyLang(){document.documentElement.lang=S.lang;Object.keys(M).forEach
 /* ---------- 3D ---------- */
 let R,ok=true;
 try{R=new THREE.WebGLRenderer({canvas:$('c'),antialias:true,alpha:true})}catch(e){ok=false;$('fb').hidden=false}
-const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(42,1,.1,120),flowers={};
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(42,1,.1,220),flowers={};
 const gh=(x,z)=>.22*Math.sin(x*.55)*Math.cos(z*.45)+.12*Math.sin(x*.9+z*.7);
+/* ---------- 雙花園幾何：圓形花園 G1 + 不規則花園 G2 + 橋 ----------
+   G1 以原點為中心、半徑 8；G2 的邊界由 rho2(角度) 決定（有點像三葉草）。
+   兩座花園沿 x 軸並排，中間隔著一段空隙，橋沿 z=0 跨過去。 */
+const G1R=8,BASE2=6.4,GAP=4.4;
+const rho2=a=>BASE2*(1+.14*Math.sin(2*a+.9)+.1*Math.sin(3*a+2.2)+.07*Math.sin(5*a+.4));
+const G2={x:G1R+GAP+rho2(Math.PI),z:0};
+const MX=(-G1R+G2.x+rho2(0))/2;                       // 兩座花園的中央 x（相機、天氣、光源共用）
+const BA=6.7,BB=G2.x-.82*rho2(Math.PI),BW=.75;         // 橋面起訖 x 與半寬
+const WXB={x0:-9.5,x1:G2.x+rho2(0)+1.5,z:19};          // 雨、花瓣的範圍：涵蓋兩座花園
+const inG1=(x,z,r)=>Math.hypot(x,z)<=r;
+const inG2=(x,z,f)=>Math.hypot(x-G2.x,z-G2.z)<=rho2(Math.atan2(z-G2.z,x-G2.x))*f;
+const onBridge=(x,z,w)=>Math.abs(z)<w&&x>BA&&x<BB;
+const deckY=x=>{const u=Math.min(1,Math.max(0,(x-BA)/(BB-BA)));return gh(BA,0)*(1-u)+gh(BB,0)*u+.03+.3*Math.sin(Math.PI*u)};
+const surf=(x,z)=>onBridge(x,z,.8)?deckY(x):gh(x,z);   // 走路的小動物踩的高度（橋面或地面）
+const walk=(x,z)=>inG1(x,z,7.15)||inG2(x,z,.9)||onBridge(x,z,.58);   // 小動物可以走的地方
+const zoneAt=(x,z)=>inG1(x,z,7.15)?1:inG2(x,z,.9)?2:onBridge(x,z,.8)?3:0;
+const at2=(f,a)=>{const r=rho2(a)*f;return[G2.x+Math.cos(a)*r,G2.z+Math.sin(a)*r]};
+const WM=at2(.64,-1),BN=at2(.7,1.55),
+  MU2=[at2(.8,1.0),at2(.74,-.8),at2(.8,-2.0)],
+  RK2=[[...at2(.8,-2.8),.5],[...at2(.78,2.0),.4],[...at2(.74,-.3),.45]],
+  PD2=[[...at2(.42,.6),1.3],[...at2(.48,-2.45),1.0],[...at2(.58,2.35),.85]];
+/* 不能放花的障礙物（圓形）：x, z, 半徑 */
+const OBS=[[-2.7,-5.4,1.5],[3.2,-5.2,.45],[5.6,-1.5,.45],[-2,-6,.5],[-3.4,4.9,.6],[6,3,.45],[-6.2,-2.4,.55],
+  [WM[0],WM[1],1.3],[BN[0],BN[1],.9],...MU2.map(p=>[p[0],p[1],.45]),...RK2];
+/* 這個位置可不可以放花：必須在某座花園的柵欄內側，且不在橋頭通道、障礙物或別朵花上 */
+function legalSpot(x,z,self){
+  if(!(inG1(x,z,6.9)||inG2(x,z,.84)))return false;                       // 空中、橋上、柵欄外
+  if(Math.abs(z)<1.3&&((x>4.9&&x<8)||(x>BB-.5&&x<BB+2)))return false;     // 橋頭通道要保持暢通
+  if(OBS.some(o=>Math.hypot(x-o[0],z-o[1])<o[2]))return false;
+  for(const d in flowers){if(d===self)continue;const f=flowers[d];if(Math.hypot(f.position.x-x,f.position.z-z)<.55)return false}
+  return true}
+/* 隨機挑一個兩座花園內的點（約 58% 在 G1） */
+function rndPt(){const a=Math.random()*6.283;if(Math.random()<.58){const r=Math.sqrt(Math.random())*6.2;return[Math.cos(a)*r,Math.sin(a)*r]}
+  const r=Math.sqrt(Math.random())*.82*rho2(a);return[G2.x+Math.cos(a)*r,G2.z+Math.sin(a)*r]}
+/* 走路的小動物要換花園時，先走到橋頭，過橋，再去目標 */
+const E1=new THREE.Vector3(6.4,0,0),E2=new THREE.Vector3(BB-.25,0,0);
+function planRoute(u,p){const a=zoneAt(p.x,p.z),b=zoneAt(u.tg.x,u.tg.z);u.wp=null;
+  if(!a||!b||a===b||b===3)return;
+  if(a===3)u.wp=[(b===1?E1:E2).clone()];
+  else u.wp=a===1?[E1.clone(),E2.clone()]:[E2.clone(),E1.clone()]}
+
 function shade(g,lo=.72){const p=g.attributes.position,n=g.attributes.normal,a=new Float32Array(p.count*3);for(let i=0;i<p.count;i++){const v=lo+(1-lo)*(n.getY(i)*.5+.5);a[i*3]=a[i*3+1]=a[i*3+2]=v}g.setAttribute('color',new THREE.BufferAttribute(a,3));return g}
 const SPH=shade(new THREE.SphereGeometry(1,28,18)),CYL=shade(new THREE.CylinderGeometry(1,1,1,14),.8),mc={};
 const mat=(c,vc)=>{const k=c+(vc?1:0);return mc[k]||(mc[k]=new THREE.MeshStandardMaterial({color:c,roughness:.88,vertexColors:!!vc,emissive:new THREE.Color(c).multiplyScalar(.13)}))};
@@ -360,9 +401,13 @@ function flower(k){
   const dr=new THREE.Group();dr.visible=false;const DP={happy:[.15,.15,.05,0],excited:[.09,.05,.12,.1],calm:[.08,.14,.03,0],loved:[.08,.1,.1,.08],sad:[.14,.04,-.08,-.25],anxious:[.07,.02,-.4,.6]}[k];for(let i=0;i<4;i++){const a=i*1.7+Math.random(),r=DP[0]+Math.random()*DP[1],d=mk(SPH,'#E6F4FF',[Math.cos(a)*r,DP[2]+Math.random()*DP[3],Math.sin(a)*r],[.028,.034,.028],null,DROPM);d.castShadow=false;dr.add(d)}h.add(dr);g.userData.dr=dr;
  g.userData.h=h;g.userData.ph=Math.random()*6;g.userData.mood=k;return g}
 
-function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined);let best;
-  for(let t=0;t<80;t++){const r=1+Math.sqrt(rnd())*5.6,a=rnd()*6.283,x=Math.cos(a)*r,z=Math.sin(a)*r;best={x,z};
-    if(Math.hypot(x+2.7,z+5.4)>1.9&&ex.every(e=>Math.hypot(e.x-x,e.z-z)>1))break}
+function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined);
+  const n2=ex.filter(e=>inG2(e.x,e.z,1.1)).length,g=n2<ex.length-n2?2:1;let best;       // 新花種在花朵比較少的那座花園
+  for(let t=0;t<120;t++){let x,z;
+    if(g==1){const r=1+Math.sqrt(rnd())*5.6,a=rnd()*6.283;x=Math.cos(a)*r;z=Math.sin(a)*r}
+    else{const a=rnd()*6.283,r=(.12+Math.sqrt(rnd())*.7)*rho2(a);x=G2.x+Math.cos(a)*r;z=G2.z+Math.sin(a)*r}
+    best={x,z};
+    if(legalSpot(x,z)&&ex.every(e=>Math.hypot(e.x-x,e.z-z)>1))break}
   return{x:best.x,z:best.z,s:.85+rnd()*.5,r:rnd()*6.28}}
 function addFlower(d,grow){const e=S.e[d];if(e.x===undefined){Object.assign(e,pickPos(d));save()}
   const f=flower(e.mood);f.position.set(e.x,gh(e.x,e.z),e.z);f.rotation.y=e.r;Object.assign(f.userData,{date:d,base:e.s,grow});scene.add(f);flowers[d]=f;setGrow(f,grow);syncCr()}
@@ -372,52 +417,119 @@ function setGrow(f,g){const b=f.userData.base,a=Math.max(.001,ez(g*2))*b;f.scale
 const spare=[],bf=[],cl=[];let sparkle=null,P=null,hover=null;
 if(ok){
   R.setPixelRatio(Math.min(devicePixelRatio,2));R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;
-  scene.fog=new THREE.Fog('#C4D9E0',30,75);
+  scene.fog=new THREE.Fog('#C4D9E0',46,118);
   window.HEMI=new THREE.HemisphereLight(0xFFF1DC,0xA9C9B2,.5);scene.add(HEMI);
-  const sun=new THREE.DirectionalLight(0xFFE6C4,.7);sun.position.set(6,11,5);window.SUN=sun;sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-10,right:10,top:10,bottom:-10});sun.shadow.bias=-.0008;scene.add(sun);
+  const sun=new THREE.DirectionalLight(0xFFE6C4,.7);sun.position.set(MX+6,11,5);window.SUN=sun;sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-19,right:19,top:19,bottom:-19});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.0008;sun.target.position.set(MX,0,0);scene.add(sun,sun.target);
   const gg=new THREE.PlaneGeometry(17,17,56,56);gg.rotateX(-Math.PI/2);const pp=gg.attributes.position;
   for(let i=0;i<pp.count;i++){let x=pp.getX(i),z=pp.getZ(i),r=Math.hypot(x,z);if(r>8){x*=8/r;z*=8/r}pp.setXYZ(i,x,r>8?-.15:gh(x,z),z)}
   gg.computeVertexNormals();const gr=new THREE.Mesh(gg,new THREE.MeshStandardMaterial({color:'#9CC487',roughness:1}));gr.receiveShadow=true;scene.add(gr);window.GR=gr;
   scene.add(mk(new THREE.CylinderGeometry(8.1,7,1.4,64),'#E3C9A8',[0,-.85,0],[1,1,1]));
-  for(let i=0;i<7;i++){const a=i*.9+.4;scene.add(mk(SPH,['#B9D9C2','#A5CFB0','#C6E2C8'][i%3],[Math.cos(a)*24,-2,Math.sin(a)*24-4],[8+i%3*2,3.6+i%2*2,6]))}
-  for(let i=0;i<6;i++){const c=new THREE.Group();[[0,0,1.4],[1.3,-.2,1.1],[-1.3,-.2,1.1],[.5,.5,1]].forEach(p=>c.add(mk(SPH,'#EAF0F4',[p[0],p[1],0],[p[2],p[2]*.7,p[2]*.8])));c.children.forEach(m=>m.castShadow=false);c.position.set(-26+i*10,8+i%3*2,-16-i%2*6);c.userData.s=.4+i*.05;scene.add(c);cl.push(c)}
+  window.GRS=[gr];
+  /* ===== 柵欄：通用建造器（posts 為封閉折線上的柱子座標，skip 判斷哪些柱子要拿掉＝橋口） ===== */
+  const buildFence=(P,skip)=>{
+    const n=P.length,kp=P.map(p=>!skip(p)),np=kp.filter(Boolean).length;let nr=0;for(let i=0;i<n;i++)if(kp[i]&&kp[(i+1)%n])nr++;
+    const bx=new THREE.BoxGeometry(1,1,1),pm2=new THREE.MeshStandardMaterial({roughness:.85,emissive:new THREE.Color('#EBD3AC'),emissiveIntensity:.12}),
+      posts=new THREE.InstancedMesh(bx,pm2,np),caps=new THREE.InstancedMesh(SPH,new THREE.MeshStandardMaterial({roughness:.8}),np),rails=new THREE.InstancedMesh(bx,pm2,nr*2),
+      o=new THREE.Object3D(),c=new THREE.Color(),cap=['#F5C7D5','#B9D8EB','#F5DEA0'];let pi=0,ri=0;
+    for(let i=0;i<n;i++){if(!kp[i])continue;const x=P[i][0],z=P[i][1],y=gh(x,z)-.05;
+      o.position.set(x,y+.37,z);o.rotation.set(0,0,0);o.scale.set(.13,.74,.13);o.updateMatrix();posts.setMatrixAt(pi,o.matrix);posts.setColorAt(pi,c.set('#EBD3AC').offsetHSL(0,0,(Math.random()-.5)*.05));
+      o.position.set(x,y+.77,z);o.scale.setScalar(.085);o.updateMatrix();caps.setMatrixAt(pi,o.matrix);caps.setColorAt(pi,c.set(cap[pi%3]));pi++;
+      const j=(i+1)%n;
+      if(kp[j]){const x2=P[j][0],z2=P[j][1],xm=(x+x2)/2,zm=(z+z2)/2,ym=gh(xm,zm)-.05,len=Math.hypot(x2-x,z2-z)*1.03,th=-Math.atan2(z2-z,x2-x);
+        [.28,.52].forEach(h=>{o.position.set(xm,ym+h,zm);o.rotation.set(0,th,0);o.scale.set(len,.07,.05);o.updateMatrix();rails.setMatrixAt(ri,o.matrix);rails.setColorAt(ri,c.set('#E2C79B').offsetHSL(0,0,(Math.random()-.5)*.04));ri++})}}
+    [posts,caps,rails].forEach(q=>{q.castShadow=true;q.receiveShadow=true;scene.add(q)})};
+
+  /* ===== 第二座花園：地面（極座標網格，邊界跟著 rho2 起伏） ===== */
+  {
+    const K=26,SG=120,c1=new THREE.Color('#98C281'),c2=new THREE.Color('#B8D890'),cc=new THREE.Color(),pos=[G2.x,gh(G2.x,G2.z),G2.z],col=[],idx=[];
+    const paint=(x,z,dirt)=>{const n=(Math.sin(x*.9)*Math.cos(z*1.1)+Math.sin(x*.3+z*.5))*.25+.5;cc.copy(c1).lerp(c2,Math.min(1,Math.max(0,n)));if(dirt)cc.set('#C9A97E');col.push(cc.r,cc.g,cc.b)};
+    paint(G2.x,G2.z,false);
+    for(let k=1;k<=K;k++){const f=k/K;for(let i=0;i<SG;i++){const a=i/SG*6.2832,r=rho2(a)*f,x=G2.x+Math.cos(a)*r,z=G2.z+Math.sin(a)*r;pos.push(x,k===K?-.15:gh(x,z),z);paint(x,z,f>.97)}}
+    for(let i=0;i<SG;i++)idx.push(0,1+(i+1)%SG,1+i);
+    for(let k=0;k<K-1;k++)for(let i=0;i<SG;i++){const a=1+k*SG+i,b=1+k*SG+(i+1)%SG,c=a+SG,d=b+SG;idx.push(a,b,c,b,d,c)}
+    const g2g=new THREE.BufferGeometry();g2g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g2g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));g2g.setIndex(idx);g2g.computeVertexNormals();
+    const gr2=new THREE.Mesh(g2g,new THREE.MeshStandardMaterial({color:'#ffffff',roughness:1,vertexColors:true}));gr2.receiveShadow=true;scene.add(gr2);window.GRS.push(gr2);
+    /* 土壤側面：跟著邊界往下縮一圈，和第一座花園的圓柱底座同色 */
+    const SS=96,sp=[],si=[];
+    for(let i=0;i<SS;i++){const a=i/SS*6.2832,r=rho2(a);sp.push(G2.x+Math.cos(a)*r*1.012,-.15,G2.z+Math.sin(a)*r*1.012,G2.x+Math.cos(a)*r*.87,-1.55,G2.z+Math.sin(a)*r*.87)}
+    for(let i=0;i<SS;i++){const j=(i+1)%SS;si.push(i*2,j*2,i*2+1,j*2,j*2+1,i*2+1)}
+    const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));sg.setIndex(si);sg.computeVertexNormals();
+    const sk=new THREE.Mesh(sg,new THREE.MeshStandardMaterial({color:'#E3C9A8',roughness:.88,side:2,emissive:new THREE.Color('#E3C9A8').multiplyScalar(.13)}));sk.castShadow=true;scene.add(sk);
+    const cb=[G2.x,-1.55,G2.z],cp=[...cb],ci=[];for(let i=0;i<SS;i++){cp.push(sp[i*6+3],sp[i*6+4],sp[i*6+5])}for(let i=0;i<SS;i++)ci.push(0,1+i,1+(i+1)%SS);
+    const cg=new THREE.BufferGeometry();cg.setAttribute('position',new THREE.Float32BufferAttribute(cp,3));cg.setIndex(ci);cg.computeVertexNormals();
+    scene.add(new THREE.Mesh(cg,new THREE.MeshStandardMaterial({color:'#D9BD98',roughness:.9,side:2})));
+  }
+  /* ===== 第二座花園的柵欄：沿邊界等距放柱子，橋口那一段不放 ===== */
+  {
+    const M=720,poly=[];for(let i=0;i<=M;i++){const a=i/M*6.2832,r=rho2(a)*.93;poly.push([G2.x+Math.cos(a)*r,G2.z+Math.sin(a)*r])}
+    const cum=[0];for(let i=1;i<=M;i++)cum.push(cum[i-1]+Math.hypot(poly[i][0]-poly[i-1][0],poly[i][1]-poly[i-1][1]));
+    const tot=cum[M],n=Math.round(tot/.654),step=tot/n,P=[];let k=1;
+    for(let j=0;j<n;j++){const d=j*step;while(k<M&&cum[k]<d)k++;const t=(d-cum[k-1])/Math.max(1e-6,cum[k]-cum[k-1]);P.push([poly[k-1][0]+(poly[k][0]-poly[k-1][0])*t,poly[k-1][1]+(poly[k][1]-poly[k-1][1])*t])}
+    buildFence(P,p=>p[0]<G2.x&&Math.abs(p[1]-G2.z)<1.05);
+  }
+  /* ===== 橋：微微拱起的木橋，兩側有欄杆 ===== */
+  {
+    const bx=new THREE.BoxGeometry(1,1,1),LB=BB-BA,V=THREE.Vector3,pw=['#E8C99A','#DDB98A','#E3C28F'],np=Math.round(LB/.34),capc=['#F5C7D5','#B9D8EB','#F5DEA0'];
+    for(let i=0;i<np;i++){const x=BA+(i+.5)/np*LB,sl=Math.atan((deckY(x+.05)-deckY(x-.05))/.1);scene.add(mk(bx,pw[i%3],[x,deckY(x)-.045,0],[LB/np*.88,.07,BW*2+.12],[0,0,sl]))}
+    const seg=(a,b,th,c)=>{const d=new V().subVectors(b,a),len=d.length(),m=mk(bx,c,[(a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2],[len*1.02,th,th]);m.quaternion.setFromUnitVectors(new V(1,0,0),d.normalize());scene.add(m)};
+    const pt=(u,z,h)=>{const x=BA+u*LB;return new V(x,deckY(x)+h,z)};
+    [-1,1].forEach(sd=>{
+      for(let i=0;i<14;i++){const u0=i/14,u1=(i+1)/14;seg(pt(u0,sd*(BW-.04),-.17),pt(u1,sd*(BW-.04),-.17),.12,'#C79F72');seg(pt(u0,sd*BW,.6),pt(u1,sd*BW,.6),.065,'#E2C79B');seg(pt(u0,sd*BW,.32),pt(u1,sd*BW,.32),.05,'#E2C79B')}
+      for(let k=0;k<=6;k++){const x=BA+k/6*LB;scene.add(mk(bx,'#EBD3AC',[x,deckY(x)+.3,sd*BW],[.1,.62,.1]),mk(SPH,capc[k%3],[x,deckY(x)+.66,sd*BW],[.075,.075,.075]))}
+    });
+  }
+  /* ===== 第二座花園的裝飾：樹、風車、長椅、蘑菇、石頭、小花點 ===== */
+  {
+    const bx=new THREE.BoxGeometry(1,1,1),tc=['#A8D5A2','#F5C7D5','#B9D9C2','#F5DEA0','#F5C7D5','#A8D5A2'];
+    [-2.5,-1.8,-.9,.5,1.4,2.3].forEach((a,i)=>{const p=at2(.985,a),t=new THREE.Group(),c=tc[i];t.add(mk(CYL,'#C9A27A',[0,.55,0],[.13,1.1,.13]),mk(SPH,c,[0,1.45,0],[.8,.72,.8]),mk(SPH,c,[.4,1.15,.2],[.5,.45,.5]),mk(SPH,c,[-.35,1.85,-.1],[.5,.45,.5]));t.position.set(p[0],gh(p[0],p[1])-.05,p[1]);t.scale.setScalar(.9+i%3*.12);scene.add(t)});
+    MU2.forEach(([x,z],i)=>{const m=new THREE.Group();m.add(mk(CYL,'#FFF3E0',[0,.18,0],[.07,.36,.07]),mk(SPH,['#B9D8EB','#F5DEA0','#F29BB5'][i],[0,.38,0],[.26,.17,.26]),mk(SPH,'#fff',[.1,.5,.1],[.05,.03,.05]));m.position.set(x,gh(x,z),z);m.scale.setScalar(1+i*.15);scene.add(m)});
+    RK2.forEach(([x,z,s])=>scene.add(mk(new THREE.IcosahedronGeometry(1,0),'#D9D2CE',[x,gh(x,z)+s*.4,z],[s,s*.7,s*.85],[.3,.6,0])));
+    {const wm=new THREE.Group(),bl=new THREE.Group();
+      wm.add(mk(shade(new THREE.CylinderGeometry(.5,.78,1.9,14),.8),'#FBEFDD',[0,.95,0],[1,1,1]),mk(new THREE.ConeGeometry(.82,.95,14),'#F29BB5',[0,2.35,0],[1,1,1]),
+        mk(bx,'#B58B66',[0,.3,.74],[.3,.55,.1]),mk(bx,'#B9D8EB',[0,1.2,.6],[.26,.26,.07]),mk(SPH,'#E3C9A8',[0,1.75,.56],[.1,.1,.1]));
+      bl.position.set(0,1.75,.62);
+      for(let k=0;k<4;k++){const g=new THREE.Group();g.rotation.z=k*Math.PI/2;g.add(mk(bx,'#E3C9A8',[0,.58,0],[.07,1.16,.05]),mk(bx,'#FFFFFF',[.17,.72,0],[.3,.7,.02]));bl.add(g)}
+      wm.add(bl);wm.position.set(WM[0],gh(WM[0],WM[1])-.02,WM[1]);wm.rotation.y=.35;scene.add(wm);window.WMB=bl}
+    {const bn=new THREE.Group();bn.add(mk(bx,'#D9B88F',[0,.34,0],[.95,.07,.36]),mk(bx,'#D9B88F',[0,.62,-.17],[.95,.3,.05]),mk(bx,'#B58B66',[-.4,.17,0],[.07,.34,.3]),mk(bx,'#B58B66',[.4,.17,0],[.07,.34,.3]));
+      bn.position.set(BN[0],gh(BN[0],BN[1]),BN[1]);bn.rotation.y=Math.atan2(G2.x-BN[0],G2.z-BN[1]);scene.add(bn)}
+    const t2=new THREE.InstancedMesh(SPH,new THREE.MeshStandardMaterial({roughness:.8}),70),o2=new THREE.Object3D(),pl2=['#F5C7D5','#FFFFFF','#F5DEA0','#D4C7EA'];
+    for(let i=0;i<70;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*.92*rho2(a),x=G2.x+Math.cos(a)*r,z=G2.z+Math.sin(a)*r;o2.position.set(x,gh(x,z)+.08,z);o2.scale.setScalar(.07+Math.random()*.04);o2.updateMatrix();t2.setMatrixAt(i,o2.matrix);t2.setColorAt(i,new THREE.Color(pl2[i%4]))}
+    scene.add(t2);
+  }
+
+  for(let i=0;i<10;i++){const a=i*.63+.4;scene.add(mk(SPH,['#B9D9C2','#A5CFB0','#C6E2C8'][i%3],[MX+Math.cos(a)*40,-2,Math.sin(a)*30-4],[8+i%3*2,3.6+i%2*2,6]))}
+  for(let i=0;i<9;i++){const c=new THREE.Group();[[0,0,1.4],[1.3,-.2,1.1],[-1.3,-.2,1.1],[.5,.5,1]].forEach(p=>c.add(mk(SPH,'#EAF0F4',[p[0],p[1],0],[p[2],p[2]*.7,p[2]*.8])));c.children.forEach(m=>m.castShadow=false);c.position.set(-30+i*9,8+i%3*2,-16-i%2*6);c.userData.s=.4+i*.05;scene.add(c);cl.push(c)}
   
   [[3.2,-5.2],[5.6,-1.5],[-2,-6]].forEach(([x,z],i)=>{const m=new THREE.Group();m.add(mk(CYL,'#FFF3E0',[0,.18,0],[.07,.36,.07]),mk(SPH,'#F29BB5',[0,.38,0],[.26,.17,.26]),mk(SPH,'#fff',[.1,.5,.1],[.05,.03,.05]));m.position.set(x,gh(x,z),z);m.scale.setScalar(1+i*.2);scene.add(m)});
   [[-3.4,4.9,.5],[6,3,.35],[-6.2,-2.4,.45]].forEach(([x,z,s])=>{const r=mk(new THREE.IcosahedronGeometry(1,0),'#D9D2CE',[x,gh(x,z)+s*.4,z],[s,s*.7,s*.85],[.3,.6,0]);scene.add(r)});
   for(let i=0;i<0;i++){const a=3.5+i*.32,x=Math.cos(a)*7.4,z=Math.sin(a)*7.4;scene.add(mk(new THREE.BoxGeometry(1,1,1),'#EBD3AC',[x,gh(x,z)+.35,z],[.14,.7,.14],[0,-a,0]));if(i<7){const b=a+.16;scene.add(mk(new THREE.BoxGeometry(1,1,1),'#E2C79B',[Math.cos(b)*7.4,gh(x,z)+.5,Math.sin(b)*7.4],[.06,.09,.8],[0,-b+1.5708,0]))}}
-  {const N=72,R=7.5,bx=new THREE.BoxGeometry(1,1,1),pm2=new THREE.MeshStandardMaterial({roughness:.85,emissive:new THREE.Color('#EBD3AC'),emissiveIntensity:.12}),posts=new THREE.InstancedMesh(bx,pm2,N),caps=new THREE.InstancedMesh(SPH,new THREE.MeshStandardMaterial({roughness:.8}),N),rails=new THREE.InstancedMesh(bx,pm2,N*2),o=new THREE.Object3D(),c=new THREE.Color(),cap=['#F5C7D5','#B9D8EB','#F5DEA0'];
-   for(let i=0;i<N;i++){const a=i/N*6.2832,x=Math.cos(a)*R,z=Math.sin(a)*R,y=gh(x,z)-.05;
-    o.position.set(x,y+.37,z);o.rotation.set(0,-a,0);o.scale.set(.13,.74,.13);o.updateMatrix();posts.setMatrixAt(i,o.matrix);posts.setColorAt(i,c.set('#EBD3AC').offsetHSL(0,0,(Math.random()-.5)*.05));
-    o.position.set(x,y+.77,z);o.rotation.set(0,0,0);o.scale.setScalar(.085);o.updateMatrix();caps.setMatrixAt(i,o.matrix);caps.setColorAt(i,c.set(cap[i%3]));
-    const m=a+Math.PI/N,xm=Math.cos(m)*R,zm=Math.sin(m)*R,ym=gh(xm,zm)-.05;
-    [.28,.52].forEach((h,k)=>{o.position.set(xm,ym+h,zm);o.rotation.set(0,-(m+Math.PI/2),0);o.scale.set(.67,.07,.05);o.updateMatrix();rails.setMatrixAt(i*2+k,o.matrix);rails.setColorAt(i*2+k,c.set('#E2C79B').offsetHSL(0,0,(Math.random()-.5)*.04))})}
-   [posts,caps,rails].forEach(q=>{q.castShadow=true;q.receiveShadow=true;scene.add(q)})}
+  buildFence(Array.from({length:72},(_,i)=>{const a=i/72*6.2832;return[Math.cos(a)*7.5,Math.sin(a)*7.5]}),p=>p[0]>0&&Math.abs(p[1])<1.05);   // 橋口那一段不放柵欄
   const tiny=new THREE.InstancedMesh(SPH,new THREE.MeshStandardMaterial({roughness:.8}),70),dm=new THREE.Object3D(),pal=['#F5C7D5','#FFFFFF','#F5DEA0','#D4C7EA'];
   for(let i=0;i<70;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*7.5,x=Math.cos(a)*r,z=Math.sin(a)*r;dm.position.set(x,gh(x,z)+.08,z);dm.scale.setScalar(.07+Math.random()*.04);dm.updateMatrix();tiny.setMatrixAt(i,dm.matrix);tiny.setColorAt(i,new THREE.Color(pal[i%4]))}
   scene.add(tiny);
   {const cols=new Float32Array(pp.count*3),c1=new THREE.Color('#98C281'),c2=new THREE.Color('#B8D890'),cc=new THREE.Color();for(let i=0;i<pp.count;i++){const x=pp.getX(i),z=pp.getZ(i),n=(Math.sin(x*.9)*Math.cos(z*1.1)+Math.sin(x*.3+z*.5))*.25+.5;cc.copy(c1).lerp(c2,Math.min(1,Math.max(0,n)));if(Math.hypot(x,z)>7.75)cc.set('#C9A97E');cols.set([cc.r,cc.g,cc.b],i*3)}gg.setAttribute('color',new THREE.BufferAttribute(cols,3));gr.material.vertexColors=true;gr.material.color.set('#ffffff');gr.material.needsUpdate=true}
   {const gi=new THREE.InstancedMesh(new THREE.SphereGeometry(.09,8,6),new THREE.MeshStandardMaterial({roughness:1}),4),o=new THREE.Object3D();for(let i=0;i<4;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*7.6,x=Math.cos(a)*r,z=Math.sin(a)*r;o.position.set(x,gh(x,z)+.14,z);o.rotation.set((Math.random()-.5)*.5,Math.random()*6,(Math.random()-.5)*.5);{const q=.7+Math.random()*.8;o.scale.set(q,q*1.7,q)}o.updateMatrix();gi.setMatrixAt(i,o.matrix);gi.setColorAt(i,new THREE.Color().setHSL(.27+Math.random()*.06,.45,.5+Math.random()*.12))}scene.add(gi)}
-  [[34,'#A9D3C2',5,.55,9],[46,'#B9CFE6',7,.5,11],[58,'#CFC6E8',8,.6,9]].forEach(([r,c,n,sy,sz],j)=>{for(let i=0;i<n*2;i++){const a=i/(n*2)*6.283+j,s=sz*(.8+Math.random()*.6);scene.add(mk(SPH,c,[Math.cos(a)*r,-3,Math.sin(a)*r],[s*1.4,s*sy*1.3,s]))}});
-  for(let i=0;i<8;i++){const a=i*.785+.3,s=10+Math.random()*6,x=Math.cos(a)*66,z=Math.sin(a)*66,y=s*.4-3;scene.add(mk(new THREE.ConeGeometry(1,1,5),'#C6C2E4',[x,y,z],[s*.9,s,s*.9],[0,Math.random()*3,0]),mk(new THREE.ConeGeometry(1,1,5),'#FFFFFF',[x,y+s*.35,z],[s*.27,s*.3,s*.27]))}
+  [[51,'#A9D3C2',5,.55,11],[69,'#B9CFE6',7,.5,13],[87,'#CFC6E8',8,.6,11]].forEach(([r,c,n,sy,sz],j)=>{for(let i=0;i<n*2;i++){const a=i/(n*2)*6.283+j,s=sz*(.8+Math.random()*.6);scene.add(mk(SPH,c,[MX+Math.cos(a)*r,-3,Math.sin(a)*r],[s*1.4,s*sy*1.3,s]))}});
+  for(let i=0;i<8;i++){const a=i*.785+.3,s=(10+Math.random()*6)*1.35,x=MX+Math.cos(a)*100,z=Math.sin(a)*100,y=s*.4-3;scene.add(mk(new THREE.ConeGeometry(1,1,5),'#C6C2E4',[x,y,z],[s*.9,s,s*.9],[0,Math.random()*3,0]),mk(new THREE.ConeGeometry(1,1,5),'#FFFFFF',[x,y+s*.35,z],[s*.27,s*.3,s*.27]))}
   [3.2,3.7,4.2,4.7,5.3,5.8].forEach((a,i)=>{const x=Math.cos(a)*7.9,z=Math.sin(a)*7.9,t=new THREE.Group(),c=['#A8D5A2','#F5C7D5','#B9D9C2','#F5DEA0','#F5C7D5','#A8D5A2'][i];t.add(mk(CYL,'#C9A27A',[0,.55,0],[.13,1.1,.13]),mk(SPH,c,[0,1.45,0],[.8,.72,.8]),mk(SPH,c,[.4,1.15,.2],[.5,.45,.5]),mk(SPH,c,[-.35,1.85,-.1],[.5,.45,.5]));t.position.set(x,gh(x,z)-.05,z);t.scale.setScalar(.9+i%3*.12);scene.add(t)});
   {const hs=new THREE.Group(),bx=new THREE.BoxGeometry(1,1,1);hs.add(mk(bx,'#FBEFDD',[0,.55,0],[1.7,1.1,1.3]),mk(new THREE.ConeGeometry(1,1,4),'#F29BB5',[0,1.55,0],[1.6,.95,1.3],[0,Math.PI/4,0]),mk(bx,'#B58B66',[0,.3,.66],[.34,.6,.06]),mk(bx,'#B9D8EB',[-.52,.65,.66],[.3,.3,.05]),mk(bx,'#B9D8EB',[.52,.65,.66],[.3,.3,.05]),mk(bx,'#E3C9A8',[.5,1.55,-.2],[.18,.5,.18]));hs.position.set(-2.7,gh(-2.7,-5.4),-5.4);hs.rotation.y=.45;scene.add(hs)}
   {const rim=new THREE.DirectionalLight(0xFFC9DC,.35);rim.position.set(-6,4,-8);scene.add(rim)}
   {const n=45,ar=new Float32Array(n*3);for(let i=0;i<n;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*8;ar.set([Math.cos(a)*r,.6+Math.random()*3,Math.sin(a)*r],i*3)}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(ar,3));const cv2=document.createElement('canvas');cv2.width=cv2.height=64;const x2=cv2.getContext('2d'),rg=x2.createRadialGradient(32,32,0,32,32,32);rg.addColorStop(0,'rgba(255,255,255,1)');rg.addColorStop(.3,'rgba(255,255,255,.6)');rg.addColorStop(1,'rgba(255,255,255,0)');x2.fillStyle=rg;x2.fillRect(0,0,64,64);window.GLOW=new THREE.CanvasTexture(cv2);
-  const mkPts=(c,s,k)=>{const a2=new Float32Array(k*3);for(let i=0;i<k;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*8;a2.set([Math.cos(a)*r,.6+Math.random()*3,Math.sin(a)*r],i*3)}const g2=new THREE.BufferGeometry();g2.setAttribute('position',new THREE.BufferAttribute(a2,3));const p=new THREE.Points(g2,new THREE.PointsMaterial({color:c,size:s,map:GLOW,transparent:true,opacity:.8,depthWrite:false,blending:THREE.AdditiveBlending}));scene.add(p);return p};
-  window.mts=[mkPts('#FFD966',.42,24),mkPts('#FFFFFF',.3,24)];
-  window.MOON=new THREE.DirectionalLight(0xB7C8FF,0);MOON.castShadow=true;MOON.shadow.mapSize.set(512,512);Object.assign(MOON.shadow.camera,{left:-10,right:10,top:10,bottom:-10});MOON.shadow.bias=-.001;scene.add(MOON);
+  const mkPts=(c,s,k,gi)=>{const a2=new Float32Array(k*3);for(let i=0;i<k;i++){const a=Math.random()*6.283,r=Math.sqrt(Math.random())*(gi?.95*rho2(a):8);a2.set([Math.cos(a)*r,.6+Math.random()*3,Math.sin(a)*r],i*3)}const g2=new THREE.BufferGeometry();g2.setAttribute('position',new THREE.BufferAttribute(a2,3));const p=new THREE.Points(g2,new THREE.PointsMaterial({color:c,size:s,map:GLOW,transparent:true,opacity:.8,depthWrite:false,blending:THREE.AdditiveBlending}));if(gi)p.position.set(G2.x,0,G2.z);scene.add(p);return p};
+  window.mts=[mkPts('#FFD966',.42,24,0),mkPts('#FFFFFF',.3,24,0),mkPts('#FFD966',.42,20,1),mkPts('#FFFFFF',.3,20,1)];   // 兩座花園各一組
+  window.MOON=new THREE.DirectionalLight(0xB7C8FF,0);MOON.castShadow=true;MOON.shadow.mapSize.set(1024,1024);Object.assign(MOON.shadow.camera,{left:-19,right:19,top:19,bottom:-19});MOON.shadow.camera.updateProjectionMatrix();MOON.shadow.bias=-.001;MOON.target.position.set(MX,0,0);scene.add(MOON,MOON.target);
   const stA=new Float32Array(900);for(let i=0;i<300;i++){const a=Math.random()*6.283,b=Math.random()*1.3+.1;stA.set([Math.cos(a)*Math.cos(b)*85,Math.sin(b)*85,Math.sin(a)*Math.cos(b)*85],i*3)}
-  const stG=new THREE.BufferGeometry();stG.setAttribute('position',new THREE.BufferAttribute(stA,3));const starsP=new THREE.Points(stG,new THREE.PointsMaterial({color:'#FFFFFF',size:3,sizeAttenuation:false,map:GLOW,transparent:true,depthWrite:false,fog:false}));scene.add(starsP);
+  const stG=new THREE.BufferGeometry();stG.setAttribute('position',new THREE.BufferAttribute(stA,3));const starsP=new THREE.Points(stG,new THREE.PointsMaterial({color:'#FFFFFF',size:3,sizeAttenuation:false,map:GLOW,transparent:true,depthWrite:false,fog:false}));starsP.position.x=MX;scene.add(starsP);
   const halo=(c,s)=>{const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:c,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,fog:false}));sp.scale.set(s,s,1);return sp};
   const sunV=new THREE.Mesh(new THREE.SphereGeometry(2.4,20,14),new THREE.MeshBasicMaterial({color:'#FFE8A8',fog:false})),moonV=new THREE.Mesh(new THREE.SphereGeometry(2,20,14),new THREE.MeshBasicMaterial({color:'#FFF6DA',fog:false}));sunV.add(halo('#FFD79A',16));moonV.add(halo('#B9CBFF',11));scene.add(sunV,moonV);
   window.glowF=1;window.applyTime=function(){const nw=new Date(),m=S.tm||'auto',h=m=='day'?12:m=='night'?0:nw.getHours()+nw.getMinutes()/60,A=(h-6)/24*6.2832,e=Math.sin(A),cl=(v,a,b)=>Math.min(b,Math.max(a,v)),df=cl((e+.12)/.3,0,1),tw=cl(1-Math.abs(e)/.28,0,1)*(m=='auto'?1:0),C=(a,b,k)=>new THREE.Color(a).lerp(new THREE.Color(b),k);
-   SUN.position.set(-Math.cos(A)*10,Math.max(.5,Math.sin(A)*11),4);SUN.intensity=.75*df*(1+.2*WX.sun)*(1-.5*WX.cover);SUN.color.copy(C('#FF9F5A','#FFE6C4',cl(e*2.5,0,1)));
-   MOON.position.set(Math.cos(A)*10,Math.max(.5,-Math.sin(A)*11),-4);MOON.intensity=.5*(1-df);
+   SUN.position.set(MX-Math.cos(A)*10,Math.max(.5,Math.sin(A)*11),4);SUN.intensity=.75*df*(1+.2*WX.sun)*(1-.5*WX.cover);SUN.color.copy(C('#FF9F5A','#FFE6C4',cl(e*2.5,0,1)));
+   MOON.position.set(MX+Math.cos(A)*10,Math.max(.5,-Math.sin(A)*11),-4);MOON.intensity=.5*(1-df);
    HEMI.intensity=.22+.3*df+.12*WX.cover*df;HEMI.color.copy(C('#8A97D0','#FFF1DC',df).lerp(new THREE.Color('#FFD1E0'),WX.pink*.5*df));HEMI.groundColor.copy(C('#3E4A6B','#A9C9B2',df));
    const top=C('#0E1838','#86B6DA',df).lerp(new THREE.Color('#6F7FB8'),tw*.7),mid=C('#26376C','#B4D3E2',df).lerp(new THREE.Color('#F4B49C'),tw*.8),bot=C('#3C4C80','#D6DDD0',df).lerp(new THREE.Color('#FADDB8'),tw*.8);
    {const k2=WX.cover*.7,d2=.3+.7*df;top.lerp(C('#9FB6CF','#8F8ABD',WX.dark).multiplyScalar(d2),k2);mid.lerp(C('#B7C7DA','#A9A3C9',WX.dark).multiplyScalar(d2),k2);bot.lerp(C('#D3DBE4','#C7C3DC',WX.dark).multiplyScalar(d2),k2);const pk=WX.pink*.4*df;top.lerp(new THREE.Color('#F6C6D8'),pk);mid.lerp(new THREE.Color('#FBD5E0'),pk)}document.body.style.background='linear-gradient(#'+top.getHexString()+',#'+mid.getHexString()+' 55%,#'+bot.getHexString()+')';scene.fog.color.copy(mid);
-   sunV.position.set(-Math.cos(A)*10,Math.sin(A)*11,4).normalize().multiplyScalar(60);sunV.visible=e>-.15&&WX.cover<.7;sunV.material.color.copy(C('#FF9F5A','#FFF0BE',cl(e*2.5,0,1)));
-   moonV.position.set(Math.cos(A)*10,-Math.sin(A)*11,-4).normalize().multiplyScalar(60);moonV.visible=e<.15;
+   sunV.position.set(-Math.cos(A)*10,Math.sin(A)*11,4).normalize().multiplyScalar(60);sunV.position.x+=MX;sunV.visible=e>-.15&&WX.cover<.7;sunV.material.color.copy(C('#FF9F5A','#FFF0BE',cl(e*2.5,0,1)));
+   moonV.position.set(Math.cos(A)*10,-Math.sin(A)*11,-4).normalize().multiplyScalar(60);moonV.position.x+=MX;moonV.visible=e<.15;
    starsP.material.opacity=1-df;starsP.visible=df<.98;
    const cm=mat('#EAF0F4',true);cm.color.copy(C('#4A5580','#EAF0F4',df).lerp(new THREE.Color('#8E94AE'),WX.cover*.5));cm.emissive.copy(cm.color).multiplyScalar(.13);
    window.glowF=.3+.7*(1-df);window.dfv=df;window.sunDir={x:-Math.cos(A)*10,z:4};window.sunE=e}}
@@ -428,6 +540,10 @@ if(ok){
 let th=.75,ph=1,rad=innerWidth<760?28:14,radG=rad;const tg=new THREE.Vector3(0,.4,0),tgG=tg.clone();
 function resize(){if(!ok)return;R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.fov=innerWidth<innerHeight?58:42;cam.updateProjectionMatrix()}
 addEventListener('resize',resize);resize();
+/* 預設視角：橫向螢幕沿著兩座花園的連線看；偏方形或直向螢幕改成從 G1 往 G2 看過去，這樣兩座花園都在畫面裡 */
+const homeCalc=()=>{const t=Math.tan(cam.fov*Math.PI/360),as=innerWidth/innerHeight,dh=19.2*.93/(t*as),dr=Math.max(10.8/(t*as),19.3*.54/t);return{h:dh<=dr,d:Math.min(60,Math.max(18,Math.min(dh,dr)))}};
+const homeRad=()=>homeCalc().d,home=()=>{tgG.set(MX,.4,0);radG=homeRad()};
+if(ok){const hc=homeCalc();th=hc.h?.4:-1.15;tg.set(MX,.4,0);tgG.copy(tg);rad=radG=hc.d}
 function beeStep(b,dt,t){const u=b.userData,p=b.position;
  if(!u.tg){u.tg=new THREE.Vector3();u.v=new THREE.Vector3();u.hold=0;u.pick=1;p.set((Math.random()-.5)*10,1.2,(Math.random()-.5)*10)}
  if(u.hold>0){u.hold-=dt;u.v.multiplyScalar(.9)}
@@ -441,7 +557,7 @@ function beeStep(b,dt,t){const u=b.userData,p=b.position;
  p.y+=Math.sin(t*14+u.i)*.004;p.x+=Math.sin(t*7+u.i*3)*.003;
  if(u.v.length()>.15){let a=Math.atan2(u.v.x,u.v.z)-b.rotation.y;a=Math.atan2(Math.sin(a),Math.cos(a));b.rotation.y+=a*Math.min(1,dt*6)}}
 const cr=[],CONE=new THREE.ConeGeometry(1,1,8),CT={bee:{sp:1.5,fly:1,h:.5},butterfly:{sp:.85,fly:1,h:.9},ladybug:{sp:.28},snail:{sp:.1},bird:{sp:.8}},CM={happy:'bee',excited:'bird',calm:'ladybug',loved:'butterfly',sad:'snail',anxious:'butterfly'};
-let arrange=false,drag=null,dm=0;
+let arrange=false,drag=null,dm=0,dragOK=true,dragO=null;const slides=[];
 const selRing=new THREE.Mesh(new THREE.TorusGeometry(.5,.05,8,32),new THREE.MeshBasicMaterial({color:'#F29BB5'}));selRing.rotation.x=Math.PI/2;selRing.visible=false;scene.add(selRing);
 function flowersOf(m){return Object.values(flowers).filter(f=>f.userData.mood==m)}
 function makeCr(m){const type=CM[m],g=new THREE.Group(),ns=o=>{o.castShadow=false;return o},a=(...o)=>o.forEach(x=>{ns(x);g.add(x)}),pv=(x,y,z)=>{const p=new THREE.Group();p.position.set(x,y,z);g.add(p);return p};
@@ -454,20 +570,38 @@ function makeCr(m){const type=CM[m],g=new THREE.Group(),ns=o=>{o.castShadow=fals
  g.userData.type=type;g.userData.mood=m;g.userData.i=Math.random()*9;g.scale.setScalar(type=='butterfly'?1.3:type=='bee'?1.2:1.15);return g}
 function syncCr(){Object.keys(M).forEach(m=>{const L=flowersOf(m),n=Math.min(3,Math.ceil(L.length/2)),cur=cr.filter(c=>c.userData.mood==m);
   while(cur.length>n){const c=cur.pop();scene.remove(c);cr.splice(cr.indexOf(c),1)}
-  while(cur.length<n){const c=makeCr(m),f=L[Math.random()*L.length|0],u=c.userData,fl=CT[u.type].fly;c.position.set(f.position.x+(Math.random()-.5)*1.2,fl?f.position.y+1.6:f.position.y,f.position.z+(Math.random()-.5)*1.2);u.tg=c.position.clone();u.v=new THREE.Vector3();u.hold=0;u.pick=1;scene.add(c);cr.push(c);cur.push(c)}})}
+  while(cur.length<n){const c=makeCr(m),f=L[Math.random()*L.length|0],u=c.userData,fl=CT[u.type].fly;let px=f.position.x+(Math.random()-.5)*1.2,pz=f.position.z+(Math.random()-.5)*1.2;if(!fl&&!walk(px,pz)){px=f.position.x;pz=f.position.z}c.position.set(px,fl?f.position.y+1.6:f.position.y,pz);u.tg=c.position.clone();u.v=new THREE.Vector3();u.hold=0;u.pick=1;scene.add(c);cr.push(c);cur.push(c)}})}
 function crStep(c,dt,t){const u=c.userData,T=CT[u.type],p=c.position,fly=T.fly,L=flowersOf(u.mood);if(u.act&&actStep(c,u,dt,t,u.type))return;
  if(u.hold>0){u.hold-=dt;u.v.multiplyScalar(.85)}
- else{const dxz=Math.hypot(u.tg.x-p.x,u.tg.z-p.z);
-  if(u.pick||(fly?p.distanceTo(u.tg):dxz)<.25){
+ else{
+  if(!fly&&u.wp&&u.wp.length&&Math.hypot(u.wp[0].x-p.x,u.wp[0].z-p.z)<.22)u.wp.shift();
+  const rt=!fly&&u.wp&&u.wp.length,dxz=Math.hypot(u.tg.x-p.x,u.tg.z-p.z);
+  if(!rt&&(u.pick||(fly?p.distanceTo(u.tg):dxz)<.25)){
    if(!u.pick&&u.fl){u.hold=(fly?.6:1.5)+Math.random()*2;u.fl=0}
-   else{u.pick=0;if(L.length&&Math.random()<.85){const f=L[Math.random()*L.length|0],a=Math.random()*6.283,r=.3+Math.random()*.5;u.tg.set(f.position.x+Math.cos(a)*r,f.position.y+(fly?1+Math.random()*T.h:0),f.position.z+Math.sin(a)*r);u.fl=1}else{const a=Math.random()*6.283,r=Math.random()*6.2;u.tg.set(Math.cos(a)*r,fly?.8+Math.random()*1.5:0,Math.sin(a)*r);u.fl=0}}}
-  const d=u.tg.clone().sub(p);if(!fly)d.y=0;d.normalize().multiplyScalar(T.sp*(1+Math.sin(t*(fly?2:1)+u.i)*.25));u.v.lerp(d,1-Math.pow(.05,dt));p.addScaledVector(u.v,dt)}
+   else{u.pick=0;
+    if(L.length&&Math.random()<.85){const f=L[Math.random()*L.length|0],a=Math.random()*6.283,r=.3+Math.random()*.5;u.tg.set(f.position.x+Math.cos(a)*r,f.position.y+(fly?1+Math.random()*T.h:0),f.position.z+Math.sin(a)*r);if(!fly&&!walk(u.tg.x,u.tg.z))u.tg.set(f.position.x,0,f.position.z);u.fl=1}
+    else{const q=rndPt();u.tg.set(q[0],fly?.8+Math.random()*1.5:0,q[1]);u.fl=0}
+    if(!fly)planRoute(u,p)}}      /* 目標在另一座花園：走路的小動物會先排好「橋頭 → 橋 → 目標」的路線 */
+  const aim=(!fly&&u.wp&&u.wp.length)?u.wp[0]:u.tg,d=new THREE.Vector3(aim.x-p.x,fly?aim.y-p.y:0,aim.z-p.z).normalize().multiplyScalar(T.sp*(1+Math.sin(t*(fly?2:1)+u.i)*.25));
+  u.v.lerp(d,1-Math.pow(.05,dt));
+  if(fly)p.addScaledVector(u.v,dt);
+  else{const nx=p.x+u.v.x*dt,nz=p.z+u.v.z*dt;
+   if(walk(nx,nz)||!walk(p.x,p.z)){p.x=nx;p.z=nz}                      /* 前面不是地面（空隙、柵欄外）就停下來重新選目標 */
+   else{u.v.set(0,0,0);u.pick=1;u.fl=0;u.wp=null}}}
  const sp=u.v.length();
- if(!fly)p.y=gh(p.x,p.z)+(u.type=='bird'?Math.abs(Math.sin(t*9+u.i))*.12*Math.min(1,sp/.4):0);
+ if(!fly)p.y=surf(p.x,p.z)+(u.type=='bird'?Math.abs(Math.sin(t*9+u.i))*.12*Math.min(1,sp/.4):0);
  else p.y+=Math.sin(t*(u.type=='bee'?18:6)+u.i)*(u.type=='bee'?.004:.006);
  if(sp>.04){let a=Math.atan2(u.v.x,u.v.z)-c.rotation.y;a=Math.atan2(Math.sin(a),Math.cos(a));c.rotation.y+=a*Math.min(1,dt*6)}
  const w=u.w;if(w){const s=u.type=='bee'?Math.sin(t*50+u.i)*.7:u.type=='butterfly'?(.3+(Math.sin(t*11+u.i)+1)*.45):Math.sin(t*14+u.i)*.5*Math.min(1,sp/.3);w[0].rotation.z=s;w[1].rotation.z=-s}}
-function setArrange(on){arrange=on;document.body.classList.toggle('arr',on);$('card').hidden=true;if(on){tgG.set(0,.4,0);radG=Math.min(radG,innerWidth<760?26:16);toast(tr('hintArr'))}else{selRing.visible=false;drag=null}refresh()}
+
+/* 花朵滑回原位：從目前位置用緩動滑回去，中間微微抬起 */
+function slideBack(d,to){const f=flowers[d];if(!f||!to)return;slideDrop(d);const T=new THREE.Vector3(to.x,gh(to.x,to.z),to.z);
+  if(S.rm){f.position.copy(T);return}slides.push({d,fr:f.position.clone(),to:T,t:0})}
+function slideDrop(d){for(let i=slides.length-1;i>=0;i--)if(slides[i].d===d)slides.splice(i,1)}
+function slideStep(dt){for(let i=slides.length-1;i>=0;i--){const q=slides[i],f=flowers[q.d];if(!f){slides.splice(i,1);continue}
+  q.t+=dt/.55;const u=Math.min(1,q.t),e=u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;f.position.lerpVectors(q.fr,q.to,e);f.position.y+=Math.sin(u*Math.PI)*.35;
+  if(u>=1){f.position.copy(q.to);slides.splice(i,1)}}}
+function setArrange(on){arrange=on;document.body.classList.toggle('arr',on);$('card').hidden=true;if(on){home();toast(tr('hintArr'))}else{selRing.visible=false;drag=null}refresh()}
 $('arr').onclick=()=>setArrange(!arrange);
 const DROPM=new THREE.MeshStandardMaterial({color:'#E6F4FF',roughness:.05,metalness:.2,transparent:true,opacity:.85,emissive:new THREE.Color('#9CC8EE'),emissiveIntensity:.25});
 const WT={none:{cover:0,rain:0,flt:0,fx:.3,fy:.3,wind:.25,rb:0,sun:0,wet:0,dark:0,pink:0}};
@@ -476,15 +610,15 @@ const WXK=Object.keys(WT.none),WX={...WT.none};let wxT={...WT.none};
 function setWeather(m,now){window.wxm=S.wxo?null:m;ambient(window.wxm);wxT={...WT.none,...(WT[window.wxm||'none']||{})};if(window.colorFlutter)colorFlutter(wxT.fc||'loved');if(now)Object.assign(WX,wxT);if(window.applyTime)applyTime();refresh()}
 if(ok){
  function rbGeo(r,c){const T=64,g=new THREE.TorusGeometry(r,.027,8,T,Math.PI*.75),col=new Float32Array(g.attributes.position.count*4),cc=new THREE.Color(c);for(let j=0;j<=8;j++)for(let i=0;i<=T;i++){const k=(j*(T+1)+i)*4,f=i/T;col[k]=cc.r;col[k+1]=cc.g;col[k+2]=cc.b;col[k+3]=Math.min(1,f*6+.35)*Math.pow(1-f,1.4)}g.setAttribute('color',new THREE.BufferAttribute(col,4));return g}
- scene.add(cam);const D=20;
- const wcm=new THREE.MeshStandardMaterial({color:'#fff',roughness:1,emissive:new THREE.Color('#fff'),emissiveIntensity:.5}),wc=new THREE.Group(),wcl=[];
+ scene.add(cam);const D=70;
+ const wcm=new THREE.MeshStandardMaterial({color:'#fff',roughness:1,fog:false,emissive:new THREE.Color('#fff'),emissiveIntensity:.5}),wc=new THREE.Group(),wcl=[];
  for(let i=0;i<14;i++){const g=new THREE.Group();[[0,0,1],[1,-.15,.78],[-1,-.15,.78],[.5,.35,.7],[-.45,.3,.62]].forEach(([x,y,s])=>{const m=mk(SPH,'#fff',[x,y,0],[s,s*.85,s*.8],null,wcm);m.castShadow=false;g.add(m)});wc.add(g);wcl.push({g,o:(i%7)/3.5-1+(Math.random()-.5)*.15,h:i<7?0:1,s:.7+Math.random()*.5,sp:.6+Math.random()*.8})}
  cam.add(wc);
  const rb=new THREE.Group();['#F6BDBD','#F9D5B5','#F8EBB8','#CBE9C0','#C3E1F3','#CDC8F0','#E4CBF0'].forEach((c,i)=>rb.add(new THREE.Mesh(rbGeo(1-i*.05,c),new THREE.MeshBasicMaterial({color:'#ffffff',vertexColors:true,transparent:true,opacity:0,depthWrite:false,fog:false,side:2}))));scene.add(rb);const rbG=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFF1F6',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));rbG.visible=false;scene.add(rbG);window.rbG=rbG;
  const sunH=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFE9A8',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,fog:false,opacity:0}));cam.add(sunH);
- const RN=340,rp=new Float32Array(RN*6),rs=[];for(let i=0;i<RN;i++)rs.push({x:(Math.random()-.5)*18,y:Math.random()*9,z:(Math.random()-.5)*18,v:9+Math.random()*3});
+ const RN=720,rp=new Float32Array(RN*6),rs=[];for(let i=0;i<RN;i++)rs.push({x:WXB.x0+Math.random()*(WXB.x1-WXB.x0),y:Math.random()*9,z:(Math.random()-.5)*WXB.z,v:9+Math.random()*3});
  const rg2=new THREE.BufferGeometry();rg2.setAttribute('position',new THREE.BufferAttribute(rp,3));const rain=new THREE.LineSegments(rg2,new THREE.LineBasicMaterial({color:'#D9EAFB',transparent:true,opacity:.6,depthWrite:false}));rain.frustumCulled=false;rain.visible=false;scene.add(rain);
- const FN=90,fl=new THREE.InstancedMesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshStandardMaterial({roughness:.7,emissive:new THREE.Color('#ffffff'),emissiveIntensity:.12}),FN),fs=[],dm2=new THREE.Object3D();for(let i=0;i<FN;i++)fs.push({x:(Math.random()-.5)*18,y:Math.random()*8,z:(Math.random()-.5)*18,ph:Math.random()*6,v:.6+Math.random()*.8,r:Math.random()*6});fl.frustumCulled=false;fl.visible=false;scene.add(fl);
+ const FN=180,fl=new THREE.InstancedMesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshStandardMaterial({roughness:.7,emissive:new THREE.Color('#ffffff'),emissiveIntensity:.12}),FN),fs=[],dm2=new THREE.Object3D();for(let i=0;i<FN;i++)fs.push({x:WXB.x0+Math.random()*(WXB.x1-WXB.x0),y:Math.random()*8,z:(Math.random()-.5)*WXB.z,ph:Math.random()*6,v:.6+Math.random()*.8,r:Math.random()*6});fl.frustumCulled=false;fl.visible=false;scene.add(fl);
  const PAL={loved:['#F7B6CB','#FBD3E1','#FFFFFF','#F29BB5'],calm:['#FFFFFF','#E8F4E0','#F6F2E0'],anx:['#8FBF7F','#B5A6D8','#C9B58A','#A9D09A']};
  window.colorFlutter=fc=>{const pl=PAL[fc]||PAL.loved;for(let i=0;i<FN;i++)fl.setColorAt(i,new THREE.Color(pl[i%pl.length]).offsetHSL(0,0,(Math.random()-.5)*.08));fl.instanceColor.needsUpdate=true};colorFlutter('loved');
  function pudGeo(cx,cz,r,sd,off){const N=32,R=[.4,.75,1],pos=[cx,gh(cx,cz)+.03+off,cz],idx=[],nf=a=>1+.18*Math.sin(2*a+sd)+.1*Math.sin(3*a+sd*2)+.06*Math.sin(5*a+sd*3);
@@ -492,20 +626,20 @@ if(ok){
   for(let i=0;i<N;i++)idx.push(0,1+(i+1)%N,1+i);
   for(let k=0;k<2;k++)for(let i=0;i<N;i++){const a=1+k*N+i,b=1+k*N+(i+1)%N,c=a+N,d=b+N;idx.push(a,b,c,b,d,c)}
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(pos.map((_,i)=>i%3==1?1:0),3));g.setIndex(idx);return g}
- const PD=[[2.9,2.4,1.5],[-3.3,-.9,1.3],[4.6,-2.2,.9],[-1.2,3.9,.8]],pud=new THREE.Group(),pm=PD.map(([x,z,r])=>{const m=new THREE.Mesh(pudGeo(x,z,r,x*3+z,0),new THREE.MeshStandardMaterial({color:'#8DB8DA',roughness:.05,metalness:0,transparent:true,opacity:0,emissive:new THREE.Color('#7FB2E0'),emissiveIntensity:.35,side:2,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));pud.add(m);const rim=new THREE.Mesh(pudGeo(x,z,r*1.2,x*3+z,-.012),new THREE.MeshBasicMaterial({color:'#5F7A55',transparent:true,opacity:0,depthWrite:false,side:2,polygonOffset:true,polygonOffsetFactor:-1})),hi=new THREE.Mesh(new THREE.CircleGeometry(1,20),new THREE.MeshBasicMaterial({color:'#FFFFFF',transparent:true,opacity:0,depthWrite:false}));hi.rotation.x=-Math.PI/2;hi.position.set(x-r*.2,gh(x,z)+.07,z-r*.25);hi.scale.set(r*.5,r*.16,1);pud.add(rim,hi);m.userData.ex=[rim,hi];const rr=[0,1,2].map(()=>{const q=new THREE.Mesh(new THREE.RingGeometry(.8,1,32),new THREE.MeshBasicMaterial({color:'#fff',transparent:true,opacity:0,depthWrite:false}));q.rotation.x=-Math.PI/2;q.position.set(x+(Math.random()-.5)*r*.8,gh(x,z)+.05,z+(Math.random()-.5)*r*.8);pud.add(q);return q});return{m,rr,r}});pud.visible=false;scene.add(pud);
- const mkFrog=()=>{const fg=new THREE.Group(),FG='#8FD18A';[mk(SPH,FG,[0,.1,0],[.15,.1,.17]),mk(SPH,'#DDF5C8',[0,.07,.07],[.11,.07,.1]),mk(SPH,FG,[.08,.2,.1],[.05,.05,.05]),mk(SPH,FG,[-.08,.2,.1],[.05,.05,.05]),mk(SPH,'#fff',[.08,.21,.135],[.035,.035,.03]),mk(SPH,'#fff',[-.08,.21,.135],[.035,.035,.03]),mk(SPH,'#3A3A3A',[.08,.215,.16],[.018,.02,.012]),mk(SPH,'#3A3A3A',[-.08,.215,.16],[.018,.02,.012]),mk(SPH,'#F59AB3',[.1,.12,.15],[.03,.02,.01]),mk(SPH,'#F59AB3',[-.1,.12,.15],[.03,.02,.01]),mk(SPH,'#7CC47A',[.13,.05,-.07],[.06,.05,.1]),mk(SPH,'#7CC47A',[-.13,.05,-.07],[.06,.05,.1])].forEach(o=>{o.castShadow=false;fg.add(o)});fg.scale.setScalar(1.4);const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.y=.12;fg.add(hb);fg.userData.hb=hb;hb.userData.cr=fg;fg.visible=false;scene.add(fg);return fg},frogs=[0,1].map(i=>({g:mkFrog(),i,u:1,from:new THREE.Vector3(),to:new THREE.Vector3(),wait:1+i*.8}));frogs.forEach(f=>f.g.position.set(PD[f.i][0],gh(PD[f.i][0],PD[f.i][1])+.03,PD[f.i][1]));window.FROGS=frogs;
+ const PD=[[2.9,2.4,1.5],[-3.3,-.9,1.3],[4.6,-2.2,.9],[-1.2,3.9,.8],...PD2],pud=new THREE.Group(),pm=PD.map(([x,z,r])=>{const m=new THREE.Mesh(pudGeo(x,z,r,x*3+z,0),new THREE.MeshStandardMaterial({color:'#8DB8DA',roughness:.05,metalness:0,transparent:true,opacity:0,emissive:new THREE.Color('#7FB2E0'),emissiveIntensity:.35,side:2,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));pud.add(m);const rim=new THREE.Mesh(pudGeo(x,z,r*1.2,x*3+z,-.012),new THREE.MeshBasicMaterial({color:'#5F7A55',transparent:true,opacity:0,depthWrite:false,side:2,polygonOffset:true,polygonOffsetFactor:-1})),hi=new THREE.Mesh(new THREE.CircleGeometry(1,20),new THREE.MeshBasicMaterial({color:'#FFFFFF',transparent:true,opacity:0,depthWrite:false}));hi.rotation.x=-Math.PI/2;hi.position.set(x-r*.2,gh(x,z)+.07,z-r*.25);hi.scale.set(r*.5,r*.16,1);pud.add(rim,hi);m.userData.ex=[rim,hi];const rr=[0,1,2].map(()=>{const q=new THREE.Mesh(new THREE.RingGeometry(.8,1,32),new THREE.MeshBasicMaterial({color:'#fff',transparent:true,opacity:0,depthWrite:false}));q.rotation.x=-Math.PI/2;q.position.set(x+(Math.random()-.5)*r*.8,gh(x,z)+.05,z+(Math.random()-.5)*r*.8);pud.add(q);return q});return{m,rr,r}});pud.visible=false;scene.add(pud);
+ const mkFrog=()=>{const fg=new THREE.Group(),FG='#8FD18A';[mk(SPH,FG,[0,.1,0],[.15,.1,.17]),mk(SPH,'#DDF5C8',[0,.07,.07],[.11,.07,.1]),mk(SPH,FG,[.08,.2,.1],[.05,.05,.05]),mk(SPH,FG,[-.08,.2,.1],[.05,.05,.05]),mk(SPH,'#fff',[.08,.21,.135],[.035,.035,.03]),mk(SPH,'#fff',[-.08,.21,.135],[.035,.035,.03]),mk(SPH,'#3A3A3A',[.08,.215,.16],[.018,.02,.012]),mk(SPH,'#3A3A3A',[-.08,.215,.16],[.018,.02,.012]),mk(SPH,'#F59AB3',[.1,.12,.15],[.03,.02,.01]),mk(SPH,'#F59AB3',[-.1,.12,.15],[.03,.02,.01]),mk(SPH,'#7CC47A',[.13,.05,-.07],[.06,.05,.1]),mk(SPH,'#7CC47A',[-.13,.05,-.07],[.06,.05,.1])].forEach(o=>{o.castShadow=false;fg.add(o)});fg.scale.setScalar(1.4);const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.y=.12;fg.add(hb);fg.userData.hb=hb;hb.userData.cr=fg;fg.visible=false;scene.add(fg);return fg},frogs=[0,1,4,5].map(i=>({g:mkFrog(),i,u:1,from:new THREE.Vector3(),to:new THREE.Vector3(),wait:1+i*.8}));frogs.forEach(f=>f.g.position.set(PD[f.i][0],gh(PD[f.i][0],PD[f.i][1])+.03,PD[f.i][1]));window.FROGS=frogs;
  window.wxFrame=function(dt,t,rm){const k=1-Math.pow(.12,dt);let ch=0;WXK.forEach(n=>{const d=wxT[n]-WX[n];if(Math.abs(d)>.002){WX[n]+=d*k;ch=1}});if(ch&&window.applyTime)applyTime();
   const dfv=window.dfv==null?1:window.dfv,vh=Math.tan(cam.fov*Math.PI/360)*D,hw=vh*cam.aspect;
   wc.visible=WX.cover>.03;
   if(wc.visible){const col=new THREE.Color('#FFFFFF').lerp(new THREE.Color('#9FAECB'),Math.min(1,WX.rain*1.1)).lerp(new THREE.Color('#6F6A94'),WX.dark).multiplyScalar(.45+.55*dfv);wcm.color.copy(col);wcm.emissive.copy(col);
    wcl.forEach(c=>{if(!rm)c.o+=dt*(.012+WX.wind*.02)*c.sp;if(c.o>1.25)c.o-=2.5;c.g.position.set(c.o*hw*1.1,vh*(c.h?.7:.88),-D);c.g.scale.setScalar(vh*.2*c.s*Math.min(1,WX.cover*1.3))})}
-  rb.visible=WX.rb>.02&&window.sunDir!=null;if(rb.visible){const sd=window.sunDir,dl=Math.hypot(sd.x,sd.z)||1,dx=-sd.x/dl,dz=-sd.z/dl,H=Math.min(10.5,Math.max(6,11-5*Math.max(0,window.sunE||0))),op=.38*WX.rb*Math.min(1,dfv*1.4);rb.position.set(dx*(5.5+H),-.3,dz*(5.5+H));rb.rotation.y=Math.atan2(-dz,dx);rb.scale.set(-H,H,1);rb.children.forEach(m=>m.material.opacity=op);rbG.visible=true;rbG.position.set(dx*5.8,.8,dz*5.8);rbG.scale.set(6,3,1);rbG.material.opacity=op*.7}else rbG.visible=false;
+  rb.visible=WX.rb>.02&&window.sunDir!=null;if(rb.visible){const sd=window.sunDir,dl=Math.hypot(sd.x,sd.z)||1,dx=-sd.x/dl,dz=-sd.z/dl,H=Math.min(15.5,Math.max(9,16.5-7.5*Math.max(0,window.sunE||0))),op=.38*WX.rb*Math.min(1,dfv*1.4),ext=17.5*Math.abs(dx)+9*Math.abs(dz);rb.position.set(MX+dx*(ext-2.5+H),-.3,dz*(ext-2.5+H));rb.rotation.y=Math.atan2(-dz,dx);rb.scale.set(-H,H,1);rb.children.forEach(m=>m.material.opacity=op);rbG.visible=true;rbG.position.set(MX+dx*(ext-2.2),.8,dz*(ext-2.2));rbG.scale.set(9,4.5,1);rbG.material.opacity=op*.7}else rbG.visible=false;
   sunH.visible=WX.sun>.02;if(sunH.visible){sunH.position.set(hw*.62,vh*.74,-D);sunH.scale.set(vh*1.5,vh*1.5,1);sunH.material.opacity=.75*WX.sun*dfv}
-  rain.visible=WX.rain>.02&&!rm;if(rain.visible){const n=Math.floor(RN*Math.min(1,WX.rain));rg2.setDrawRange(0,n*2);for(let i=0;i<n;i++){const d=rs[i];d.y-=d.v*dt;if(d.y<0){d.y=8+Math.random()*2;d.x=(Math.random()-.5)*18;d.z=(Math.random()-.5)*18}const o=i*6;rp[o]=d.x;rp[o+1]=d.y;rp[o+2]=d.z;rp[o+3]=d.x-.05*(1+WX.wind);rp[o+4]=d.y+.5;rp[o+5]=d.z}rg2.attributes.position.needsUpdate=true}
-  fl.visible=WX.flt>.02&&!rm;if(fl.visible){const n=Math.floor(FN*Math.min(1,WX.flt));fl.count=n;for(let i=0;i<n;i++){const s=fs[i];s.y-=WX.fy*s.v*dt;s.x+=WX.fx*s.v*dt+Math.sin(t*1.3+s.ph)*.25*dt;s.z+=Math.sin(t*.9+s.ph)*.2*dt;if(s.y<.1||s.x>9.5){s.y=6+Math.random()*3;s.x=WX.fx>.8?-9.5:(Math.random()-.5)*18;s.z=(Math.random()-.5)*18}dm2.position.set(s.x,s.y,s.z);dm2.rotation.set(t*s.v+s.r,t*.7+s.ph,Math.sin(t+s.ph)*.8);dm2.scale.set(.075,.015,.05);dm2.updateMatrix();fl.setMatrixAt(i,dm2.matrix)}fl.instanceMatrix.needsUpdate=true}
+  rain.visible=WX.rain>.02&&!rm;if(rain.visible){const n=Math.floor(RN*Math.min(1,WX.rain));rg2.setDrawRange(0,n*2);for(let i=0;i<n;i++){const d=rs[i];d.y-=d.v*dt;if(d.y<0){d.y=8+Math.random()*2;d.x=WXB.x0+Math.random()*(WXB.x1-WXB.x0);d.z=(Math.random()-.5)*WXB.z}const o=i*6;rp[o]=d.x;rp[o+1]=d.y;rp[o+2]=d.z;rp[o+3]=d.x-.05*(1+WX.wind);rp[o+4]=d.y+.5;rp[o+5]=d.z}rg2.attributes.position.needsUpdate=true}
+  fl.visible=WX.flt>.02&&!rm;if(fl.visible){const n=Math.floor(FN*Math.min(1,WX.flt));fl.count=n;for(let i=0;i<n;i++){const s=fs[i];s.y-=WX.fy*s.v*dt;s.x+=WX.fx*s.v*dt+Math.sin(t*1.3+s.ph)*.25*dt;s.z+=Math.sin(t*.9+s.ph)*.2*dt;if(s.y<.1||s.x>WXB.x1){s.y=6+Math.random()*3;s.x=WX.fx>.8?WXB.x0:WXB.x0+Math.random()*(WXB.x1-WXB.x0);s.z=(Math.random()-.5)*WXB.z}dm2.position.set(s.x,s.y,s.z);dm2.rotation.set(t*s.v+s.r,t*.7+s.ph,Math.sin(t+s.ph)*.8);dm2.scale.set(.075,.015,.05);dm2.updateMatrix();fl.setMatrixAt(i,dm2.matrix)}fl.instanceMatrix.needsUpdate=true}
   pud.visible=WX.wet>.02;if(pud.visible)pm.forEach((p,j)=>{p.m.material.opacity=.82*WX.wet;p.m.userData.ex[0].material.opacity=.3*WX.wet;p.m.userData.ex[1].material.opacity=.4*WX.wet;p.rr.forEach((q,n)=>{const u=rm?.5:((t*.7+j*.31+n*.33)%1);q.scale.setScalar(p.r*(.08+u*.3));q.material.opacity=(1-u)*.55*WX.wet})});
   frogs.forEach(F=>{const fg=F.g,fr=F;fg.visible=WX.wet>.35;if(F.act&&actStep(fg,F,dt,t,'frog'))return;if(fg.visible&&!rm){fr.wait-=dt;if(fr.u>=1){fg.scale.setScalar(1.4);if(fr.wait<=0){const P0=PD[fr.i],a=Math.random()*6.283,rr=P0[2]*.5*Math.sqrt(Math.random());fr.from.copy(fg.position);fr.to.set(P0[0]+Math.cos(a)*rr,0,P0[1]+Math.sin(a)*rr);fr.to.y=gh(fr.to.x,fr.to.z)+.03;fr.u=0;fr.wait=1.5+Math.random()*2.5;fg.rotation.y=Math.atan2(fr.to.x-fr.from.x,fr.to.z-fr.from.z)}}else{fr.u=Math.min(1,fr.u+dt/.55);const u=fr.u,sq=1+Math.sin(u*Math.PI)*.2;fg.position.lerpVectors(fr.from,fr.to,u);fg.position.y+=Math.sin(u*Math.PI)*.3;fg.scale.set(1.4/Math.sqrt(sq),1.4*sq,1.4/Math.sqrt(sq))}}});
-  if(window.GR){GR.material.roughness=1-.5*WX.wet;GR.material.color.setScalar(1-.16*WX.wet)}}
+  (window.GRS||[]).forEach(g=>{g.material.roughness=1-.5*WX.wet;g.material.color.setScalar(1-.16*WX.wet)})}
 }
 const parts=[],ACT={bee:1.3,butterfly:1.5,bird:1.3,ladybug:1.5,snail:1.8,frog:1.2};let PMS=null;
 if(ok){const mkT=fn=>{const c=document.createElement('canvas');c.width=c.height=64;fn(c.getContext('2d'));return new THREE.CanvasTexture(c)};
@@ -524,42 +658,50 @@ function pokeG(c){const F=(window.FROGS||[]).find(f=>f.g===c),u=F||c.userData,ty
 function actStep(g,u,dt,t,type){const a=u.act,P=g.position;a.t+=dt;const f=Math.min(1,a.t/ACT[type]),ea=x=>1-Math.pow(1-Math.min(1,Math.max(0,x)),3),s0=a.s0,fl=(w,s)=>{if(w){w[0].rotation.z=s;w[1].rotation.z=-s}};
  if(type=='bee'){const ph=f*6.2832;P.set(a.p0.x+Math.sin(a.r0)*Math.sin(ph)*.55,a.p0.y+(1-Math.cos(ph))*.55,a.p0.z+Math.cos(a.r0)*Math.sin(ph)*.55);g.rotation.x=-ph;fl(u.w,Math.sin(t*80)*.7);if(Math.random()<dt*10)burst('heart',P,1)}
  else if(type=='butterfly'){const k=1-f*.5;P.set(a.p0.x+Math.cos(f*12.5)*.35*k,a.p0.y+Math.sin(f*Math.PI)*.9,a.p0.z+Math.sin(f*12.5)*.35*k);g.rotation.y=a.r0+f*12.5;fl(u.w,.3+(Math.sin(t*38)+1)*.45);if(Math.random()<dt*12)burst('spark',P,1)}
- else if(type=='bird'){const hop=Math.abs(Math.sin(f*Math.PI*2))*.3,sq=1+(1-Math.min(1,hop*6))*.12;P.y=gh(P.x,P.z)+hop;g.rotation.y=a.r0+ea(f)*6.2832;g.scale.set(s0*sq,s0/sq,s0*sq);fl(u.w,Math.sin(t*30)*.8);if(!a.f1&&f>.5){a.f1=1;burst('heart',P,3)}}
- else if(type=='ladybug'){const roll=f<.25?ea(f/.25)*Math.PI:f<.7?Math.PI+Math.sin((f-.25)*70)*.15:Math.PI*(1-ea((f-.7)/.3));g.rotation.z=roll;g.rotation.x=(f>.25&&f<.7)?Math.sin((f-.25)*50)*.12:0;P.y=gh(P.x,P.z)+.1*Math.sin(Math.min(roll,Math.PI));if(!a.f1&&f>.8){a.f1=1;burst('spark',P,4)}}
+ else if(type=='bird'){const hop=Math.abs(Math.sin(f*Math.PI*2))*.3,sq=1+(1-Math.min(1,hop*6))*.12;P.y=surf(P.x,P.z)+hop;g.rotation.y=a.r0+ea(f)*6.2832;g.scale.set(s0*sq,s0/sq,s0*sq);fl(u.w,Math.sin(t*30)*.8);if(!a.f1&&f>.5){a.f1=1;burst('heart',P,3)}}
+ else if(type=='ladybug'){const roll=f<.25?ea(f/.25)*Math.PI:f<.7?Math.PI+Math.sin((f-.25)*70)*.15:Math.PI*(1-ea((f-.7)/.3));g.rotation.z=roll;g.rotation.x=(f>.25&&f<.7)?Math.sin((f-.25)*50)*.12:0;P.y=surf(P.x,P.z)+.1*Math.sin(Math.min(roll,Math.PI));if(!a.f1&&f>.8){a.f1=1;burst('spark',P,4)}}
  else if(type=='snail'){const zs=f<.25?1-.45*(f/.25):f<.65?.55:.55+.5*ea((f-.65)/.35)-.05*Math.sin((f-.65)/.35*Math.PI);g.scale.set(s0,s0*(.85+.15*zs),s0*zs);g.rotation.x=f<.65?.3*Math.min(1,f/.25):.3*(1-ea((f-.65)/.35));if(!a.f1&&f>.65){a.f1=1;burst('bubble',P,4)}}
  else{const j=Math.max(0,(f-.2)/.8),pf=f<.2?f/.2:0,sx=f<.2?1+.25*pf:1+.05*Math.sin(j*Math.PI),sy=f<.2?1-.15*pf:1+.12*Math.sin(j*Math.PI);P.y=a.p0.y+Math.sin(j*Math.PI)*.9;g.rotation.y=a.r0+j*Math.PI;g.scale.set(s0*sx,s0*sy,s0*sx);if(!a.f1&&f>.9){a.f1=1;burst('bubble',P,5)}}
- if(f>=1){g.rotation.x=0;g.rotation.z=0;g.scale.setScalar(s0);if(type=='bee'||type=='butterfly')P.copy(a.p0);else P.y=gh(P.x,P.z)+(type=='frog'?.03:0);u.act=null;if(u.v){u.v.set(0,0,0);u.hold=.6}else u.wait=.6;return false}
+ if(f>=1){g.rotation.x=0;g.rotation.z=0;g.scale.setScalar(s0);if(type=='bee'||type=='butterfly')P.copy(a.p0);else P.y=surf(P.x,P.z)+(type=='frog'?.03:0);u.act=null;if(u.v){u.v.set(0,0,0);u.hold=.6}else u.wait=.6;return false}
  return true}
 const clock=new THREE.Clock();
 function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
   tg.lerp(tgG,k);rad+=(radG-rad)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
   for(const d in flowers){const f=flowers[d],u=f.userData;faceUpdate(f,t,dt);if(u.dr)u.dr.visible=WX.wet>.25;if(!rm){const w=.5+WX.wind*1.1;f.rotation.z=Math.sin(t*(1+w*.5)+u.ph)*.03*w;u.h.rotation.z=Math.sin(t*(1.4+w*.6)+u.ph)*.045*w}
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
-  if(!rm){if(window.mts)mts.forEach((p,j)=>{p.rotation.y+=dt*(.03+j*.02);p.position.y=Math.sin(t*.5+j*2)*.15;p.material.opacity=window.glowF*(.55+Math.sin(t*1.7+j*2.4)*.35)});cr.forEach(c=>crStep(c,dt,t));cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>30)c.position.x=-30});
+  if(!rm){if(window.mts)mts.forEach((p,j)=>{p.rotation.y+=dt*(.03+j*.02);p.position.y=Math.sin(t*.5+j*2)*.15;p.material.opacity=window.glowF*(.55+Math.sin(t*1.7+j*2.4)*.35)});cr.forEach(c=>crStep(c,dt,t));cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>50)c.position.x=-32});
     bf.forEach(b=>{const u=b.userData;if(u.bee){beeStep(b,dt,t);return}const s=.28,a=t*s+u.i*2,x=Math.cos(a)*5.2*(u.bee?.8:1),z=Math.sin(a*1.3)*4.4,y=(u.bee?1:1.5)+Math.sin(t*1.1+u.i)*.35;b.position.set(x,y,z);b.rotation.y=-Math.atan2(-Math.sin(a*1.3)*1.3*4.4,-Math.sin(a)*5.2)+Math.PI/2;if(!u.bee){const w=Math.sin(t*16+u.i)*.9;u.w[0].rotation.z=w;u.w[1].rotation.z=-w}})}
-  partStep(dt);wxFrame(dt,t,rm);if(P){P.t+=rm?dt*8:dt;const f=flowers[P.d];setGrow(f,Math.min(1,(P.t-1.2)/3));
+  partStep(dt);wxFrame(dt,t,rm);slideStep(dt);if(window.WMB&&!rm)WMB.rotation.z-=dt*(.4+WX.wind*1.3);if(P){P.t+=rm?dt*8:dt;const f=flowers[P.d];setGrow(f,Math.min(1,(P.t-1.2)/3));
     P.seed.visible=P.t<1.1;P.seed.position.y=Math.max(.05,2-P.t*2.2)+f.position.y;
     if(sparkle){const a=sparkle.geometry.attributes.position;for(let i=0;i<a.count;i++)a.setY(i,a.getY(i)+dt*.4);a.needsUpdate=true;sparkle.material.opacity=Math.max(0,Math.min(1,(P.t-.9)*2,(5-P.t)))}
     if(P.t>3.9&&!P.toast){P.toast=1;sfx('bloom');toast(tr('bloomed'))}
-    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;radG=innerWidth<760?28:14;tgG.set(0,.4,0)}}
+    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;home()}}
   if(ok)R.render(scene,cam)}
 if(ok)frame();
 
 /* ---------- camera input ---------- */
 const cv=$('c'),pts=new Map(),ray=new THREE.Raycaster(),mv=new THREE.Vector2();let pd=0,moved=0,pinch=0;
 function pick(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?o.userData.date:null}
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;if(arrange&&pts.size==1){const d=pick(e);if(d){drag=d;dm=0;hover=null;const f0=flowers[d];selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;if(arrange&&pts.size==1){const d=pick(e);if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
 cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
   if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg)?'pointer':'grab';return}
-  if(drag){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;if(dr.y<-.01){const k=-o.y/dr.y;let x=o.x+dr.x*k,z=o.z+dr.z*k;const l=Math.hypot(x,z);if(l>7){x*=7/l;z*=7/l}f.position.set(x,gh(x,z),z);dm++;selRing.position.set(x,gh(x,z)+.05,z)}}pts.set(e.pointerId,e);return}
-  if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);th-=((c.clientX+d.clientX)/2-ox)*.006;ph=Math.min(1.4,Math.max(.35,ph-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(42,Math.max(4.5,radG*od/nd));moved=99;return}
+  if(drag){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;
+    let x=f.position.x,z=f.position.z,sky=true;
+    if(dr.y<-.01){const k=-o.y/dr.y;x=o.x+dr.x*k;z=o.z+dr.z*k;const k2=(gh(x,z)-o.y)/dr.y;x=o.x+dr.x*k2;z=o.z+dr.z*k2;sky=false;const l=Math.hypot(x-MX,z);if(l>40){x=MX+(x-MX)*40/l;z*=40/l;sky=true}}
+    dragOK=!sky&&legalSpot(x,z,drag);                      /* 空中、橋上、柵欄外、障礙物、別朵花上都不行 */
+    f.position.set(x,gh(x,z)+(dragOK?0:.3),z);dm++;selRing.position.set(x,gh(x,z)+.05,z);selRing.material.color.set(dragOK?'#F29BB5':'#E8685F')}
+  pts.set(e.pointerId,e);return}
+  if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);th-=((c.clientX+d.clientX)/2-ox)*.006;ph=Math.min(1.4,Math.max(.35,ph-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(64,Math.max(4.5,radG*od/nd));moved=99;return}
   const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType!='mouse'||e.buttons&4)pan(dx,dy);else{th-=dx*.006;ph=Math.min(1.4,Math.max(.35,ph-dy*.005))}pts.set(e.pointerId,e)});
-cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(drag){const f=flowers[drag],en=S.e[drag];if(f&&en&&dm>2){en.x=f.position.x;en.z=f.position.z;save();sfx('move');toast(tr('moved'))}drag=null;selRing.visible=false;return}if(moved<6&&!pts.size){const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else $('card').hidden=true}});
-cv.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
+cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
+    if(f&&en){if(dm>2&&dragOK){en.x=f.position.x;en.z=f.position.z;f.position.y=gh(en.x,en.z);save();sfx('move');toast(tr('moved'))}
+      else{slideBack(d,dragO);if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
+    return}if(moved<6&&!pts.size){const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else $('card').hidden=true}});
+cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('mousedown',e=>{if(e.button==1)e.preventDefault()});
-function pan(dx,dy){const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;[tg,tgG].forEach(v=>{v.x+=mx;v.z+=mz;const l=Math.hypot(v.x,v.z);if(l>9){v.x*=9/l;v.z*=9/l}})}
-cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(42,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
+function pan(dx,dy){const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;[tg,tgG].forEach(v=>{v.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,v.x+mx));v.z=Math.min(10,Math.max(-10,v.z+mz))})}
+cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(64,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
 
 /* ---------- UI ---------- */
 function toast(m){const t=document.createElement('div');t.className='toast';t.innerHTML=ic('local_florist')+' '+m;document.body.append(t);setTimeout(()=>t.remove(),3700)}
@@ -577,8 +719,8 @@ function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
   c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
-  $('ce').onclick=()=>openModal(d);$('cx').onclick=()=>{c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?28:14};
-  $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;tgG.set(0,.4,0);radG=innerWidth<760?28:14;refresh();toast(tr('removed'))}}}
+  $('ce').onclick=()=>openModal(d);$('cx').onclick=()=>{c.hidden=true;home()};
+  $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
 let ed,sel,tg2=[];
 function openModal(d){ed=d||today();const e=S.e[ed];sel=e?e.mood:null;tg2=e?[...(e.tags||[])]:[];
   $('mt').textContent=e?tr('editT',ed==today()?'':fmt(ed)):tr('hi0');$('ms').textContent=e?tr('save'):tr('plant');$('txt').value=e?e.text||'':'';
