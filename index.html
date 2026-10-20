@@ -711,8 +711,13 @@ function actStep(g,u,dt,t,type){const a=u.act,P=g.position;a.t+=dt;const f=Math.
  else{const j=Math.max(0,(f-.2)/.8),pf=f<.2?f/.2:0,sx=f<.2?1+.25*pf:1+.05*Math.sin(j*Math.PI),sy=f<.2?1-.15*pf:1+.12*Math.sin(j*Math.PI);P.y=a.p0.y+Math.sin(j*Math.PI)*.9;g.rotation.y=a.r0+j*Math.PI;g.scale.set(s0*sx,s0*sy,s0*sx);if(!a.f1&&f>.9){a.f1=1;burst('bubble',P,5)}}
  if(f>=1){g.rotation.x=0;g.rotation.z=0;g.scale.setScalar(s0);if(type=='bee'||type=='butterfly')P.copy(a.p0);else P.y=surf(P.x,P.z)+(type=='frog'?.03:0);u.act=null;if(u.v){u.v.set(0,0,0);u.hold=.6}else u.wait=.6;return false}
  return true}
+const PAN_GAIN=1.6,panV={x:0,z:0};let panT=0,panning=false;   /* PAN_GAIN：平移增益，想再多一點就調大 */
 const clock=new THREE.Clock();
 function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
+  /* 放開手指後的慣性滑行 */
+  if(!panning&&(Math.abs(panV.x)>.1||Math.abs(panV.z)>.1)){
+    if(S.rm)panV.x=panV.z=0;
+    else{tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+panV.x*dt));tgG.z=Math.min(10,Math.max(-10,tgG.z+panV.z*dt));const d=Math.pow(.015,dt);panV.x*=d;panV.z*=d}}
   tg.lerp(tgG,k);rad+=(radG-rad)*k;th+=(thG-th)*k;ph+=(phG-ph)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
   for(const d in flowers){const f=flowers[d],u=f.userData;faceUpdate(f,t,dt);if(u.dr)u.dr.visible=WX.wet>.25&&u.st===1;if(u.dry)u.dry.visible=WX.wet>.25&&u.st===0;if(!rm){const w=.5+WX.wind*1.1;f.rotation.z=Math.sin(t*(1+w*.5)+u.ph)*.03*w;u.h.rotation.z=u.hy.rotation.z=Math.sin(t*(1.4+w*.6)+u.ph)*.045*w}
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
@@ -729,7 +734,7 @@ if(ok)frame();
 /* ---------- camera input ---------- */
 const cv=$('c'),pts=new Map(),ray=new THREE.Raycaster(),mv=new THREE.Vector2();let pd=0,moved=0,pinch=0;
 function pick(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?o.userData.date:null}
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;if(arrange&&pts.size==1){const d=pick(e);if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;panV.x=panV.z=0;panning=true;panT=performance.now();if(arrange&&pts.size==1){const d=pick(e);if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
 cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
   if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg)?'pointer':'grab';return}
   if(drag){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;
@@ -738,16 +743,26 @@ cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
     dragOK=!sky&&legalSpot(x,z,drag);                      /* 空中、橋上、柵欄外、障礙物、別朵花上都不行 */
     f.position.set(x,gh(x,z)+(dragOK?0:.3),z);dm++;selRing.position.set(x,gh(x,z)+.05,z);selRing.material.color.set(dragOK?'#F29BB5':'#E8685F')}
   pts.set(e.pointerId,e);return}
-  if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);thG-=((c.clientX+d.clientX)/2-ox)*.006;phG=Math.min(1.4,Math.max(.35,phG-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(64,Math.max(4.5,radG*od/nd));moved=99;return}
-  const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType!='mouse'||e.buttons&4)pan(dx,dy);else{thG-=dx*.006;phG=Math.min(1.4,Math.max(.35,phG-dy*.005))}pts.set(e.pointerId,e)});
-cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
+  if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);thG-=((c.clientX+d.clientX)/2-ox)*.006;phG=Math.min(1.4,Math.max(.35,phG-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(64,Math.max(4.5,radG*od/nd));moved=99;panV.x=panV.z=0;return}
+  const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType!='mouse'||e.buttons&4)pan(dx,dy,e.pointerType=='mouse');else{thG-=dx*.006;phG=Math.min(1.4,Math.max(.35,phG-dy*.005))}pts.set(e.pointerId,e)});
+cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;if(performance.now()-panT>90||moved<6||drag)panV.x=panV.z=0}if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
     if(f&&en){if(dm>2&&dragOK){en.x=f.position.x;en.z=f.position.z;f.position.y=gh(en.x,en.z);save();sfx('move');toast(tr('moved'))}
       else{slideBack(d,dragO);if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
     return}if(moved<6&&!pts.size){const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else $('card').hidden=true}});
-cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}});
+cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;panV.x=panV.z=0}if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('mousedown',e=>{if(e.button==1)e.preventDefault()});
-function pan(dx,dy){const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;[tgG].forEach(v=>{v.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,v.x+mx));v.z=Math.min(10,Math.max(-10,v.z+mz))})}
+/* 平移：手指移動量乘上增益；滑得越快放大越多；拉近時也不會變得太慢（距離下限 12） */
+function pan(dx,dy,mouse){
+  if(mouse){/* 電腦滑鼠：維持原本靈敏度，不加速、不慣性 */
+    const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;
+    tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+mx));tgG.z=Math.min(10,Math.max(-10,tgG.z+mz));panV.x=panV.z=0;return}
+  const now=performance.now(),dt=Math.max(8,Math.min(100,now-panT))/1000;panT=now;
+  const boost=1+Math.min(.6,Math.hypot(dx,dy)/dt/2500),
+    k=2*Math.tan(cam.fov*Math.PI/360)*Math.max(rad,10)/innerHeight*PAN_GAIN*boost,s=Math.sin(th),c=Math.cos(th),
+    mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;
+  tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+mx));tgG.z=Math.min(10,Math.max(-10,tgG.z+mz));
+  panV.x=Math.max(-40,Math.min(40,panV.x*.5+mx/dt*.5));panV.z=Math.max(-40,Math.min(40,panV.z*.5+mz/dt*.5))}
 cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(64,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
 
 /* ---------- UI ---------- */
