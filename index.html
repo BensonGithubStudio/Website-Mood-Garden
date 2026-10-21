@@ -110,6 +110,8 @@ nav{max-width:calc(100% - 16px)}
 /* ---- settings ---- */
 #p-set{top:calc(env(safe-area-inset-top,0px) + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 88px);max-height:none;transform:translateX(-50%);padding:18px 12px 4px}
 #p-set:not([hidden]){display:flex;flex-direction:column}
+/* 寬螢幕：選單列移到頂部，設定面板需避開它（底部不再需要為選單留空間） */
+@media(min-width:1000px){#p-set{top:calc(env(safe-area-inset-top,0px) + 86px);bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}}
 #p-set h2{padding:0 8px 6px;flex:none}
 .sbody{flex:1;min-height:0;overflow:auto;padding:0 2px 16px;-webkit-overflow-scrolling:touch}
 .sg{font-size:12px;letter-spacing:.06em;opacity:.65;margin:14px 10px 6px}
