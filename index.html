@@ -154,6 +154,25 @@ nav{max-width:calc(100% - 16px)}
 .paper{background:#FFFBF0;border:2px dashed #e7d9b9;border-radius:6px 22px 6px 22px;padding:18px 20px;transform:rotate(-1deg)}
 .paper .gt{font-size:18px;line-height:1.55;margin:10px 0 2px;font-style:italic}
 .gsh-h{display:flex;align-items:center;gap:8px;font-size:22px}#gsh .sc{margin-top:10px}.gpop{display:grid;place-items:center;margin:6px 0 8px}
+
+/* ---- 底部按鈕版位（記錄心情／佈置花園／小禮物） ----
+   <400px（很窄）：選單列兩側放不下，按鈕浮在選單列上方；左側兩顆上下排列，小禮物在上、佈置花園在下。
+   400–559px（一般直式手機）：按鈕貼在選單列兩側、與它同一水平線；左側兩顆仍上下排列。
+   ≥560px（橫式手機、平板）：左側兩顆改為橫排，同樣與選單列同一水平線。
+   ≥1000px：選單列在頂部，按鈕回到畫面底部。 */
+#fab,#arr,#gb{--fb:calc(env(safe-area-inset-bottom,0px) + 92px);width:52px;height:52px;padding:0;font-size:0;display:inline-flex;align-items:center;justify-content:center;bottom:var(--fb)}
+#fab[hidden]{display:none}
+#fab{right:16px}#fab .ms{font-size:26px;vertical-align:0}
+#arr{left:16px}
+#gb{left:16px;bottom:calc(var(--fb) + 62px)}
+@media(min-width:400px){#fab,#arr,#gb{--fb:calc(env(safe-area-inset-bottom,0px) + 16px)}}
+@media(min-width:560px){#gb{left:78px;bottom:var(--fb)}}
+@media(min-width:760px){#fab{right:20px}}
+@media(min-width:1000px){#fab,#arr,#gb{--fb:28px}}
+/* 選單列：按鈕間距與左右內距再緊密一點（滑動的粉色圓塊由 JS 依按鈕實際尺寸計算，會自動跟上） */
+nav{gap:2px}nav button{padding:10px 14px}
+/* 手機版問候面板：標題與下方標籤拉開距離（此寬度下說明文字已隱藏） */
+@media(max-width:759px){.hello{padding:16px 20px 18px}.hello h1{margin-bottom:12px}}
 </style></head><body data-v="garden">
 <canvas id="c" aria-label="3D mood garden"></canvas>
 <div id="fb" hidden data-t="fb"></div>
@@ -1324,7 +1343,7 @@ function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter
   $('hi').innerHTML=ic('local_florist')+(S.e[today()]?tr('hi1'):tr('hi0'));
   $('cnt').innerHTML=ic('eco')+' '+tr('cnt',en.length);
   $('mon').innerHTML=mo.length?tr('mon')+' '+Object.entries(c).map(([k,v])=>flo(k,18)+'×'+v).join(' '):tr('monNone');
-  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'));$('arr').title=tr(arrange?'done':'arr');if(window.GF)GF.refresh()}
+  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist');$('fab').setAttribute('aria-label',tr('rec'));$('fab').title=tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'));$('arr').title=tr(arrange?'done':'arr');if(window.GF)GF.refresh()}
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
   c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${matureOf(e)?'':`<div style="font-size:12px;opacity:.75;margin-top:4px">${e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e))}</div>`}${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px">${thirstyOf(e)?`<button class="btn w" id="cw" data-sfx="off" aria-label="${tr('waterB')}" title="${tr('waterB')}">${ic('water_drop')}</button>`:''}<button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn" id="cr" data-sfx="off" aria-label="${tr('gRotB')}" title="${tr('gRotB')}">${ic('rotate_right')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
