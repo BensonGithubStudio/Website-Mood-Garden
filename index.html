@@ -1663,13 +1663,14 @@ Object.assign(L.ko,{rvT:'강가의 쉼터',rvPh:'놓아주고 싶은 마음을 �
 }catch(e){}
 
 /* ---------- 河的形狀 ---------- */
-const WY=-.55,RZ0=-19,RZ1=13;                                  // 水面高度、河的起訖（z）
-const cx=z=>10.35+.7*Math.sin(z*.19+.5),hw=z=>3.5+.5*Math.sin(z*.31+1.2);   // 中心線 x、半寬
+const WY=-.55,RZ0=-200,RZ1=130,LZ=-70;                                  // 水面高度、河的起訖（z）
+const far=z=>Math.min(1,Math.max(0,(Math.abs(z)-12)/25));      // 離花園越遠，河越能大幅彎曲、越寬
+const cx=z=>10.35+.7*Math.sin(z*.19+.5)+far(z)*4.5*Math.sin(z*.032+.8),hw=z=>3.5+.5*Math.sin(z*.31+1.2)+Math.max(0,Math.abs(z)-18)*.04;   // 中心線 x、半寬
 const IZ=4.7,IX=cx(IZ)-.15,IR=1.7;                              // 休息小島的位置與半徑
 
 const U={uT:{value:0},uDay:{value:1},uNight:{value:0},uRip:{value:Array.from({length:8},()=>new T.Vector4(0,0,99,0))},uG2:{value:new T.Vector2(G2.x,0)}};
 {
-  const NZ=72,NU=18,pos=[],nor=[],aR=[],idx=[];
+  const NZ=Math.round(RZ1-RZ0),NU=18,pos=[],nor=[],aR=[],idx=[];
   for(let i=0;i<=NZ;i++){const z=RZ0+(RZ1-RZ0)*i/NZ;for(let j=0;j<=NU;j++){const u=j/NU*2-1;pos.push(cx(z)+u*hw(z),WY,z);nor.push(0,1,0);aR.push(u,i/NZ)}}
   for(let i=0;i<NZ;i++)for(let j=0;j<NU;j++){const a=i*(NU+1)+j,b=a+1,c=a+NU+1,d=c+1;idx.push(a,c,b,b,c,d)}
   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('normal',new T.Float32BufferAttribute(nor,3));g.setAttribute('aR',new T.Float32BufferAttribute(aR,2));g.setIndex(idx);
@@ -1692,7 +1693,7 @@ vec3 deep=vec3(.22,.46,.60),mid=vec3(.36,.62,.70),shal=vec3(.62,.80,.76);
 vec3 col=mix(mid,deep,smoothstep(.2,1.,1.-au)*.75);col=mix(col,shal,shore*.75);
 float st=smoothstep(.55,.9,fbm(vec2(pp.x*2.4,pp.y*.7+uT*.6)+3.));col+=st*.09;
 col=mix(col,vec3(.94,.98,.97),clamp(foam,0.,1.)*.55);col+=vec3(.9,.97,1.)*rg*.22;col*=mix(.34,.82,uDay);
-float endF=smoothstep(0.,.14,vR.y)*smoothstep(1.,.86,vR.y);float edge=smoothstep(1.,.78,au);
+float endF=smoothstep(${RZ0.toFixed(1)},${(RZ0+40).toFixed(1)},vWp.z)*(1.-smoothstep(${(RZ1-40).toFixed(1)},${RZ1.toFixed(1)},vWp.z));float edge=1.-smoothstep(.78,1.,au);
 diffuseColor.rgb=col;diffuseColor.a=clamp(edge*endF,0.,1.)*.93;`;
   const FE=`float sp=smoothstep(.9,1.,vn(pp*7.5+vec2(0.,uT*1.1)))*smoothstep(.55,.95,vn(pp*3.1-uT*.35));
 totalEmissiveRadiance+=vec3(1.,.97,.88)*sp*(.28*uDay+.1)*edge*endF+vec3(.1,.2,.36)*uNight*(.35+st)*.5*edge;`;
@@ -1801,7 +1802,21 @@ const lampGl=new T.Sprite(new T.SpriteMaterial({map:GLOW,color:'#FFD9A0',blendin
 const FF=14,ffs=[],ffp=new Float32Array(FF*3);for(let i=0;i<FF;i++)ffs.push({a:Math.random()*6.28,r:.8+Math.random()*2.6,y:.2+Math.random()*1.4,s:.15+Math.random()*.25,p:Math.random()*6});
 const ffg=new T.BufferGeometry();ffg.setAttribute('position',new T.BufferAttribute(ffp,3));
 const ffm=new T.PointsMaterial({color:'#FFF3B0',size:.3,map:GLOW,transparent:true,opacity:0,depthWrite:false,blending:T.AdditiveBlending});const fireflies=new T.Points(ffg,ffm);fireflies.frustumCulled=false;scene.add(fireflies);
-const WHITE=new T.Color('#ffffff'),mists=[];[[RZ0+1.5,0],[RZ0+3.5,1],[RZ0+.5,2],[RZ1-1.2,3],[RZ1-3,4]].forEach(([z,i])=>{const m=new T.Sprite(new T.SpriteMaterial({map:GLOW,color:'#ffffff',transparent:true,depthWrite:false,opacity:.2,fog:false}));const s=7+i%3*2.2;m.scale.set(s,s*.55,1);m.position.set(cx(z)+(i%2?1.2:-1.2),WY+.5,z);scene.add(m);mists.push({m,x:m.position.x,p:i*1.7})});
+const WHITE=new T.Color('#ffffff'),mists=[];[[-32,0],[-58,1],[-95,2],[34,3],[62,4]].forEach(([z,i])=>{const m=new T.Sprite(new T.SpriteMaterial({map:GLOW,color:'#ffffff',transparent:true,depthWrite:false,opacity:.2,fog:false}));const s=14+i%3*4;m.scale.set(s,s*.5,1);m.position.set(cx(z)+(i%2?2:-2),WY+1.5,z);scene.add(m);mists.push({m,x:m.position.x,p:i*1.7})});
+
+/* ---------- 夜晚的窗燈：房子與風車的窗戶，發光方式和燈籠一樣（自發光隨夜晚變亮 + 一圈柔光），只是更微弱 ---------- */
+const WINS=[];
+try{
+  const sites=[[-2.7,-5.4],[WM[0],WM[1]]];
+  scene.children.forEach(g=>{
+    if(!g.isGroup||!sites.some(q=>Math.hypot(g.position.x-q[0],g.position.z-q[1])<.05))return;
+    g.updateMatrixWorld(true);
+    g.children.forEach(m=>{
+      if(!m.isMesh||!m.material||!m.material.color||m.material.color.getHexString()!=='b9d8eb')return;
+      const mt=m.material.clone();mt.emissive=new T.Color('#FFC77A');mt.emissiveIntensity=0;m.material=mt;
+      const gl=new T.Sprite(new T.SpriteMaterial({map:GLOW,color:'#FFD9A0',blending:T.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));
+      gl.scale.set(.62,.62,1);gl.position.copy(m.localToWorld(new T.Vector3(0,0,3)));scene.add(gl);WINS.push({mt,gl})})});
+}catch(e){}
 
 /* ---------- 漂流的葉子 ---------- */
 const LEAF_C=['#9CD08F','#F0CF7A','#F4B3C9','#C6B4EA'],leaves=[];
@@ -1835,6 +1850,7 @@ function step(now){
   hint.gl.material.opacity=.2+(rm?0:.12*Math.sin(t*1.6))+(hint.hov?.2:0);hint.gl.position.y=hint.sp.position.y;
   /* 夜晚：燈籠亮、螢火蟲、霧的顏色 */
   lm.emissiveIntensity=.2+1.3*night;lampGl.material.opacity=.06+.55*night;
+  WINS.forEach(w=>{w.mt.emissiveIntensity=.8*night;w.mt.envMapIntensity=.1+.9*day;w.gl.material.opacity=.32*night;w.gl.visible=night>.02})
   ffm.opacity=night*.9;fireflies.visible=night>.05;
   if(fireflies.visible){const a=ffg.attributes.position;ffs.forEach((f,i)=>{const q=rm?0:t*f.s+f.a;a.setXYZ(i,IX+Math.cos(q)*f.r,f.y+Math.sin(t*.8+f.p)*.15,IZ+Math.sin(q*1.3)*f.r*.8)});a.needsUpdate=true}
   try{mists.forEach(o=>{o.m.material.color.copy(scene.fog.color).lerp(WHITE,.35);o.m.material.opacity=.14+.1*day;if(!rm)o.m.position.x=o.x+Math.sin(t*.12+o.p)*.8})}catch(e){}
@@ -1846,7 +1862,7 @@ function step(now){
       l.mesh.position.set(l.x0,WY+.04+(1-k)*(1-k)*.55,l.z);l.mesh.rotation.set(.2*(1-k),1.2,.3*(1-k));
       if(k>=1){l.landed=true;addRip(l.mesh.position.x,l.mesh.position.z,1);try{sfx('leaf_float','water')}catch(e){}}
       continue}
-    l.t+=dt;const sp=(.34+.32*sstep(0,8,l.t))*(rm?1.6:1);l.z-=sp*dt;
+    l.t+=dt;const sp=(.34+.6*sstep(0,28,l.t))*(rm?1.6:1);l.z-=sp*dt;
     const z=l.z,lat=Math.sin(l.t*.55+l.ph)*.3,tx=cx(z)+lat+l.off0*(1-sstep(0,7,l.t));  // 一開始在碼頭旁，慢慢匯入主流
     l.mesh.position.set(tx,WY+.025+Math.sin(l.t*2.1+l.ph)*.01,z);
     const dxz=-(cx(z-.3)-cx(z+.3))/.6;                        // 河道在這裡的走向
@@ -1854,8 +1870,8 @@ function step(now){
     l.mesh.rotation.set(Math.sin(l.t*1.7+1)*.06,yaw,Math.sin(l.t*1.3+l.ph)*.1);
     l.rt-=dt;if(l.rt<=0){l.rt=1.1;addRip(l.mesh.position.x,l.mesh.position.z,.5)}
     l.m.emissiveIntensity=.08+.45*night;
-    l.m.opacity=clamp((z-(RZ0+1.5))/6,0,1);
-    if(z<RZ0+1.5){scene.remove(l.mesh);l.m.dispose();leaves.splice(i,1);if(follow===l)follow=null}
+    l.m.opacity=clamp((z-LZ)/14,0,1);
+    if(z<LZ){scene.remove(l.mesh);l.m.dispose();leaves.splice(i,1);if(follow===l)follow=null}
   }
   /* 放葉子之後，鏡頭輕輕跟著葉子看一小段，然後回到全景（只在使用者沒碰畫面時） */
   if(follow){
