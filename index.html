@@ -182,7 +182,7 @@ const SND={
   vol:{sfx:.7,amb:.35},
   sfx:{
     click:'audio/sfx/click.wav',animal:'audio/sfx/animal.wav',flower:'audio/sfx/flower.wav',
-    plant:'audio/sfx/plant.wav',water:'audio/sfx/water.wav',gift_drop:'audio/sfx/gift_drop.wav',gift_open:'audio/sfx/gift_open.wav',decor_place:'audio/sfx/decor_place.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',deny:'audio/sfx/deny.wav',
+    plant:'audio/sfx/plant.wav',water:'audio/sfx/water.wav',gift_drop:'audio/sfx/gift_drop.wav',gift_open:'audio/sfx/gift_open.wav',decor_place:'audio/sfx/decor_place.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',rotate:'audio/sfx/rotate.wav',deny:'audio/sfx/deny.wav',
     animal_bee:'audio/sfx/animal_bee.wav',animal_bird:'audio/sfx/animal_bird.wav',animal_ladybug:'audio/sfx/animal_ladybug.wav',
     animal_butterfly:'audio/sfx/animal_butterfly.wav',animal_snail:'audio/sfx/animal_snail.wav',animal_frog:'audio/sfx/animal_frog.wav',leaf_float:'audio/sfx/leaf_float.wav'
   },
@@ -999,22 +999,22 @@ const T={
 en:{gb:'Little gifts',gEmpty:'Animals sometimes leave little gifts in the garden. Decorations you receive will be kept here.',gIn:'In the garden',gKept:'Collected',gPick:'Collect',gPut:'Place',gOk:'Got it',gFrom:w=>'A note from '+w,
  gn:{bee:'a little bee',bird:'a little chick',ladybug:'a ladybug',butterfly:'a butterfly',snail:'a snail'},giftT:w=>'A gift from '+w+'!',
  gGot:n=>'You got: '+n+'!',gPlaceNow:'Place in garden',gKeepB:'Keep for later',gPlaced:'Placed in the garden',gStored:'Collected',gNoSpot:'No room to place it. Try collecting something first.',
- gDeco:'Garden decoration',gHint:'Collect it, or use Arrange to drag it somewhere else.',gStoreB:'Collect',gMoveB:'Move',
+ gDeco:'Garden decoration',gHint:'Collect it, rotate it, or use Arrange to drag it somewhere else.',gStoreB:'Collect',gMoveB:'Move',gRotB:'Rotate',
  dn:['Little Cabin','Mini Swing','Mushroom House','Tiny Pond','Wooden Bench','Stepping Stones','Windmill','Little Lantern','Birdhouse','Fountain','Mailbox','Picnic Blanket','Picket Fence','Flower Pot']},
 zh:{gb:'小禮物',gEmpty:'小動物有時會在花園裡留下小禮物，收到的裝飾品會收在這裡。',gIn:'在花園裡',gKept:'收藏中',gPick:'收藏',gPut:'放置',gOk:'收下了',gFrom:w=>w+'送來的紙條',
  gn:{bee:'小蜜蜂',bird:'小雞',ladybug:'瓢蟲',butterfly:'蝴蝶',snail:'蝸牛'},giftT:w=>w+'在花園裡留下了一份小禮物！',
  gGot:n=>'收到了「'+n+'」！',gPlaceNow:'放進花園',gKeepB:'先收藏',gPlaced:'已放進花園',gStored:'已收藏',gNoSpot:'附近沒有空位可以放，先收藏幾個再試試吧。',
- gDeco:'花園裝飾',gHint:'可以收藏起來，或進入佈置模式拖曳移動。',gStoreB:'收藏',gMoveB:'移動',
+ gDeco:'花園裝飾',gHint:'可以收藏、旋轉，或進入佈置模式拖曳移動。',gStoreB:'收藏',gMoveB:'移動',gRotB:'旋轉',
  dn:['小木屋','迷你鞦韆','蘑菇屋','小池塘','木頭椅子','石頭小路','風車','小燈籠','鳥屋','噴水池','小郵筒','野餐墊','小籬笆','花盆']},
 ja:{gb:'小さなプレゼント',gEmpty:'動物たちが、ときどき庭に小さなプレゼントを置いていきます。もらった飾りはここに保管されます。',gIn:'庭に置いてある',gKept:'保管中',gPick:'しまう',gPut:'置く',gOk:'ありがとう',gFrom:w=>w+'からのメモ',
  gn:{bee:'ミツバチ',bird:'ひよこ',ladybug:'てんとう虫',butterfly:'チョウ',snail:'カタツムリ'},giftT:w=>w+'からの小さなプレゼントが届きました！',
  gGot:n=>'「'+n+'」をもらいました！',gPlaceNow:'庭に置く',gKeepB:'とっておく',gPlaced:'庭に置きました',gStored:'しまいました',gNoSpot:'置ける場所がありません。先にひとつしまってみてください。',
- gDeco:'庭の飾り',gHint:'しまうか、配置モードでドラッグして動かせます。',gStoreB:'しまう',gMoveB:'動かす',
+ gDeco:'庭の飾り',gHint:'しまう・回転するほか、配置モードでドラッグして動かせます。',gStoreB:'しまう',gMoveB:'動かす',gRotB:'回転',
  dn:['小さなログハウス','ミニブランコ','キノコの家','小さな池','木のベンチ','飛び石の小道','風車','小さなランタン','鳥の巣箱','噴水','ポスト','ピクニックシート','小さな柵','植木鉢']},
 ko:{gb:'작은 선물',gEmpty:'동물들이 가끔 정원에 작은 선물을 놓고 가요. 받은 장식은 여기에 보관돼요.',gIn:'정원에 있음',gKept:'보관 중',gPick:'보관',gPut:'놓기',gOk:'고마워요',gFrom:w=>w+'의 쪽지',
  gn:{bee:'꿀벌',bird:'병아리',ladybug:'무당벌레',butterfly:'나비',snail:'달팽이'},giftT:w=>w+'의 작은 선물이 도착했어요!',
  gGot:n=>'「'+n+'」을(를) 받았어요!',gPlaceNow:'정원에 놓기',gKeepB:'나중에',gPlaced:'정원에 놓았어요',gStored:'보관했어요',gNoSpot:'놓을 자리가 없어요. 먼저 하나를 보관해 보세요.',
- gDeco:'정원 장식',gHint:'보관하거나 배치 모드에서 끌어 옮길 수 있어요.',gStoreB:'보관',gMoveB:'옮기기',
+ gDeco:'정원 장식',gHint:'보관하거나 돌릴 수 있고, 배치 모드에서 끌어 옮길 수도 있어요.',gStoreB:'보관',gMoveB:'옮기기',gRotB:'회전',
  dn:['작은 통나무집','미니 그네','버섯 집','작은 연못','나무 벤치','징검돌 길','풍차','작은 등불','새집','분수','우체통','피크닉 돗자리','작은 울타리','화분']}};
 for(const k in T)Object.assign(L[k],T[k]);
 
@@ -1091,6 +1091,12 @@ function putDecor(o,cx,cz){const r=DR[o.k],sp=findSpot(cx==null?tgG.x:cx,cz==nul
   o.x=sp[0];o.z=sp[1];o.ry=Math.random()*6.283;o.p=1;o.nw=0;o.u=Date.now();spawnDecor(o,true);gsave();
   tgG.set(o.x,gh(o.x,o.z)+.3,o.z);if(radG>14)radG=12;sfx('decor_place','plant');burst('spark',{x:o.x,y:gh(o.x,o.z)+.3,z:o.z},6);toast(tr('gPlaced'));gbRefresh();return true}
 function storeDecor(id){const o=G().decor.find(x=>x.id===id);if(!o)return;removeDecorObj(id);o.p=0;o.u=Date.now();gsave();sfx('move');toast(tr('gStored'));gbRefresh()}
+/* 旋轉裝飾品：每按一次轉 45 度（帶緩動）；角度存在 ry，更新時間 u 一起更新，雲端逐項比較時較新的贏，所以會同步到其他裝置 */
+function rotateDecor(id){const d=DEC.find(o=>o.id===id),s=G().decor.find(o=>o.id===id);if(!d||!s)return;const u=d.g.userData,TP=Math.PI*2;
+  u.ryT=(u.ryT!=null?u.ryT:d.g.rotation.y)+Math.PI/4;if(S.rm)d.g.rotation.y=u.ryT;
+  s.ry=((u.ryT%TP)+TP)%TP;s.u=Date.now();gsave();sfx('rotate','click')}
+/* 把裝飾品轉到指定角度（走最短的路；其他裝置同步過來時也用這個） */
+function setDecorRy(d,ry){const g=d.g,u=g.userData,TP=Math.PI*2,cur=u.ryT!=null?u.ryT:g.rotation.y;let df=(((ry-cur)%TP)+TP)%TP;if(df>Math.PI)df-=TP;u.ryT=cur+df;if(S.rm)g.rotation.y=u.ryT}
 
 /* ---- 小視窗：紙條 / 收到裝飾品 / 我的小禮物 ---- */
 const gOpen=h=>{$('gsh').innerHTML=h;$('gmod').hidden=false},gClose=()=>{$('gmod').hidden=true};
@@ -1111,9 +1117,9 @@ function gbRefresh(){const b=$('gb');if(!b)return;const n=G().decor.filter(o=>o.
 
 /* ---- 點花園裡的裝飾品：小卡片（收藏 / 移動） ---- */
 function decorCard(did){const d=DEC.find(o=>o.id===did);if(!d)return;const c=$('card');c.hidden=false;
-  c.innerHTML=`<div style="font-size:12px;opacity:.7">${esc(tr('gDeco'))}</div><h2 style="display:flex;align-items:center;gap:8px">${dIcon(d.k,36)}<span>${esc(nameOf(d.k))}</span></h2><p>${esc(tr('gHint'))}</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="gst" aria-label="${esc(tr('gStoreB'))}" title="${esc(tr('gStoreB'))}">${ic('inventory_2')}</button><button class="btn" id="gmv" aria-label="${esc(tr('gMoveB'))}" title="${esc(tr('gMoveB'))}">${ic('open_with')}</button><button class="btn" id="gcx" style="margin-left:auto" aria-label="${esc(tr('close'))}" title="${esc(tr('close'))}">${ic('close')}</button></div>`;
+  c.innerHTML=`<div style="font-size:12px;opacity:.7">${esc(tr('gDeco'))}</div><h2 style="display:flex;align-items:center;gap:8px">${dIcon(d.k,36)}<span>${esc(nameOf(d.k))}</span></h2><p>${esc(tr('gHint'))}</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="gst" aria-label="${esc(tr('gStoreB'))}" title="${esc(tr('gStoreB'))}">${ic('inventory_2')}</button><button class="btn" id="grt" data-sfx="off" aria-label="${esc(tr('gRotB'))}" title="${esc(tr('gRotB'))}">${ic('rotate_right')}</button><button class="btn" id="gcx" style="margin-left:auto" aria-label="${esc(tr('close'))}" title="${esc(tr('close'))}">${ic('close')}</button></div>`;
   $('gst').onclick=()=>{storeDecor(did);c.hidden=true};
-  $('gmv').onclick=()=>{c.hidden=true;if(!arrange)setArrange(true)};
+  $('grt').onclick=()=>rotateDecor(did);
   $('gcx').onclick=()=>{c.hidden=true}}
 
 /* ---- 禮物盒（3D） ---- */
@@ -1183,6 +1189,7 @@ function step(t,dt,rm){try{
     else{b.scale.setScalar(1);b.position.set(o.to.x,o.to.y+(rm?0:.035+.03*Math.sin(t*2.2+o.i)),o.to.z);if(!rm)b.rotation.y=t*.5+o.i}
     o.gl.material.opacity=rm?.45:.35+.2*Math.sin(t*3+o.i)}
   for(const o of DEC){const u=o.g.userData;
+    if(u.ryT!=null){const df=u.ryT-o.g.rotation.y;if(rm||Math.abs(df)<.002)o.g.rotation.y=u.ryT;else o.g.rotation.y+=df*Math.min(1,dt*12)}
     if(u.pop!=null){u.pop+=dt/.6;const x=Math.min(1,u.pop),ob=1+2.70158*Math.pow(x-1,3)+1.70158*Math.pow(x-1,2);o.g.scale.setScalar(Math.max(.001,ob));if(x>=1){u.pop=null;o.g.scale.setScalar(1)}}
     if(!rm){if(u.sw)u.sw.rotation.z=Math.sin(t*1.4+o.x)*.16;if(u.bl)u.bl.rotation.z-=dt*(.35+(WX.wind||0)*1.1);
       if(u.dr)u.dr.forEach((d,i)=>{const ph=(t*.9+i/8)%1,a=i/8*6.283+ph*.8,rr=ph*.2;d.position.set(Math.cos(a)*rr,.42+.14*Math.sin(ph*Math.PI)-.3*ph*ph,Math.sin(a)*rr)})}
@@ -1206,7 +1213,7 @@ function applyItem(r){const g=G(),pi=g.pend.findIndex(p=>p.id===r.id),di=g.decor
   else if(r.s==='d'){if(pi>=0){g.pend.splice(pi,1);removeGiftObj(r.id)}
     const o={id:r.id,k:r.k,x:r.x,z:r.z,ry:r.ry||0,p:r.p?1:0,nw:r.nw?1:0,u:r.u},old=g.decor[di];
     if(di>=0)g.decor[di]=o;else g.decor.push(o);
-    if(ok){const cur=DEC.find(d=>d.id===o.id);if(!o.p)removeDecorObj(o.id);else if(!cur||cur.x!==o.x||cur.z!==o.z)spawnDecor(o,false)}}
+    if(ok){const cur=DEC.find(d=>d.id===o.id);if(!o.p)removeDecorObj(o.id);else if(!cur||cur.x!==o.x||cur.z!==o.z)spawnDecor(o,false);else setDecorRy(cur,o.ry||0)}}
   else if(r.s==='x'){if(pi>=0){g.pend.splice(pi,1);removeGiftObj(r.id)}g.gone[r.id]=r.u}}
 function syncG(R){R=R||{};const g=G(),Li=localItems(),Ri=R.i||{},out={};let touched=false,dirty=false;
   new Set([...Object.keys(Li),...Object.keys(Ri)]).forEach(id=>{const l=Li[id],r=Ri[id];
@@ -1236,7 +1243,7 @@ function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta()
     if(S.rm)panV.x=panV.z=0;
     else{tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+panV.x*dt));tgG.z=Math.min(10,Math.max(-10,tgG.z+panV.z*dt));const d=Math.pow(.015,dt);panV.x*=d;panV.z*=d}}
   tg.lerp(tgG,k);rad+=(radG-rad)*k;th+=(thG-th)*k;ph+=(phG-ph)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
-  for(const d in flowers){const f=flowers[d],u=f.userData;faceUpdate(f,t,dt);if(u.dr)u.dr.visible=WX.wet>.25&&u.st===1;if(u.dry)u.dry.visible=WX.wet>.25&&u.st===0;if(!rm){const w=.5+WX.wind*1.1;f.rotation.z=Math.sin(t*(1+w*.5)+u.ph)*.03*w;u.h.rotation.z=u.hy.rotation.z=Math.sin(t*(1.4+w*.6)+u.ph)*.045*w}
+  for(const d in flowers){const f=flowers[d],u=f.userData;if(u.ryT!=null){const df=u.ryT-f.rotation.y;if(rm||Math.abs(df)<.002)f.rotation.y=u.ryT;else f.rotation.y+=df*Math.min(1,dt*12)}faceUpdate(f,t,dt);if(u.dr)u.dr.visible=WX.wet>.25&&u.st===1;if(u.dry)u.dry.visible=WX.wet>.25&&u.st===0;if(!rm){const w=.5+WX.wind*1.1;f.rotation.z=Math.sin(t*(1+w*.5)+u.ph)*.03*w;u.h.rotation.z=u.hy.rotation.z=Math.sin(t*(1.4+w*.6)+u.ph)*.045*w}
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
   if(!rm){if(window.mts)mts.forEach((p,j)=>{p.rotation.y+=dt*(.03+j*.02);p.position.y=Math.sin(t*.5+j*2)*.15;p.material.opacity=window.glowF*(.55+Math.sin(t*1.7+j*2.4)*.35)});cr.forEach(c=>crStep(c,dt,t));cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>50)c.position.x=-32});
     bf.forEach(b=>{const u=b.userData;if(u.bee){beeStep(b,dt,t);return}const s=.28,a=t*s+u.i*2,x=Math.cos(a)*5.2*(u.bee?.8:1),z=Math.sin(a*1.3)*4.4,y=(u.bee?1:1.5)+Math.sin(t*1.1+u.i)*.35;b.position.set(x,y,z);b.rotation.y=-Math.atan2(-Math.sin(a*1.3)*1.3*4.4,-Math.sin(a)*5.2)+Math.PI/2;if(!u.bee){const w=Math.sin(t*16+u.i)*.9;u.w[0].rotation.z=w;u.w[1].rotation.z=-w}})}
@@ -1298,9 +1305,14 @@ function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter
   $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'));$('arr').title=tr(arrange?'done':'arr');if(window.GF)GF.refresh()}
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
-  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${matureOf(e)?'':`<div style="font-size:12px;opacity:.75;margin-top:4px">${e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e))}</div>`}${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px">${thirstyOf(e)?`<button class="btn w" id="cw" data-sfx="off" aria-label="${tr('waterB')}" title="${tr('waterB')}">${ic('water_drop')}</button>`:''}<button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
-  $('ce').onclick=()=>openModal(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true;home()};
+  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${matureOf(e)?'':`<div style="font-size:12px;opacity:.75;margin-top:4px">${e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e))}</div>`}${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px">${thirstyOf(e)?`<button class="btn w" id="cw" data-sfx="off" aria-label="${tr('waterB')}" title="${tr('waterB')}">${ic('water_drop')}</button>`:''}<button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn" id="cr" data-sfx="off" aria-label="${tr('gRotB')}" title="${tr('gRotB')}">${ic('rotate_right')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
+  $('ce').onclick=()=>openModal(d);$('cr').onclick=()=>rotateFlower(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true;home()};
   $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
+/* 旋轉花朵：每按一次轉 45 度（帶緩動）；角度存在 S.e[d].r，save() 會偵測到變更並更新時間，因此會隨花朵一起同步到 Google 雲端 */
+function rotateFlower(d){const e=S.e[d];if(!e)return;const f=flowers[d],TP=Math.PI*2,u=f&&f.userData;
+  const cur=u?(u.ryT!=null?u.ryT:f.rotation.y):(e.r||0),nx=cur+Math.PI/4;
+  if(u){u.ryT=nx;if(S.rm)f.rotation.y=nx}
+  e.r=((nx%TP)+TP)%TP;save();sfx('rotate','click')}
 let ed,sel,tg2=[];
 function openModal(d){ed=d||today();const e=S.e[ed];sel=e?e.mood:null;tg2=e?[...(e.tags||[])]:[];
   $('mt').textContent=e?tr('editT',ed==today()?'':fmt(ed)):tr('hi0');$('ms').textContent=e?tr('save'):tr('plant');$('txt').value=e?e.text||'':'';
