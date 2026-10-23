@@ -37,9 +37,18 @@ nav button{position:relative;z-index:1}
 @media(min-width:1000px){nav{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}.fab{bottom:28px}}
 @media(max-width:759px){.hello{right:16px;max-width:none}.hello p{display:none}.fab{right:16px}}
 @media(max-width:480px){.logo{font-size:17px;padding:6px 12px}#date{font-size:12px;padding:6px 11px}}
-body:not([data-v=garden]) .g{display:none}
+/* 花園介面（標題、問候、按鈕）：切換分頁時淡入淡出＋輕微位移，而不是直接消失 */
+.g{transition:opacity .4s ease .1s,translate .45s cubic-bezier(.2,.9,.3,1) .1s,visibility 0s}
+.fab.g{transition:transform .2s,opacity .4s ease .1s,translate .45s cubic-bezier(.2,.9,.3,1) .1s,visibility 0s}
+body:not([data-v=garden]) .g{opacity:0;visibility:hidden;pointer-events:none;translate:0 10px;transition:opacity .22s ease,translate .3s ease,visibility 0s .22s}
+body:not([data-v=garden]) .top.g,body:not([data-v=garden]) .hello.g{translate:0 -10px}
 .panel{position:fixed;z-index:3;left:50%;top:50%;transform:translate(-50%,-48%);width:min(520px,calc(100% - 28px));max-height:calc(100% - 170px);overflow:auto;padding:22px}
 @media(min-width:1000px){.panel{top:calc(50% + 28px)}}
+/* 面板進出場：離場快速淡出，進場帶一點彈性浮起（用獨立的 translate / scale 屬性，不影響原本的置中 transform） */
+.panel{opacity:0;scale:.12;transform-origin:var(--ox,50%) var(--oy,100%);pointer-events:none;transition:opacity .18s ease,scale .24s cubic-bezier(.5,0,.75,0)}
+.panel.in{opacity:1;scale:1;pointer-events:auto;transition:opacity .28s ease .04s,scale .46s cubic-bezier(.2,.9,.3,1.12) .04s}
+body.rm .panel,body.rm .panel.in,body.rm .g,body.rm .fab.g{translate:none!important;scale:none!important;transition:opacity .15s ease!important}
+@media(prefers-reduced-motion:reduce){.panel,.panel.in,.g,.fab.g{translate:none!important;scale:none!important;transition:opacity .15s ease!important}}
 .panel h2{font-size:24px;margin-bottom:12px}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
 .cal .w{font-size:12px;opacity:.6}
@@ -1295,7 +1304,18 @@ function toast(m){const t=document.createElement('div');t.className='toast';t.in
 function ask(msg,yes){return new Promise(r=>{$('dm').textContent=msg;$('dy').textContent=yes||tr('confirm');$('dlg').hidden=false;$('dy').onclick=()=>{$('dlg').hidden=true;r(1)};$('dn').onclick=()=>{$('dlg').hidden=true;r(0)}})}
 function movePill(anim){const b=document.querySelector('nav button[aria-current=true]'),p=$('pill');if(!b)return;p.style.transition=anim?'':'none';p.style.width=b.offsetWidth+'px';p.style.transform='translateX('+b.offsetLeft+'px)'}
 addEventListener('resize',()=>movePill(false));if(document.fonts)document.fonts.ready.then(()=>movePill(false));
-function show(v){if(v!='garden'&&arrange)setArrange(false);document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>$('p-'+x).hidden=x!=v);$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
+/* 面板開關：進場先取消 hidden、強制重排後加上 .in 觸發過渡；離場先移除 .in，動畫結束才真正 hidden */
+function setPanel(p,on,v){clearTimeout(p._t);
+  if(on){if(!p.classList.contains('in')){p.hidden=false;
+      /* 先在「沒有任何變形」的狀態量出面板的版面位置，把縮放的原點設在被點的選單按鈕中心，面板就會從按鈕長出來、也縮回按鈕 */
+      const s=p.style;s.transition='none';s.translate='none';s.scale='none';s.transform='none';
+      const r=p.getBoundingClientRect(),b=document.querySelector('nav button[data-v='+v+']');
+      if(b){const q=b.getBoundingClientRect();s.setProperty('--ox',(q.left+q.width/2-r.left)+'px');s.setProperty('--oy',(q.top+q.height/2-r.top)+'px')}
+      /* 還原變形時要先保持「無過渡」，否則 scale 會從 none 開始往 .12 過渡，之後的進場動畫就被它吃掉 */
+      s.translate=s.scale=s.transform='';void p.offsetWidth;s.transition='';void p.offsetWidth}
+    p.classList.add('in')}
+  else{if(p.hidden)return;p.classList.remove('in');p._t=setTimeout(()=>{p.hidden=true},S.rm?170:300)}}
+function show(v){if(v!='garden'&&arrange)setArrange(false);document.body.classList.toggle('rm',!!S.rm);document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>setPanel($('p-'+x),x==v,x));$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
   $('date').textContent=n.toLocaleDateString(LC(),{weekday:'short',month:'short',day:'numeric'});
@@ -1367,7 +1387,7 @@ function renderSet(){
   $('p-set').querySelectorAll('.sw').forEach(b=>b.onclick=()=>{
     const k=b.dataset.k;
     if(k=='wx'){S.wxo=!S.wxo;save();setWeather(S.wxd==today()?S.wx:null)}
-    else if(k=='rm')S.rm=!S.rm;
+    else if(k=='rm'){S.rm=!S.rm;document.body.classList.toggle('rm',!!S.rm)}
     else if(k=='sfx')S.snd=S.snd===false;
     else if(k=='amb')S.amb=S.amb===false;
     save();ambApply();
