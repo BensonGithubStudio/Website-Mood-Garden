@@ -1605,7 +1605,13 @@ window.cloud=(()=>{
     catch(e){tok=null;manual=false;setSt('err')}}
 
   /* ---- 同步：讀雲端檔 → 逐日比較更新時間（較新的贏）→ 必要時寫回 ---- */
-  function applyE(d,o){o=JSON.parse(JSON.stringify(o));S.e[d]=o;_bj[d]=_sig(o);delete S.del[d];if(ok){rmFlower(d);addFlower(d,1)}}
+  function applyE(d,o){o=JSON.parse(JSON.stringify(o));const old=S.e[d],f=flowers[d];
+    /* 只有旋轉角度不同（其餘欄位都一樣）：不重建花朵，改成順著最短方向平滑轉過去，跟裝飾品的同步動畫一致 */
+    const same=!!(old&&f&&f.userData&&(()=>{const ks=new Set([...Object.keys(old),...Object.keys(o)]);ks.delete('r');ks.delete('u');for(const k of ks)if(JSON.stringify(old[k])!==JSON.stringify(o[k]))return false;return true})());
+    S.e[d]=o;_bj[d]=_sig(o);delete S.del[d];
+    if(!ok)return;
+    if(same){const u=f.userData,TP=Math.PI*2,cur=u.ryT!=null?u.ryT:f.rotation.y;let df=((((o.r||0)-cur)%TP)+TP)%TP;if(df>Math.PI)df-=TP;u.ryT=cur+df;if(S.rm)f.rotation.y=u.ryT}
+    else{rmFlower(d);addFlower(d,1)}}
   function applyD(d,u){rmFlower(d);delete S.e[d];delete _bj[d];S.del[d]=u}
   async function sync(){
     if(!user)return;if(busy){again=true;return}
