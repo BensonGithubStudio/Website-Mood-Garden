@@ -49,6 +49,8 @@ body:not([data-v=garden]) .top.g,body:not([data-v=garden]) .hello.g{translate:0 
 .panel.in{opacity:1;scale:1;pointer-events:auto;transition:opacity .28s ease .04s,scale .46s cubic-bezier(.2,.9,.3,1.12) .04s}
 body.rm .panel,body.rm .panel.in,body.rm .g,body.rm .fab.g{translate:none!important;scale:none!important;transition:opacity .15s ease!important}
 @media(prefers-reduced-motion:reduce){.panel,.panel.in,.g,.fab.g{translate:none!important;scale:none!important;transition:opacity .15s ease!important}}
+/* 手機／窄螢幕：選單在底部，面板改成置中於「頂部標題列」與「底部選單」之間，高度也扣掉兩者，避免和選單重疊 */
+@media(max-width:999px){.panel{--tb:calc(env(safe-area-inset-top,0px) + 62px);--bb:calc(env(safe-area-inset-bottom,0px) + 96px);top:calc(var(--tb) + (100% - var(--tb) - var(--bb))/2);transform:translate(-50%,-50%);max-height:calc(100% - var(--tb) - var(--bb))}}
 .panel h2{font-size:24px;margin-bottom:12px}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
 .cal .w{font-size:12px;opacity:.6}
