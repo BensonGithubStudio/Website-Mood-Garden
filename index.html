@@ -54,7 +54,7 @@ body:not([data-v=garden]) .g{display:none}
 .wk{display:flex;gap:6px;justify-content:space-between;margin-top:6px}
 .wk div{flex:1;text-align:center;font-size:11px}.wk i{display:grid;place-items:center;aspect-ratio:1;border-radius:50%;font-style:normal;font-size:18px;background:#fff9;margin-bottom:2px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px dashed #d9cfbe}
-.btn{background:#fff;padding:9px 16px;border-radius:99px;box-shadow:0 3px 10px #0001}.btn.p{background:#F29BB5;color:#fff}.btn.r{color:#b5484f}
+.btn{background:#fff;padding:9px 16px;border-radius:99px;box-shadow:0 3px 10px #0001}.btn.p{background:#F29BB5;color:#fff}.btn.r{color:#b5484f}.btn.w{background:#7DB8E6;color:#fff}
 .scrim{position:fixed;inset:0;z-index:20;background:#5b5a5555;display:grid;place-items:center;padding:14px}
 .scrim[hidden],[hidden]{display:none!important}
 .sheet{background:#FFFCF7;border-radius:32px;padding:22px;width:min(520px,100%);max-height:100%;overflow:auto;box-shadow:var(--sh)}
@@ -138,13 +138,18 @@ nav{max-width:calc(100% - 16px)}
 /* ---- account / sync ---- */
 .ab{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 14px;margin-top:8px;border-radius:16px;font-weight:700;font-size:15px;background:#fff;border:1.5px solid #eadfcd;transition:transform .2s}
 .ab:first-of-type{margin-top:0}.ab:hover:not(:disabled){transform:translateY(-1px)}.ab:disabled{opacity:.45;cursor:default}
+.fab.sec{overflow:visible}#gb{left:78px}.fab.sec .gbd{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#F29BB5;color:#fff;font:600 12px/20px Fredoka,Nunito,sans-serif;text-align:center;box-shadow:0 2px 6px #0003}
+.gi{flex:none;width:46px;height:46px;border-radius:14px;background:#E5DBF7;display:grid;place-items:center}
+.paper{background:#FFFBF0;border:2px dashed #e7d9b9;border-radius:6px 22px 6px 22px;padding:18px 20px;transform:rotate(-1deg)}
+.paper .gt{font-size:18px;line-height:1.55;margin:10px 0 2px;font-style:italic}
+.gsh-h{display:flex;align-items:center;gap:8px;font-size:22px}#gsh .sc{margin-top:10px}.gpop{display:grid;place-items:center;margin:6px 0 8px}
 </style></head><body data-v="garden">
 <canvas id="c" aria-label="3D mood garden"></canvas>
 <div id="fb" hidden data-t="fb"></div>
 
 <header class="top g"><div class="logo"><span class="ms">local_florist</span> Mood Garden</div><div id="date"></div></header>
 <section class="hello glass g"><h1 id="hi"></h1><p data-t="tag"></p><div class="chips"><span id="cnt"></span><span id="mon"></span><span id="wxc"></span></div></section>
-<button class="fab g" id="fab">Record Today's Mood</button><button class="fab g sec" id="arr"></button>
+<button class="fab g" id="fab">Record Today's Mood</button><button class="fab g sec" id="arr"></button><button class="fab g sec" id="gb"></button>
 <section id="card" hidden></section>
 
 <nav aria-label="Main"><span id="pill"></span><button data-v="garden"><span class="ms">yard</span> Garden</button><button data-v="cal"><span class="ms">calendar_month</span> Calendar</button><button data-v="ins"><span class="ms">insights</span> Insights</button><button data-v="set"><span class="ms">settings</span> Settings</button></nav>
@@ -159,6 +164,7 @@ nav{max-width:calc(100% - 16px)}
 <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mx" data-t="cancel"></button><button class="btn p" id="ms" data-sfx="off">Plant My Flower</button></div></div></div>
 <div class="scrim" id="dlg" hidden><div class="sheet" style="width:min(340px,100%)"><p id="dm" style="margin-bottom:16px"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="dn" data-t="keep"></button><button class="btn r" id="dy">Confirm</button></div></div></div>
 
+<div class="scrim" id="gmod" hidden><div class="sheet" id="gsh" role="dialog"></div></div>
 <div id="ld" role="status" aria-live="polite"><div class="cl" style="left:6%;top:9%"></div><div class="cl" style="right:4%;top:20%;width:100px"></div>
 <div class="bud"><div class="st"></div><div class="hd"></div><div class="sm"></div><div class="ck" style="left:20%"></div><div class="ck" style="right:20%"></div></div>
 <div class="ob-s"><p id="ldm" class="ldm"></p><div class="ldb"><i id="ldi"></i></div><button class="btn p big" id="lde" hidden data-t="ldGo" style="font-size:18px;padding:12px 30px"></button></div></div>
@@ -176,7 +182,7 @@ const SND={
   vol:{sfx:.7,amb:.35},
   sfx:{
     click:'audio/sfx/click.wav',animal:'audio/sfx/animal.wav',flower:'audio/sfx/flower.wav',
-    plant:'audio/sfx/plant.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',deny:'audio/sfx/deny.wav',
+    plant:'audio/sfx/plant.wav',water:'audio/sfx/water.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',deny:'audio/sfx/deny.wav',
     animal_bee:'audio/sfx/animal_bee.wav',animal_bird:'audio/sfx/animal_bird.wav',animal_ladybug:'audio/sfx/animal_ladybug.wav',
     animal_butterfly:'audio/sfx/animal_butterfly.wav',animal_snail:'audio/sfx/animal_snail.wav',animal_frog:'audio/sfx/animal_frog.wav'
   },
@@ -326,10 +332,10 @@ function flo(k,s){const L='stroke="#8a7a5a" stroke-opacity=".35" stroke-width=".
 /* ---------- i18n ---------- */
 if(!S.lang){const n=(navigator.language||'en').toLowerCase();S.lang=n.startsWith('zh')?'zh':n.startsWith('ja')?'ja':n.startsWith('ko')?'ko':'en'}
 const L={
-en:{fb:"Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.",tag:'Grow your feelings, one flower at a time.',n_garden:'Garden',n_cal:'Calendar',n_ins:'Insights',n_set:'Settings',rec:"Record Today's Mood",hi0:'How are you feeling today?',hi1:'Your flower has been planted!',cnt:n=>n+(n==1?' flower':' flowers'),mon:'This month',monNone:'Nothing planted this month yet',m:['Happy','Excited','Calm','Loved','Sad','Anxious'],f:['Sunflower','Tulip','Daisy','Rose','Bluebell','Lavender'],tg:['Work','Study','Friends','Family','Travel','Personal'],ph:'What made you feel this way today?',editT:d=>d?'Edit '+d:'Edit your day',plant:'Plant My Flower',save:'Save changes',cancel:'Cancel',keep:'Keep it',confirm:'Confirm',noNote:'No note for this day.',edit:'Edit',delete:'Delete',close:'Close',delQ:"Delete this flower and its note? This can't be undone.",removed:'Flower removed',bloomed:'A new sprout has popped up!',grown:'A flower just grew up!',sprout:h=>`Still a sprout. It grows up in about ${h}h`,pick:'Pick a mood first',saved:'Flower saved',updated:'Entry updated',resetDone:'Garden reset. A fresh start',calHint:"You can plant today's flower any time",wd:['S','M','T','W','T','F','S'],calNote:"Empty buds are days you haven't recorded. That's fine.",insEmpty:"Your insights will grow as you plant flowers. Record today's mood to begin.",insM:'This month',common:(f,p,n)=>`Most common: ${f} (${p}% of ${n} ${n==1?'day':'days'})`,insNone:'No flowers this month yet.',l7:'Last 7 days',total:n=>`${n} ${n==1?'flower':'flowers'} planted in total`,setT:'Settings',rmT:'Reduce motion',rmD:'Skips sway, flying friends and slow camera moves.',on:'On',off:'Off',rsT:'Reset Garden',rsD:'Removes every flower and note from this device.',rsB:'Reset',local:'Until you sign in, your garden is stored only in this browser.',lang:'Language',rs1:'Reset your whole garden?',rs1y:'Yes, continue',rs2:'Last check: every flower and note will be deleted for good.',rs2y:'Delete everything',obH:'Track your feelings, grow a garden',obP:'Pick a mood each day and it blooms as a flower. No streaks, no pressure.',go:'Get started',skip:'Skip',arr:'Arrange',done:'Done',moved:'Flower moved',hintArr:'Drag a flower to move it, even to the other garden',badSpot:"Can't move it to that spot",friendsT:'Garden friends',friendsD:'Each flower invites its own little visitors. Plant more of a mood and more friends will come.',crn:['Bees','Chicks','Ladybugs','Butterflies','Snails','Butterflies'],tmT:'Time of day',tmD:'Follows your local time, or pick a fixed look.',tmA:'Auto',tmDay:'Day',tmN:'Night',ld:['Travelling to your garden…','First time here — finding the way, hang on','The soil is a bit hard, loosening it up'],ldReady:'Your garden is ready',ldGo:'Enter the garden',sfxT:'Sound effects',sfxD:'Taps, flowers and little creatures.',ambT:'Ambient sound',ambD:'Looping weather audio in the background.',secLook:'Look & feel',secSnd:'Sound',secAcc:'Account & sync',accD:'Sign in, and you never have to worry about your carefully grown flowers disappearing.',gIn:'Continue with Google',sOut:'Sign out',sNow:'Sync now',stOk:'Synced',stSync:'Syncing…',stOff:'Offline. Will sync when you are back online.',stErr:'Sync problem. Tap “Sync now” to retry.',stRe:'Session expired. Reconnect to keep syncing (about once an hour).',cRe:'Reconnect',cNoT:'Cloud sync is off',cNo:'Add your Google client ID (GOOGLE_CLIENT_ID) in the file to turn it on.',cScope:'Syncing needs access to your Drive app data. Please sign in again and allow it.',cMixQ:'This device still holds flowers from another account. Add them to the account you just signed in to?',cMixY:'Add them',cMixN:'No, use this account only',cFail:'Sign-in failed',cIn:'Signed in. Syncing your garden…',cOut:'Signed out. Your garden stays on this device.',cRs:'Your other signed-in devices will be cleared too.',cloudNote:'Your garden is backed up to your own Google Drive and syncs across your devices.',secData:'Data',sndT:'Sound',sndD:'Click sounds and weather ambience.',wxT:'Weather',wxD:'The garden weather follows the mood you record.',wxn:['Fresh breeze','Rainbow','Breezy','Petal rain','Light rain','Clouds & wind']},
-zh:{fb:'你的裝置目前無法顯示 3D 花園，其他功能仍可使用，可以從月曆瀏覽你的花朵。',tag:'一次一朵花，慢慢種出你的心情。',n_garden:'花園',n_cal:'月曆',n_ins:'統計',n_set:'設定',rec:'記錄今日心情',hi0:'今天感覺如何？',hi1:'你的花已經種下了！',cnt:n=>n+' 朵花',mon:'本月',monNone:'這個月還沒有種花',m:['開心','興奮','平靜','被愛','難過','焦慮'],f:['向日葵','鬱金香','雛菊','玫瑰','風鈴草','薰衣草'],tg:['工作','學習','朋友','家人','旅行','個人'],ph:'今天是什麼讓你有這種感覺？',editT:d=>d?'編輯 '+d+' 的紀錄':'編輯今天的紀錄',plant:'種下我的花',save:'儲存變更',cancel:'取消',keep:'保留',confirm:'確認',noNote:'這一天沒有留下文字。',edit:'編輯',delete:'刪除',close:'關閉',delQ:'要刪除這朵花和它的紀錄嗎？刪除後無法復原。',removed:'已刪除花朵',bloomed:'新的小花苗冒出來了！',grown:'有花朵長大了！',sprout:h=>`還是小花苗，約 ${h} 小時後長大`,pick:'請先選擇一種心情',saved:'花朵已儲存',updated:'紀錄已更新',resetDone:'花園已重置，重新開始吧',calHint:'你隨時都可以種下今天的花',wd:['日','一','二','三','四','五','六'],calNote:'空的花苞代表還沒有記錄的日子，沒關係的。',insEmpty:'種下花朵後，這裡就會出現你的統計。先記錄今天的心情吧。',insM:'本月',common:(f,p,n)=>`最常出現：${f}（${n} 天中的 ${p}%）`,insNone:'這個月還沒有花朵。',l7:'最近 7 天',total:n=>`累計種下 ${n} 朵花`,setT:'設定',rmT:'減少動態效果',rmD:'關閉搖晃、飛行小動物與緩慢的鏡頭移動。',on:'開',off:'關',rsT:'重置花園',rsD:'從這個裝置移除所有花朵和紀錄。',rsB:'重置',local:'尚未登入時，花園只會儲存在這個瀏覽器中。',lang:'語言',rs1:'要重置整座花園嗎？',rs1y:'是，繼續',rs2:'最後確認：所有花朵和紀錄都會被永久刪除。',rs2y:'全部刪除',obH:'記錄心情，種出一座花園',obP:'每天選一種心情，它就會綻放成一朵花。沒有連續打卡，也沒有壓力。',go:'開始使用',skip:'略過',arr:'佈置花園',done:'完成',moved:'花朵位置已儲存',hintArr:'拖曳花朵來移動位置，也可以搬到另一座花園',badSpot:'無法移動到這個位置',friendsT:'花園的小夥伴',friendsD:'每種花都會吸引自己的小生物。同一種心情種得越多，來的小夥伴就越多。',crn:['蜜蜂','小雞','瓢蟲','蝴蝶','蝸牛','蝴蝶'],tmT:'日夜變化',tmD:'依照你的當地時間，也可以固定成白天或夜晚。',tmA:'自動',tmDay:'白天',tmN:'夜晚',ld:['正在旅行至你的花園…','第一次來需要找路，再等等喔','土有點硬，我需要鬆個土'],ldReady:'花園準備好了',ldGo:'進入花園',sfxT:'音效',sfxD:'按鈕、花朵與小動物的互動聲。',ambT:'背景音',ambD:'依天氣循環播放的環境音。',secLook:'外觀',secSnd:'聲音',secAcc:'帳號與同步',accD:'登入後，就不用擔心辛苦栽培的花朵消失了。',gIn:'使用 Google 登入',sOut:'登出',sNow:'立即同步',stOk:'已同步',stSync:'同步中…',stOff:'目前離線，恢復連線後會自動同步',stErr:'同步發生問題，請點「立即同步」重試',stRe:'登入已過期，需要重新連線才能繼續同步（約每小時一次）',cRe:'重新連線',cNoT:'雲端同步未開啟',cNo:'請在檔案裡填入 Google 的用戶端 ID（GOOGLE_CLIENT_ID）才能啟用。',cScope:'同步需要存取「雲端硬碟的應用程式資料」，請重新登入並允許。',cMixQ:'這台裝置上留有另一個帳號的花。要把它們也放進剛登入的帳號嗎？',cMixY:'放進來',cMixN:'不用，只用這個帳號的',cFail:'登入失敗',cIn:'登入成功，正在同步花園…',cOut:'已登出，花園會留在這台裝置上',cRs:'其他已登入的裝置也會一併清空。',cloudNote:'你的花園已備份到你自己的 Google 雲端硬碟，並在你的裝置間同步。',secData:'資料',sndT:'音效',sndD:'按鈕、花朵與天氣的環境音效。',wxT:'天氣',wxD:'花園的天氣會跟著你記錄的心情變化。',wxn:['清風','彩虹','微風','花瓣雨','小雨','烏雲與微風']},
-ja:{fb:'お使いの端末では3D庭園を表示できません。ほかの機能は使えます。カレンダーから花を見られます。',tag:'一輪ずつ、気持ちを育てよう。',n_garden:'ガーデン',n_cal:'カレンダー',n_ins:'統計',n_set:'設定',rec:'今日の気分を記録',hi0:'今日の気分はどう？',hi1:'お花を植えました！',cnt:n=>n+'輪',mon:'今月',monNone:'今月はまだ植えていません',m:['うれしい','わくわく','おだやか','愛されてる','かなしい','不安'],f:['ヒマワリ','チューリップ','デイジー','バラ','ブルーベル','ラベンダー'],tg:['仕事','勉強','友だち','家族','旅行','自分時間'],ph:'今日はどうしてそう感じたの？',editT:d=>d?d+'の記録を編集':'今日の記録を編集',plant:'お花を植える',save:'変更を保存',cancel:'キャンセル',keep:'やめる',confirm:'OK',noNote:'この日のメモはありません。',edit:'編集',delete:'削除',close:'閉じる',delQ:'このお花と記録を削除しますか？元に戻せません。',removed:'お花を削除しました',bloomed:'新しい芽が出ました！',grown:'お花が大きくなったよ！',sprout:h=>`まだ芽のすがた。あと約${h}時間で大きくなります`,pick:'先に気分を選んでください',saved:'お花を保存しました',updated:'記録を更新しました',resetDone:'庭をリセットしました。また始めましょう',calHint:'今日のお花はいつでも植えられます',wd:['日','月','火','水','木','金','土'],calNote:'空のつぼみは、まだ記録していない日です。気にしなくて大丈夫。',insEmpty:'お花を植えると、ここに統計が育ちます。まず今日の気分を記録してみましょう。',insM:'今月',common:(f,p,n)=>`いちばん多い気分：${f}（${n}日中 ${p}%）`,insNone:'今月はまだお花がありません。',l7:'直近7日間',total:n=>`これまでに${n}輪を植えました`,setT:'設定',rmT:'動きを減らす',rmD:'ゆれ、飛ぶ生きもの、ゆっくりしたカメラ移動をオフにします。',on:'オン',off:'オフ',rsT:'庭をリセット',rsD:'この端末からすべてのお花と記録を消します。',rsB:'リセット',local:'ログインするまで、庭のデータはこのブラウザにだけ保存されます。',lang:'言語',rs1:'庭をまるごとリセットしますか？',rs1y:'はい、続ける',rs2:'最終確認：すべてのお花と記録が完全に削除されます。',rs2y:'すべて削除',obH:'気持ちを記録して、庭を育てよう',obP:'毎日の気分を選ぶと、お花になって咲きます。連続記録もプレッシャーもありません。',go:'はじめる',skip:'スキップ',arr:'配置を変更',done:'完了',moved:'位置を保存しました',hintArr:'お花をドラッグして移動できます。もうひとつの庭にも運べます',badSpot:'その場所には移動できません',friendsT:'庭のなかまたち',friendsD:'お花ごとに、集まる生きものが違います。同じ気分を植えるほど、仲間が増えます。',crn:['ミツバチ','ひよこ','てんとう虫','チョウ','カタツムリ','チョウ'],tmT:'時間帯',tmD:'現在の時刻に合わせます。固定もできます。',tmA:'自動',tmDay:'昼',tmN:'夜',ld:['あなたの庭へ旅をしています…','初めてなので道を探しています。もう少し待ってね','土が少し硬いので、ほぐしています'],ldReady:'庭の準備ができました',ldGo:'庭に入る',sfxT:'効果音',sfxD:'ボタン、花、小さな生き物の音。',ambT:'環境音',ambD:'天気に合わせて流れるループ音。',secLook:'表示',secSnd:'サウンド',secAcc:'アカウントと同期',accD:'ログインすれば、大切に育てたお花が消えてしまう心配はありません。',gIn:'Googleでログイン',sOut:'ログアウト',sNow:'今すぐ同期',stOk:'同期済み',stSync:'同期中…',stOff:'オフラインです。接続が戻ると自動で同期します。',stErr:'同期に問題があります。「今すぐ同期」でもう一度お試しください。',stRe:'ログインの有効期限が切れました。同期を続けるには再接続してください（1時間に1回ほど）。',cRe:'再接続',cNoT:'クラウド同期はオフです',cNo:'ファイルにGoogleのクライアントID（GOOGLE_CLIENT_ID）を入れると使えます。',cScope:'同期にはドライブのアプリデータへのアクセスが必要です。もう一度ログインして許可してください。',cMixQ:'この端末に別のアカウントのお花が残っています。いまログインしたアカウントに追加しますか？',cMixY:'追加する',cMixN:'いいえ、このアカウントだけ',cFail:'ログインに失敗しました',cIn:'ログインしました。庭を同期しています…',cOut:'ログアウトしました。庭はこの端末に残ります。',cRs:'ログイン中のほかの端末のお花も消えます。',cloudNote:'庭はあなた自身のGoogleドライブにバックアップされ、端末間で同期されます。',secData:'データ',sndT:'サウンド',sndD:'操作音と天気の環境音。',wxT:'天気',wxD:'記録した気分に合わせて庭の天気が変わります。',wxn:['爽やかな風','にじ','そよ風','花びらの雨','小雨','雲と風']},
-ko:{fb:'이 기기에서는 3D 정원을 표시할 수 없어요. 나머지 기능은 그대로 쓸 수 있고, 달력에서 꽃을 볼 수 있어요.',tag:'꽃 한 송이씩, 마음을 키워요.',n_garden:'정원',n_cal:'달력',n_ins:'통계',n_set:'설정',rec:'오늘의 기분 기록',hi0:'오늘 기분이 어때요?',hi1:'꽃을 심었어요!',cnt:n=>n+'송이',mon:'이번 달',monNone:'이번 달에는 아직 심은 꽃이 없어요',m:['행복','설렘','평온','사랑받음','슬픔','불안'],f:['해바라기','튤립','데이지','장미','블루벨','라벤더'],tg:['일','공부','친구','가족','여행','개인'],ph:'오늘 왜 이런 기분이 들었나요?',editT:d=>d?d+' 기록 수정':'오늘 기록 수정',plant:'내 꽃 심기',save:'변경 저장',cancel:'취소',keep:'그대로 두기',confirm:'확인',noNote:'이 날은 남긴 글이 없어요.',edit:'수정',delete:'삭제',close:'닫기',delQ:'이 꽃과 기록을 삭제할까요? 되돌릴 수 없어요.',removed:'꽃을 삭제했어요',bloomed:'새싹이 돋아났어요!',grown:'꽃이 자랐어요!',sprout:h=>`아직 새싹이에요. 약 ${h}시간 뒤에 자라요`,pick:'먼저 기분을 골라 주세요',saved:'꽃을 저장했어요',updated:'기록을 수정했어요',resetDone:'정원을 초기화했어요. 새로 시작해요',calHint:'오늘의 꽃은 언제든 심을 수 있어요',wd:['일','월','화','수','목','금','토'],calNote:'빈 꽃봉오리는 아직 기록하지 않은 날이에요. 괜찮아요.',insEmpty:'꽃을 심으면 여기에 통계가 자라나요. 먼저 오늘의 기분을 기록해 보세요.',insM:'이번 달',common:(f,p,n)=>`가장 많은 기분: ${f} (${n}일 중 ${p}%)`,insNone:'이번 달에는 아직 꽃이 없어요.',l7:'최근 7일',total:n=>`지금까지 ${n}송이를 심었어요`,setT:'설정',rmT:'움직임 줄이기',rmD:'흔들림, 날아다니는 친구들, 느린 카메라 이동을 끕니다.',on:'켜짐',off:'꺼짐',rsT:'정원 초기화',rsD:'이 기기에서 모든 꽃과 기록을 지워요.',rsB:'초기화',local:'로그인하기 전에는 정원 데이터가 이 브라우저에만 저장돼요.',lang:'언어',rs1:'정원 전체를 초기화할까요?',rs1y:'네, 계속',rs2:'마지막 확인: 모든 꽃과 기록이 영구적으로 삭제돼요.',rs2y:'모두 삭제',obH:'기분을 기록하고 정원을 키워요',obP:'매일 기분을 고르면 한 송이 꽃으로 피어나요. 연속 기록도, 부담도 없어요.',go:'시작하기',skip:'건너뛰기',arr:'배치하기',done:'완료',moved:'위치를 저장했어요',hintArr:'꽃을 끌어서 옮겨 보세요. 다른 정원으로도 옮길 수 있어요',badSpot:'그 위치로는 옮길 수 없어요',friendsT:'정원 친구들',friendsD:'꽃마다 찾아오는 친구가 달라요. 같은 기분을 많이 심을수록 친구도 늘어나요.',crn:['꿀벌','병아리','무당벌레','나비','달팽이','나비'],tmT:'시간대',tmD:'현재 시각에 맞춰요. 고정할 수도 있어요.',tmA:'자동',tmDay:'낮',tmN:'밤',ld:['당신의 정원으로 여행하는 중…','처음이라 길을 찾고 있어요, 조금만 기다려 주세요','흙이 조금 단단해서 풀어주는 중이에요'],ldReady:'정원이 준비되었어요',ldGo:'정원으로 들어가기',sfxT:'효과음',sfxD:'버튼, 꽃, 작은 동물의 소리.',ambT:'배경음',ambD:'날씨에 맞춰 반복 재생되는 환경음.',secLook:'화면',secSnd:'사운드',secAcc:'계정 및 동기화',accD:'로그인하면 정성껏 키운 꽃이 사라질까 걱정하지 않아도 돼요.',gIn:'Google로 로그인',sOut:'로그아웃',sNow:'지금 동기화',stOk:'동기화됨',stSync:'동기화 중…',stOff:'오프라인이에요. 연결되면 자동으로 동기화돼요.',stErr:'동기화에 문제가 생겼어요. “지금 동기화”를 눌러 다시 시도해 주세요.',stRe:'로그인이 만료됐어요. 계속 동기화하려면 다시 연결해 주세요(약 1시간에 한 번).',cRe:'다시 연결',cNoT:'클라우드 동기화가 꺼져 있어요',cNo:'파일에 Google 클라이언트 ID(GOOGLE_CLIENT_ID)를 넣으면 사용할 수 있어요.',cScope:'동기화에는 드라이브 앱 데이터 접근이 필요해요. 다시 로그인해서 허용해 주세요.',cMixQ:'이 기기에 다른 계정의 꽃이 남아 있어요. 방금 로그인한 계정에 함께 넣을까요?',cMixY:'넣기',cMixN:'아니요, 이 계정만',cFail:'로그인에 실패했어요',cIn:'로그인했어요. 정원을 동기화하는 중…',cOut:'로그아웃했어요. 정원은 이 기기에 남아요.',cRs:'로그인된 다른 기기의 꽃도 함께 지워져요.',cloudNote:'정원이 내 Google 드라이브에 백업되고 기기 간에 동기화돼요.',secData:'데이터',sndT:'사운드',sndD:'버튼 효과음과 날씨 환경음.',wxT:'날씨',wxD:'기록한 기분에 따라 정원 날씨가 바뀜어요.',wxn:['상쾌한 바람','무지개','산들바람','꽃비','보슬비','구름과 바람']}};
+en:{fb:"Your device can't show the 3D garden right now. Everything else still works: use the calendar to browse your flowers.",tag:'Grow your feelings, one flower at a time.',n_garden:'Garden',n_cal:'Calendar',n_ins:'Insights',n_set:'Settings',rec:"Record Today's Mood",hi0:'How are you feeling today?',hi1:'Your flower has been planted!',cnt:n=>n+(n==1?' flower':' flowers'),mon:'This month',monNone:'Nothing planted this month yet',m:['Happy','Excited','Calm','Loved','Sad','Anxious'],f:['Sunflower','Tulip','Daisy','Rose','Bluebell','Lavender'],tg:['Work','Study','Friends','Family','Travel','Personal'],ph:'What made you feel this way today?',editT:d=>d?'Edit '+d:'Edit your day',plant:'Plant My Flower',save:'Save changes',cancel:'Cancel',keep:'Keep it',confirm:'Confirm',noNote:'No note for this day.',edit:'Edit',delete:'Delete',close:'Close',delQ:"Delete this flower and its note? This can't be undone.",removed:'Flower removed',bloomed:'A new sprout has popped up!',grown:'A flower just grew up!',sprout:h=>`Still a sprout. You can water it in about ${h}h`,thirsty:'This sprout is thirsty. Give it some water so it can grow!',waterB:'Water',wetNote:m=>`Watered! It grows up in about ${m} min`,waterT:'Splash! It will grow up in about an hour',thirstT:n=>n==1?'A sprout is thirsty!':`${n} sprouts are thirsty!`,pick:'Pick a mood first',saved:'Flower saved',updated:'Entry updated',resetDone:'Garden reset. A fresh start',calHint:"You can plant today's flower any time",wd:['S','M','T','W','T','F','S'],calNote:"Empty buds are days you haven't recorded. That's fine.",insEmpty:"Your insights will grow as you plant flowers. Record today's mood to begin.",insM:'This month',common:(f,p,n)=>`Most common: ${f} (${p}% of ${n} ${n==1?'day':'days'})`,insNone:'No flowers this month yet.',l7:'Last 7 days',total:n=>`${n} ${n==1?'flower':'flowers'} planted in total`,setT:'Settings',rmT:'Reduce motion',rmD:'Skips sway, flying friends and slow camera moves.',on:'On',off:'Off',rsT:'Reset Garden',rsD:'Removes every flower and note from this device.',rsB:'Reset',local:'Until you sign in, your garden is stored only in this browser.',lang:'Language',rs1:'Reset your whole garden?',rs1y:'Yes, continue',rs2:'Last check: every flower and note will be deleted for good.',rs2y:'Delete everything',obH:'Track your feelings, grow a garden',obP:'Pick a mood each day and it blooms as a flower. No streaks, no pressure.',go:'Get started',skip:'Skip',arr:'Arrange',done:'Done',moved:'Flower moved',hintArr:'Drag a flower to move it, even to the other garden',badSpot:"Can't move it to that spot",friendsT:'Garden friends',friendsD:'Each flower invites its own little visitors. Plant more of a mood and more friends will come.',crn:['Bees','Chicks','Ladybugs','Butterflies','Snails','Butterflies'],tmT:'Time of day',tmD:'Follows your local time, or pick a fixed look.',tmA:'Auto',tmDay:'Day',tmN:'Night',ld:['Travelling to your garden…','First time here — finding the way, hang on','The soil is a bit hard, loosening it up'],ldReady:'Your garden is ready',ldGo:'Enter the garden',sfxT:'Sound effects',sfxD:'Taps, flowers and little creatures.',ambT:'Ambient sound',ambD:'Looping weather audio in the background.',secLook:'Look & feel',secSnd:'Sound',secAcc:'Account & sync',accD:'Sign in, and you never have to worry about your carefully grown flowers disappearing.',gIn:'Continue with Google',sOut:'Sign out',sNow:'Sync now',stOk:'Synced',stSync:'Syncing…',stOff:'Offline. Will sync when you are back online.',stErr:'Sync problem. Tap “Sync now” to retry.',stRe:'Session expired. Reconnect to keep syncing (about once an hour).',cRe:'Reconnect',cNoT:'Cloud sync is off',cNo:'Add your Google client ID (GOOGLE_CLIENT_ID) in the file to turn it on.',cScope:'Syncing needs access to your Drive app data. Please sign in again and allow it.',cMixQ:'This device still holds flowers from another account. Add them to the account you just signed in to?',cMixY:'Add them',cMixN:'No, use this account only',cFail:'Sign-in failed',cIn:'Signed in. Syncing your garden…',cOut:'Signed out. Your garden stays on this device.',cRs:'Your other signed-in devices will be cleared too.',cloudNote:'Your garden is backed up to your own Google Drive and syncs across your devices.',secData:'Data',sndT:'Sound',sndD:'Click sounds and weather ambience.',wxT:'Weather',wxD:'The garden weather follows the mood you record.',wxn:['Fresh breeze','Rainbow','Breezy','Petal rain','Light rain','Clouds & wind']},
+zh:{fb:'你的裝置目前無法顯示 3D 花園，其他功能仍可使用，可以從月曆瀏覽你的花朵。',tag:'一次一朵花，慢慢種出你的心情。',n_garden:'花園',n_cal:'月曆',n_ins:'統計',n_set:'設定',rec:'記錄今日心情',hi0:'今天感覺如何？',hi1:'你的花已經種下了！',cnt:n=>n+' 朵花',mon:'本月',monNone:'這個月還沒有種花',m:['開心','興奮','平靜','被愛','難過','焦慮'],f:['向日葵','鬱金香','雛菊','玫瑰','風鈴草','薰衣草'],tg:['工作','學習','朋友','家人','旅行','個人'],ph:'今天是什麼讓你有這種感覺？',editT:d=>d?'編輯 '+d+' 的紀錄':'編輯今天的紀錄',plant:'種下我的花',save:'儲存變更',cancel:'取消',keep:'保留',confirm:'確認',noNote:'這一天沒有留下文字。',edit:'編輯',delete:'刪除',close:'關閉',delQ:'要刪除這朵花和它的紀錄嗎？刪除後無法復原。',removed:'已刪除花朵',bloomed:'新的小花苗冒出來了！',grown:'有花朵長大了！',sprout:h=>`還是小花苗，約 ${h} 小時後可以澆水`,thirsty:'小花苗口渴了，澆水後才會長大喔',waterB:'澆水',wetNote:m=>`已澆水！約 ${m} 分鐘後長大`,waterT:'澆水完成！約 1 小時後就會長大',thirstT:n=>n==1?'有一株小花苗口渴了！':`有 ${n} 株小花苗口渴了！`,pick:'請先選擇一種心情',saved:'花朵已儲存',updated:'紀錄已更新',resetDone:'花園已重置，重新開始吧',calHint:'你隨時都可以種下今天的花',wd:['日','一','二','三','四','五','六'],calNote:'空的花苞代表還沒有記錄的日子，沒關係的。',insEmpty:'種下花朵後，這裡就會出現你的統計。先記錄今天的心情吧。',insM:'本月',common:(f,p,n)=>`最常出現：${f}（${n} 天中的 ${p}%）`,insNone:'這個月還沒有花朵。',l7:'最近 7 天',total:n=>`累計種下 ${n} 朵花`,setT:'設定',rmT:'減少動態效果',rmD:'關閉搖晃、飛行小動物與緩慢的鏡頭移動。',on:'開',off:'關',rsT:'重置花園',rsD:'從這個裝置移除所有花朵和紀錄。',rsB:'重置',local:'尚未登入時，花園只會儲存在這個瀏覽器中。',lang:'語言',rs1:'要重置整座花園嗎？',rs1y:'是，繼續',rs2:'最後確認：所有花朵和紀錄都會被永久刪除。',rs2y:'全部刪除',obH:'記錄心情，種出一座花園',obP:'每天選一種心情，它就會綻放成一朵花。沒有連續打卡，也沒有壓力。',go:'開始使用',skip:'略過',arr:'佈置花園',done:'完成',moved:'花朵位置已儲存',hintArr:'拖曳花朵來移動位置，也可以搬到另一座花園',badSpot:'無法移動到這個位置',friendsT:'花園的小夥伴',friendsD:'每種花都會吸引自己的小生物。同一種心情種得越多，來的小夥伴就越多。',crn:['蜜蜂','小雞','瓢蟲','蝴蝶','蝸牛','蝴蝶'],tmT:'日夜變化',tmD:'依照你的當地時間，也可以固定成白天或夜晚。',tmA:'自動',tmDay:'白天',tmN:'夜晚',ld:['正在旅行至你的花園…','第一次來需要找路，再等等喔','土有點硬，我需要鬆個土'],ldReady:'花園準備好了',ldGo:'進入花園',sfxT:'音效',sfxD:'按鈕、花朵與小動物的互動聲。',ambT:'背景音',ambD:'依天氣循環播放的環境音。',secLook:'外觀',secSnd:'聲音',secAcc:'帳號與同步',accD:'登入後，就不用擔心辛苦栽培的花朵消失了。',gIn:'使用 Google 登入',sOut:'登出',sNow:'立即同步',stOk:'已同步',stSync:'同步中…',stOff:'目前離線，恢復連線後會自動同步',stErr:'同步發生問題，請點「立即同步」重試',stRe:'登入已過期，需要重新連線才能繼續同步（約每小時一次）',cRe:'重新連線',cNoT:'雲端同步未開啟',cNo:'請在檔案裡填入 Google 的用戶端 ID（GOOGLE_CLIENT_ID）才能啟用。',cScope:'同步需要存取「雲端硬碟的應用程式資料」，請重新登入並允許。',cMixQ:'這台裝置上留有另一個帳號的花。要把它們也放進剛登入的帳號嗎？',cMixY:'放進來',cMixN:'不用，只用這個帳號的',cFail:'登入失敗',cIn:'登入成功，正在同步花園…',cOut:'已登出，花園會留在這台裝置上',cRs:'其他已登入的裝置也會一併清空。',cloudNote:'你的花園已備份到你自己的 Google 雲端硬碟，並在你的裝置間同步。',secData:'資料',sndT:'音效',sndD:'按鈕、花朵與天氣的環境音效。',wxT:'天氣',wxD:'花園的天氣會跟著你記錄的心情變化。',wxn:['清風','彩虹','微風','花瓣雨','小雨','烏雲與微風']},
+ja:{fb:'お使いの端末では3D庭園を表示できません。ほかの機能は使えます。カレンダーから花を見られます。',tag:'一輪ずつ、気持ちを育てよう。',n_garden:'ガーデン',n_cal:'カレンダー',n_ins:'統計',n_set:'設定',rec:'今日の気分を記録',hi0:'今日の気分はどう？',hi1:'お花を植えました！',cnt:n=>n+'輪',mon:'今月',monNone:'今月はまだ植えていません',m:['うれしい','わくわく','おだやか','愛されてる','かなしい','不安'],f:['ヒマワリ','チューリップ','デイジー','バラ','ブルーベル','ラベンダー'],tg:['仕事','勉強','友だち','家族','旅行','自分時間'],ph:'今日はどうしてそう感じたの？',editT:d=>d?d+'の記録を編集':'今日の記録を編集',plant:'お花を植える',save:'変更を保存',cancel:'キャンセル',keep:'やめる',confirm:'OK',noNote:'この日のメモはありません。',edit:'編集',delete:'削除',close:'閉じる',delQ:'このお花と記録を削除しますか？元に戻せません。',removed:'お花を削除しました',bloomed:'新しい芽が出ました！',grown:'お花が大きくなったよ！',sprout:h=>`まだ芽のすがた。あと約${h}時間で水やりできます`,thirsty:'この芽はのどがかわいています。水をあげると大きくなります',waterB:'水やり',wetNote:m=>`水をあげました！あと約${m}分で大きくなります`,waterT:'水やり完了！約1時間で大きくなります',thirstT:n=>`${n}株の芽がのどをかわかせています！`,pick:'先に気分を選んでください',saved:'お花を保存しました',updated:'記録を更新しました',resetDone:'庭をリセットしました。また始めましょう',calHint:'今日のお花はいつでも植えられます',wd:['日','月','火','水','木','金','土'],calNote:'空のつぼみは、まだ記録していない日です。気にしなくて大丈夫。',insEmpty:'お花を植えると、ここに統計が育ちます。まず今日の気分を記録してみましょう。',insM:'今月',common:(f,p,n)=>`いちばん多い気分：${f}（${n}日中 ${p}%）`,insNone:'今月はまだお花がありません。',l7:'直近7日間',total:n=>`これまでに${n}輪を植えました`,setT:'設定',rmT:'動きを減らす',rmD:'ゆれ、飛ぶ生きもの、ゆっくりしたカメラ移動をオフにします。',on:'オン',off:'オフ',rsT:'庭をリセット',rsD:'この端末からすべてのお花と記録を消します。',rsB:'リセット',local:'ログインするまで、庭のデータはこのブラウザにだけ保存されます。',lang:'言語',rs1:'庭をまるごとリセットしますか？',rs1y:'はい、続ける',rs2:'最終確認：すべてのお花と記録が完全に削除されます。',rs2y:'すべて削除',obH:'気持ちを記録して、庭を育てよう',obP:'毎日の気分を選ぶと、お花になって咲きます。連続記録もプレッシャーもありません。',go:'はじめる',skip:'スキップ',arr:'配置を変更',done:'完了',moved:'位置を保存しました',hintArr:'お花をドラッグして移動できます。もうひとつの庭にも運べます',badSpot:'その場所には移動できません',friendsT:'庭のなかまたち',friendsD:'お花ごとに、集まる生きものが違います。同じ気分を植えるほど、仲間が増えます。',crn:['ミツバチ','ひよこ','てんとう虫','チョウ','カタツムリ','チョウ'],tmT:'時間帯',tmD:'現在の時刻に合わせます。固定もできます。',tmA:'自動',tmDay:'昼',tmN:'夜',ld:['あなたの庭へ旅をしています…','初めてなので道を探しています。もう少し待ってね','土が少し硬いので、ほぐしています'],ldReady:'庭の準備ができました',ldGo:'庭に入る',sfxT:'効果音',sfxD:'ボタン、花、小さな生き物の音。',ambT:'環境音',ambD:'天気に合わせて流れるループ音。',secLook:'表示',secSnd:'サウンド',secAcc:'アカウントと同期',accD:'ログインすれば、大切に育てたお花が消えてしまう心配はありません。',gIn:'Googleでログイン',sOut:'ログアウト',sNow:'今すぐ同期',stOk:'同期済み',stSync:'同期中…',stOff:'オフラインです。接続が戻ると自動で同期します。',stErr:'同期に問題があります。「今すぐ同期」でもう一度お試しください。',stRe:'ログインの有効期限が切れました。同期を続けるには再接続してください（1時間に1回ほど）。',cRe:'再接続',cNoT:'クラウド同期はオフです',cNo:'ファイルにGoogleのクライアントID（GOOGLE_CLIENT_ID）を入れると使えます。',cScope:'同期にはドライブのアプリデータへのアクセスが必要です。もう一度ログインして許可してください。',cMixQ:'この端末に別のアカウントのお花が残っています。いまログインしたアカウントに追加しますか？',cMixY:'追加する',cMixN:'いいえ、このアカウントだけ',cFail:'ログインに失敗しました',cIn:'ログインしました。庭を同期しています…',cOut:'ログアウトしました。庭はこの端末に残ります。',cRs:'ログイン中のほかの端末のお花も消えます。',cloudNote:'庭はあなた自身のGoogleドライブにバックアップされ、端末間で同期されます。',secData:'データ',sndT:'サウンド',sndD:'操作音と天気の環境音。',wxT:'天気',wxD:'記録した気分に合わせて庭の天気が変わります。',wxn:['爽やかな風','にじ','そよ風','花びらの雨','小雨','雲と風']},
+ko:{fb:'이 기기에서는 3D 정원을 표시할 수 없어요. 나머지 기능은 그대로 쓸 수 있고, 달력에서 꽃을 볼 수 있어요.',tag:'꽃 한 송이씩, 마음을 키워요.',n_garden:'정원',n_cal:'달력',n_ins:'통계',n_set:'설정',rec:'오늘의 기분 기록',hi0:'오늘 기분이 어때요?',hi1:'꽃을 심었어요!',cnt:n=>n+'송이',mon:'이번 달',monNone:'이번 달에는 아직 심은 꽃이 없어요',m:['행복','설렘','평온','사랑받음','슬픔','불안'],f:['해바라기','튤립','데이지','장미','블루벨','라벤더'],tg:['일','공부','친구','가족','여행','개인'],ph:'오늘 왜 이런 기분이 들었나요?',editT:d=>d?d+' 기록 수정':'오늘 기록 수정',plant:'내 꽃 심기',save:'변경 저장',cancel:'취소',keep:'그대로 두기',confirm:'확인',noNote:'이 날은 남긴 글이 없어요.',edit:'수정',delete:'삭제',close:'닫기',delQ:'이 꽃과 기록을 삭제할까요? 되돌릴 수 없어요.',removed:'꽃을 삭제했어요',bloomed:'새싹이 돋아났어요!',grown:'꽃이 자랐어요!',sprout:h=>`아직 새싹이에요. 약 ${h}시간 뒤에 물을 줄 수 있어요`,thirsty:'새싹이 목말라해요. 물을 주면 자라요',waterB:'물 주기',wetNote:m=>`물을 줬어요! 약 ${m}분 뒤에 자라요`,waterT:'물 주기 완료! 약 1시간 뒤에 자라요',thirstT:n=>`목마른 새싹이 ${n}개 있어요!`,pick:'먼저 기분을 골라 주세요',saved:'꽃을 저장했어요',updated:'기록을 수정했어요',resetDone:'정원을 초기화했어요. 새로 시작해요',calHint:'오늘의 꽃은 언제든 심을 수 있어요',wd:['일','월','화','수','목','금','토'],calNote:'빈 꽃봉오리는 아직 기록하지 않은 날이에요. 괜찮아요.',insEmpty:'꽃을 심으면 여기에 통계가 자라나요. 먼저 오늘의 기분을 기록해 보세요.',insM:'이번 달',common:(f,p,n)=>`가장 많은 기분: ${f} (${n}일 중 ${p}%)`,insNone:'이번 달에는 아직 꽃이 없어요.',l7:'최근 7일',total:n=>`지금까지 ${n}송이를 심었어요`,setT:'설정',rmT:'움직임 줄이기',rmD:'흔들림, 날아다니는 친구들, 느린 카메라 이동을 끕니다.',on:'켜짐',off:'꺼짐',rsT:'정원 초기화',rsD:'이 기기에서 모든 꽃과 기록을 지워요.',rsB:'초기화',local:'로그인하기 전에는 정원 데이터가 이 브라우저에만 저장돼요.',lang:'언어',rs1:'정원 전체를 초기화할까요?',rs1y:'네, 계속',rs2:'마지막 확인: 모든 꽃과 기록이 영구적으로 삭제돼요.',rs2y:'모두 삭제',obH:'기분을 기록하고 정원을 키워요',obP:'매일 기분을 고르면 한 송이 꽃으로 피어나요. 연속 기록도, 부담도 없어요.',go:'시작하기',skip:'건너뛰기',arr:'배치하기',done:'완료',moved:'위치를 저장했어요',hintArr:'꽃을 끌어서 옮겨 보세요. 다른 정원으로도 옮길 수 있어요',badSpot:'그 위치로는 옮길 수 없어요',friendsT:'정원 친구들',friendsD:'꽃마다 찾아오는 친구가 달라요. 같은 기분을 많이 심을수록 친구도 늘어나요.',crn:['꿀벌','병아리','무당벌레','나비','달팽이','나비'],tmT:'시간대',tmD:'현재 시각에 맞춰요. 고정할 수도 있어요.',tmA:'자동',tmDay:'낮',tmN:'밤',ld:['당신의 정원으로 여행하는 중…','처음이라 길을 찾고 있어요, 조금만 기다려 주세요','흙이 조금 단단해서 풀어주는 중이에요'],ldReady:'정원이 준비되었어요',ldGo:'정원으로 들어가기',sfxT:'효과음',sfxD:'버튼, 꽃, 작은 동물의 소리.',ambT:'배경음',ambD:'날씨에 맞춰 반복 재생되는 환경음.',secLook:'화면',secSnd:'사운드',secAcc:'계정 및 동기화',accD:'로그인하면 정성껏 키운 꽃이 사라질까 걱정하지 않아도 돼요.',gIn:'Google로 로그인',sOut:'로그아웃',sNow:'지금 동기화',stOk:'동기화됨',stSync:'동기화 중…',stOff:'오프라인이에요. 연결되면 자동으로 동기화돼요.',stErr:'동기화에 문제가 생겼어요. “지금 동기화”를 눌러 다시 시도해 주세요.',stRe:'로그인이 만료됐어요. 계속 동기화하려면 다시 연결해 주세요(약 1시간에 한 번).',cRe:'다시 연결',cNoT:'클라우드 동기화가 꺼져 있어요',cNo:'파일에 Google 클라이언트 ID(GOOGLE_CLIENT_ID)를 넣으면 사용할 수 있어요.',cScope:'동기화에는 드라이브 앱 데이터 접근이 필요해요. 다시 로그인해서 허용해 주세요.',cMixQ:'이 기기에 다른 계정의 꽃이 남아 있어요. 방금 로그인한 계정에 함께 넣을까요?',cMixY:'넣기',cMixN:'아니요, 이 계정만',cFail:'로그인에 실패했어요',cIn:'로그인했어요. 정원을 동기화하는 중…',cOut:'로그아웃했어요. 정원은 이 기기에 남아요.',cRs:'로그인된 다른 기기의 꽃도 함께 지워져요.',cloudNote:'정원이 내 Google 드라이브에 백업되고 기기 간에 동기화돼요.',secData:'데이터',sndT:'사운드',sndD:'버튼 효과음과 날씨 환경음.',wxT:'날씨',wxD:'기록한 기분에 따라 정원 날씨가 바뀜어요.',wxn:['상쾌한 바람','무지개','산들바람','꽃비','보슬비','구름과 바람']}};
 function tr(k,...a){const v=(L[S.lang]||L.en)[k]??L.en[k];return typeof v=='function'?v(...a):v}
 function LC(){return{en:'en',zh:'zh-TW',ja:'ja',ko:'ko'}[S.lang]||'en'}
 function applyLang(){document.documentElement.lang=S.lang;Object.keys(M).forEach((k,i)=>{M[k].n=tr('m')[i];M[k].f=tr('f')[i]});
@@ -372,6 +378,7 @@ function legalSpot(x,z,self){
   if(Math.abs(z)<1.3&&((x>4.9&&x<8)||(x>BB-.5&&x<BB+2)))return false;     // 橋頭通道要保持暢通
   if(OBS.some(o=>Math.hypot(x-o[0],z-o[1])<o[2]))return false;
   for(const d in flowers){if(d===self)continue;const f=flowers[d];if(Math.hypot(f.position.x-x,f.position.z-z)<.55)return false}
+  if((window.DEC||[]).some(o=>Math.hypot(x-o.x,z-o.z)<o.r+.3))return false;     // 別壓到裝飾品
   return true}
 /* 隨機挑一個兩座花園內的點（約 58% 在 G1） */
 function rndPt(){const a=Math.random()*6.283;if(Math.random()<.58){const r=Math.sqrt(Math.random())*6.2;return[Math.cos(a)*r,Math.sin(a)*r]}
@@ -426,8 +433,12 @@ function flowerAdult(k){
 
 /* ---------- 兩種成長階段：剛種下是小花苗，過 12 小時長成成熟的花 ---------- */
 const GROW_MS=12*3600*1000;
-const matureOf=e=>!e.pt||Date.now()-e.pt>=GROW_MS;                    // 沒有種植時間的舊花一律視為已成熟
-const hrsLeft=e=>Math.max(1,Math.ceil((e.pt+GROW_MS-Date.now())/36e5));
+/* 澆水規則：種下滿 12 小時後「口渴」，要澆水才會長大；沒澆水就一直是小花苗；澆水（e.wt）後再過 1 小時長成成熟的花 */
+const WATER_MS=3600*1000,WATER_EPOCH=1792655736305;                    // WATER_EPOCH＝澆水功能上線時間；在這之前就已長成的舊花維持成熟，不會變回小花苗
+const matureOf=e=>!e.pt||(e.wt?Date.now()-e.wt>=WATER_MS:e.pt+GROW_MS<=WATER_EPOCH);   // 沒有種植時間的舊花一律視為已成熟
+const thirstyOf=e=>!!e.pt&&!e.wt&&!matureOf(e)&&Date.now()-e.pt>=GROW_MS;              // 滿 12 小時、還沒澆水
+const hrsLeft=e=>Math.max(1,Math.ceil((e.pt+GROW_MS-Date.now())/36e5));                // 距離可以澆水還有幾小時
+const minsLeftW=e=>Math.max(1,Math.ceil((e.wt+WATER_MS-Date.now())/6e4));              // 澆水後距離長大還有幾分鐘
 function flowerBaby(k){
   const g=new THREE.Group(),H={happy:.8,excited:.65,calm:.5,loved:.6,sad:.6,anxious:.55}[k],h=new THREE.Group();
   g.add(mk(CYL,'#8CC27D',[0,H/2,0],[.04,H,.04]));
@@ -454,12 +465,30 @@ function setStage(f,st,anim){const u=f.userData;u.st=st;
   u.mo=null;u.A.visible=st===1;u.Y.visible=st===0;u.A.scale.setScalar(st===1?1:.001);u.Y.scale.setScalar(st===0?1:.001)}
 let matT=0;
 function stageStep(t,dt){
-  if(t-matT>3){matT=t;for(const d in flowers){const f=flowers[d],u=f.userData,e=S.e[d];if(e&&u.st===0&&matureOf(e)&&!(P&&P.d===d))setStage(f,1,true)}}
+  if(t-matT>3){matT=t;let nt=0;for(const d in flowers){const f=flowers[d],u=f.userData,e=S.e[d];if(!e)continue;
+    if(u.st===0&&matureOf(e)&&!(P&&P.d===d))setStage(f,1,true);
+    const th=u.st===0&&thirstyOf(e);setThirst(f,th);if(th&&!u.th)nt++;u.th=th}
+    if(nt&&!P)toast(tr('thirstT',nt))}
+  if(!S.rm)for(const d in flowers){const u=flowers[d].userData;if(u.dp)u.dp.position.y=1.25+.07*Math.sin(t*3+u.ph)}
   for(const d in flowers){const f=flowers[d],u=f.userData;if(u.mo==null)continue;
     u.mo+=S.rm?dt*8:dt/1.5;const x=Math.min(1,u.mo),xa=Math.max(0,(x-.2)/.8),ob=1+2.70158*Math.pow(xa-1,3)+1.70158*Math.pow(xa-1,2);
     u.Y.scale.setScalar(Math.max(.001,1-ez(Math.min(1,x*3))));u.A.scale.setScalar(Math.max(.001,xa>0?ob:.001));
     if(x>=1){u.mo=null;u.Y.visible=false;u.Y.scale.setScalar(.001);u.A.scale.setScalar(1)}}}
 
+/* ---------- 澆水：口渴的小花苗頭上會浮出水滴，點花（或水滴）→ 詳情卡 → 按澆水鈕 ---------- */
+function setThirst(f,on){const u=f.userData;
+  if(on&&!u.dp&&WDROP){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:WDROP,transparent:true,depthWrite:false}));s.scale.set(.4,.4,1);s.position.set(0,1.25,0);f.add(s);u.dp=s}
+  if(!on&&u.dp){f.remove(u.dp);u.dp.material.dispose();u.dp=null}}
+function waterFx(f){const u=f.userData,p={x:f.position.x,y:f.position.y+1.3*u.base,z:f.position.z};
+  if(!PMS||!PMS.drop)return;
+  if(S.rm){burst('bubble',{x:p.x,y:f.position.y+.4*u.base,z:p.z},3);return}
+  const n0=parts.length;burst('drop',p,14);
+  for(let i=n0;i<parts.length;i++){const s=parts[i];s.position.y=p.y+Math.random()*.4;s.userData.v.set((Math.random()-.5)*.35,-1.8-Math.random()*.8,(Math.random()-.5)*.35);s.userData.m=.8+Math.random()*.4}
+  setTimeout(()=>burst('bubble',{x:p.x,y:f.position.y+.3*u.base,z:p.z},5),500)}
+function water(d){const e=S.e[d];if(!e||!thirstyOf(e)){sfx('deny');return false}
+  e.wt=Date.now();save();const f=flowers[d];
+  if(f){setThirst(f,false);f.userData.th=false;waterFx(f)}
+  sfx('water','plant');toast(tr('waterT'));return true}
 function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined);
   const n2=ex.filter(e=>inG2(e.x,e.z,1.1)).length,g=n2<ex.length-n2?2:1;let best;       // 新花種在花朵比較少的那座花園
   for(let t=0;t<120;t++){let x,z;
@@ -707,6 +736,12 @@ if(ok){const mkT=fn=>{const c=document.createElement('canvas');c.width=c.height=
   bubble:mkT(x=>{x.strokeStyle='rgba(255,255,255,.95)';x.lineWidth=3;x.fillStyle='rgba(190,225,250,.35)';x.beginPath();x.arc(32,32,24,0,6.3);x.fill();x.stroke();x.fillStyle='rgba(255,255,255,.9)';x.beginPath();x.ellipse(24,23,6,3.5,-.6,0,6.3);x.fill()})},
   sm=m=>new THREE.SpriteMaterial({map:m,transparent:true,depthWrite:false});
  PMS={heart:sm(TX.heart),star:sm(TX.star),bubble:sm(TX.bubble),spark:new THREE.SpriteMaterial({map:GLOW,color:'#FFF1B0',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false})}}
+let WDROP=null;
+if(ok){const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');
+  x.fillStyle='#6DB6EC';x.strokeStyle='#fff';x.lineWidth=4;x.lineJoin='round';
+  x.beginPath();x.moveTo(32,6);x.bezierCurveTo(26,18,12,32,12,42);x.arc(32,42,20,Math.PI,0,true);x.bezierCurveTo(52,32,38,18,32,6);x.closePath();x.fill();x.stroke();
+  x.fillStyle='rgba(255,255,255,.85)';x.beginPath();x.ellipse(24,42,4,7,.35,0,6.3);x.fill();
+  WDROP=new THREE.CanvasTexture(c);PMS.drop=new THREE.SpriteMaterial({map:WDROP,transparent:true,depthWrite:false})}
 function burst(type,p,n){if(!PMS)return;const k=Math.max(1,rad/13);for(let i=0;i<n;i++){const s=new THREE.Sprite(PMS[type].clone()),sc=(.2+Math.random()*.12)*k;s.position.set(p.x+(Math.random()-.5)*.3,p.y+.2,p.z+(Math.random()-.5)*.3);s.scale.set(sc,sc,1);s.userData={v:new THREE.Vector3((Math.random()-.5)*.6,.5+Math.random()*.6,(Math.random()-.5)*.6),l:0,m:1+Math.random()*.7,sc};scene.add(s);parts.push(s)}}
 function partStep(dt){for(let i=parts.length-1;i>=0;i--){const s=parts[i],u=s.userData;u.l+=dt;s.position.addScaledVector(u.v,dt);u.v.multiplyScalar(1-dt*.8);const f=u.l/u.m;s.material.opacity=Math.min(1,(1-f)*1.6);const k=u.sc*(1+f*.3);s.scale.set(k,k,1);if(f>=1){scene.remove(s);s.material.dispose();parts.splice(i,1)}}
  const hs=Math.max(1,rad/13)*.38;cr.forEach(c=>c.userData.hb.scale.setScalar(hs/c.scale.x));(window.FROGS||[]).forEach(f=>f.g.userData.hb.scale.setScalar(hs/f.g.scale.x))}
@@ -725,6 +760,438 @@ function actStep(g,u,dt,t,type){const a=u.act,P=g.position;a.t+=dt;const f=Math.
  return true}
 const PAN_GAIN=1.6,panV={x:0,z:0};let panT=0,panning=false;   /* PAN_GAIN：平移增益，想再多一點就調大 */
 const clock=new THREE.Clock();
+/* ---------- 小動物的禮物：紙條與裝飾品 ----------
+   系統每天抽 0–2 份禮物，在花園裡有小動物時，由其中一隻「送」來（頻率與動物數量無關）。
+   禮物是一份小盒子：點開可能是一張紙條，也可能是一件小裝飾品。
+   裝飾品可以放進花園、用「佈置花園」拖曳移動，或隨時收藏起來。
+   資料存在 S.g（只存在這台裝置的瀏覽器，不會進 Google 雲端同步）。 */
+window.GF=(function(){
+const GNOTES={
+zh:[
+'今天的風很舒服呢，你今天過得好嗎？',
+'我剛剛在花園發現一朵新花，想跟你分享！',
+'偷偷告訴你，今天的陽光暖暖的，很適合發呆一下。',
+'你有喝水嗎？記得照顧好自己喔。',
+'我在花瓣上躺了一會兒，覺得世界都慢下來了。',
+'不管今天過得怎麼樣，花園都會在這裡等你。',
+'剛剛有一朵雲長得像棉花糖，你有看到嗎？',
+'你今天有吃到什麼好吃的東西嗎？',
+'這座小小的花園，是因為有你才這麼漂亮。',
+'先深呼吸一下，再慢慢吐氣。我在這裡陪你。',
+'我今天走了好遠的路，終於回到這裡休息了。',
+'如果今天有點累，讓自己慢一點也沒關係。',
+'我聽到花朵們在小聲聊天，好像在說你的名字。',
+'路邊的小草今天也很努力長高，你也是！',
+'你知道嗎？每一朵花，都是從一個小小的心情長出來的。',
+'今天有什麼小小的開心事嗎？我很想聽。',
+'我撿到一顆圓圓的小石頭，它看起來好像在對我微笑。',
+'今晚的星星，一定也會偷偷看著你的花園。',
+'慢慢來，花也不是一天就長大的。',
+'你今天有對自己溫柔一點嗎？',
+'我在花園繞了一圈，大家都很平安喔！',
+'空氣聞起來好清新，要不要出去走一走？',
+'我今天學到一件事：發呆也是一種休息。',
+'謝謝你每天來看我們，我們都很開心。',
+'如果你現在心情不太好，我可以安靜地陪你坐一會兒。',
+'我剛剛躲在花叢下面休息，涼涼的好舒服。',
+'今天的你，已經做得很好了。',
+'悄悄話：我最喜歡早晨的露珠了，亮晶晶的。',
+'有空的話，也看一眼天空吧，雲正在慢慢散步呢。',
+'我追著一片花瓣跑，結果一路跑到你的花園來了。',
+'睡前把周圍的吵鬧調小一點，讓心也好好休息。',
+'這裡的花都有自己的小脾氣，不過都很可愛。',
+'今天有人對你笑了嗎？沒有的話，我先笑給你看。',
+'我在籬笆旁看到彩虹的影子，說不定是為你出現的。',
+'有時候什麼都不做，也是很棒的選擇。',
+'我把今天的好心情，分一點給你。',
+'你種下的每一朵花，我都記得。',
+'外面的世界很大，但這座小花園永遠有你的位置。',
+'你今天笑了幾次呢？我偷偷在數喔。',
+'安靜聽一下，有沒有聽到風吹過花瓣的聲音？',
+'下雨天也沒關係，花兒最喜歡被雨水親親了。',
+'如果有煩惱，可以先放在花園裡，我們幫你看著。',
+'我找到一個超舒服的小角落，下次帶你去看。',
+'今天的你，比昨天多了一點點勇氣喔。',
+'要不要伸個懶腰？我先來，呼～',
+'我試著用花瓣寫字，可是風一吹就把字吹跑了。',
+'外面有好多忙碌的事，但你停下來看花的樣子，真的很棒。',
+'謝謝你，讓我今天有地方可以散步。',
+'一天裡最棒的時刻，說不定就是現在。',
+'送你一個看不見的擁抱，收到了嗎？',
+'我在這裡等你的下一朵花，不急，慢慢來。',
+'晚安先說在前面：今天辛苦了。',
+'看著你的花園一天比一天熱鬧，我也覺得好幸福。',
+'有些心情說不出口也沒關係，花會替你說。'
+],
+en:[
+'The wind feels so nice today. How has your day been?',
+'I just found a new flower in the garden and wanted to share it with you!',
+'Secret: the sun is warm today. A perfect time for a little daydream.',
+'Have you had some water? Take good care of yourself.',
+'I lay on a petal for a while, and the whole world slowed down.',
+'No matter how today goes, the garden will be here waiting for you.',
+'One cloud looked just like a marshmallow. Did you see it?',
+'Have you eaten something yummy today?',
+'This little garden is so pretty because of you.',
+'Take a deep breath, then let it out slowly. I\'m right here with you.',
+'I walked a long way today and finally made it back here to rest.',
+'If you\'re tired today, it\'s okay to go a little slower.',
+'I heard the flowers whispering. I think they said your name.',
+'The little grass is working hard to grow tall today. So are you!',
+'Did you know? Every flower grows from one small feeling.',
+'Anything small and happy today? I\'d love to hear it.',
+'I found a perfectly round pebble. It looks like it\'s smiling at me.',
+'The stars tonight will be peeking at your garden, I just know it.',
+'Take your time. Flowers don\'t grow up in a day either.',
+'Have you been gentle with yourself today?',
+'I made a lap around the garden. Everyone is safe and sound!',
+'The air smells so fresh. Maybe take a little walk outside?',
+'I learned something new today: daydreaming counts as resting.',
+'Thank you for visiting us every day. It makes us so happy.',
+'If you\'re feeling down, I can sit quietly beside you for a while.',
+'I hid under the flowers for a bit. It was cool and so comfy.',
+'You\'ve already done well today.',
+'A whisper: my favorite thing is the morning dew. It sparkles!',
+'Take a peek at the sky if you can. The clouds are out for a stroll.',
+'I chased a petal and ended up right here in your garden.',
+'Before bed, turn down a little noise so your heart can rest too.',
+'Every flower here has its own little temper, but they\'re all adorable.',
+'Did anyone smile at you today? If not, I\'ll smile first.',
+'I spotted the shadow of a rainbow by the fence. Maybe it came for you.',
+'Sometimes doing nothing at all is a wonderful choice.',
+'I\'m sharing a bit of my good mood with you.',
+'I remember every flower you\'ve planted.',
+'The world is big, but there\'s always a spot for you in this little garden.',
+'How many times did you smile today? I\'ve been counting secretly.',
+'Listen quietly. Can you hear the wind brushing the petals?',
+'Rainy days are fine. Flowers love getting kissed by the rain.',
+'If something is worrying you, leave it in the garden. We\'ll watch over it.',
+'I found a very cozy corner. I\'ll show you next time.',
+'You have a tiny bit more courage than yesterday.',
+'Want to stretch? I\'ll go first. Hmmm~',
+'I tried writing with a petal, but the wind blew my words away.',
+'There\'s so much busyness out there, but you stopped to look at flowers. That\'s lovely.',
+'Thank you for giving me a place to wander today.',
+'Maybe the best moment of the day is this very one.',
+'Here\'s an invisible hug. Did it arrive?',
+'I\'ll be waiting for your next flower. No rush at all.',
+'Good night, in advance: you did great today.',
+'Watching your garden get livelier every day makes me happy too.',
+'Some feelings are hard to say out loud. The flowers can say them for you.'
+],
+ja:[
+'今日は風がとても気持ちいいね。今日はどんな一日だった？',
+'さっき庭で新しいお花を見つけたよ。あなたにも教えたくて！',
+'ひみつだけど、今日は日差しがぽかぽか。少しぼんやりするのにぴったりだよ。',
+'お水は飲んだ？ 自分をいたわってね。',
+'花びらの上でごろんとしたら、世界がゆっくりになったよ。',
+'今日がどんな日でも、庭はここで待っているよ。',
+'マシュマロみたいな雲があったよ。見た？',
+'今日はおいしいものを食べた？',
+'この小さな庭がきれいなのは、あなたがいるからだよ。',
+'ゆっくり息を吸って、ゆっくり吐いてみて。そばにいるよ。',
+'今日はたくさん歩いて、やっとここに帰ってきて休んでるところ。',
+'疲れている日は、ゆっくりでも大丈夫だよ。',
+'お花たちが小さな声でおしゃべりしてたよ。あなたの名前を呼んでいたみたい。',
+'道ばたの草も、今日もがんばって背をのばしてるよ。あなたもね！',
+'知ってる？ お花はぜんぶ、小さな気持ちから育つんだよ。',
+'今日、ちいさなうれしいことはあった？ 聞かせてほしいな。',
+'まんまるの小石を見つけたよ。にっこり笑っているみたい。',
+'今夜は星たちも、あなたの庭をこっそりのぞいているはず。',
+'ゆっくりでいいよ。お花だって一日では大きくならないもの。',
+'今日は自分にやさしくできた？',
+'庭をひとまわりしてきたよ。みんな元気だった！',
+'空気がとてもすがすがしいよ。ちょっとお散歩してみない？',
+'今日おぼえたこと：ぼんやりするのも、立派な休けいなんだって。',
+'毎日会いに来てくれてありがとう。みんな、とってもうれしいよ。',
+'気分が沈んでいるなら、しばらく静かにそばにいるね。',
+'お花のかげで少し休んだよ。ひんやりして気持ちよかった。',
+'今日のあなたは、もうじゅうぶんがんばってるよ。',
+'こっそり教えるね。朝つゆがいちばん好き。きらきらしてるんだ。',
+'できたら空もちょっと見てみて。雲がのんびりお散歩中だよ。',
+'花びらを追いかけていたら、あなたの庭に来ちゃった。',
+'寝る前は、すこしだけ静かにして、心も休ませてあげてね。',
+'ここのお花はそれぞれ気まぐれだけど、みんなかわいいんだ。',
+'今日、だれかに笑いかけてもらえた？ まだなら、わたしが先に笑うね。',
+'柵のそばで虹のかげを見かけたよ。あなたのために出たのかも。',
+'なにもしないのも、すてきな選択だよ。',
+'今日のいい気分を、ちょっとだけおすそわけ。',
+'あなたが植えたお花は、ぜんぶおぼえているよ。',
+'世界は広いけれど、この小さな庭にはいつもあなたの場所があるよ。',
+'今日は何回笑った？ こっそり数えてるんだ。',
+'耳をすませてみて。風が花びらをなでる音が聞こえる？',
+'雨の日もだいじょうぶ。お花は雨のキスが大好きなんだ。',
+'心配ごとがあるなら、庭に置いていって。みんなで見ているから。',
+'とても居心地のいい場所を見つけたよ。今度案内するね。',
+'昨日のあなたより、ほんの少しだけ勇気が増えているよ。',
+'のびをしてみない？ わたしが先にやるね。うーん～',
+'花びらで文字を書いてみたけど、風にとばされちゃった。',
+'世の中はいそがしいけど、立ち止まってお花を見るあなたはすてきだよ。',
+'今日お散歩できる場所をくれて、ありがとう。',
+'一日でいちばんいい時間は、きっと今この瞬間だよ。',
+'見えないハグをおくるね。とどいたかな？',
+'次のお花を待ってるよ。あせらなくていいからね。',
+'おやすみの前に言っておくね。今日もおつかれさま。',
+'あなたの庭が日ごとににぎやかになっていくのを見ると、わたしもうれしいよ。',
+'言葉にできない気持ちは、お花が代わりに伝えてくれるよ。'
+],
+ko:[
+'오늘은 바람이 참 기분 좋네요. 오늘 하루는 어땠어요?',
+'방금 정원에서 새로운 꽃을 발견했어요. 같이 보고 싶었어요!',
+'비밀인데요, 오늘은 햇살이 따뜻해요. 잠깐 멍 때리기 딱 좋아요.',
+'물은 마셨어요? 스스로를 잘 챙겨 주세요.',
+'꽃잎 위에 잠깐 누웠더니 세상이 천천히 흘러가는 것 같았어요.',
+'오늘이 어떤 하루였든, 정원은 여기서 기다리고 있을게요.',
+'마시멜로처럼 생긴 구름이 있었어요. 봤어요?',
+'오늘 맛있는 거 먹었어요?',
+'이 작은 정원이 예쁜 건 당신이 있기 때문이에요.',
+'숨을 깊게 들이쉬고, 천천히 내쉬어 봐요. 옆에 있을게요.',
+'오늘 먼 길을 걸어서 이제야 여기로 돌아와 쉬고 있어요.',
+'오늘 피곤하다면 천천히 가도 괜찮아요.',
+'꽃들이 작게 속닥이는 소리를 들었어요. 당신 이름을 말하는 것 같았어요.',
+'길가의 풀도 오늘 열심히 키를 키우고 있어요. 당신도요!',
+'알고 있나요? 꽃은 모두 작은 마음 하나에서 자라나요.',
+'오늘 작고 기쁜 일이 있었나요? 듣고 싶어요.',
+'동글동글한 조약돌을 주웠어요. 웃고 있는 것 같아요.',
+'오늘 밤엔 별들도 몰래 당신의 정원을 들여다볼 거예요.',
+'천천히 해도 돼요. 꽃도 하루 만에 크지는 않잖아요.',
+'오늘은 스스로에게 다정했나요?',
+'정원을 한 바퀴 돌고 왔어요. 다들 잘 지내고 있어요!',
+'공기가 정말 상쾌해요. 잠깐 산책해 보는 건 어때요?',
+'오늘 새로 배운 게 있어요. 멍하니 있는 것도 쉬는 거래요.',
+'매일 찾아와 줘서 고마워요. 우리 모두 정말 기뻐요.',
+'기분이 가라앉아 있다면, 잠시 조용히 곁에 앉아 있을게요.',
+'꽃 그늘 아래에서 잠깐 쉬었어요. 시원하고 편안했어요.',
+'오늘의 당신은 이미 충분히 잘했어요.',
+'속닥속닥, 저는 아침 이슬이 제일 좋아요. 반짝반짝하거든요.',
+'괜찮다면 하늘도 한 번 올려다봐요. 구름이 천천히 산책 중이에요.',
+'꽃잎을 쫓아가다 보니 당신의 정원까지 오게 됐어요.',
+'자기 전에는 소음을 조금 줄이고 마음도 쉬게 해 주세요.',
+'여기 꽃들은 저마다 성격이 있지만 다 사랑스러워요.',
+'오늘 누가 당신에게 웃어 줬나요? 아직이라면 제가 먼저 웃을게요.',
+'울타리 옆에서 무지개 그림자를 봤어요. 당신을 위해 나타났을지도 몰라요.',
+'아무것도 하지 않는 것도 멋진 선택이에요.',
+'오늘의 좋은 기분을 조금 나눠 줄게요.',
+'당신이 심은 꽃은 하나하나 다 기억하고 있어요.',
+'세상은 넓지만, 이 작은 정원에는 언제나 당신 자리가 있어요.',
+'오늘 몇 번 웃었어요? 몰래 세어 보고 있어요.',
+'조용히 귀 기울여 봐요. 바람이 꽃잎을 스치는 소리가 들리나요?',
+'비 오는 날도 괜찮아요. 꽃은 빗방울 뽀뽀를 좋아해요.',
+'걱정거리가 있다면 정원에 두고 가요. 우리가 지켜볼게요.',
+'아주 아늑한 구석을 찾았어요. 다음에 알려 줄게요.',
+'어제의 당신보다 아주 조금 더 용기가 생겼어요.',
+'기지개 켜 볼까요? 제가 먼저 할게요. 으음~',
+'꽃잎으로 글씨를 써 봤는데 바람에 날아가 버렸어요.',
+'세상엔 바쁜 일이 많지만, 멈춰서 꽃을 보는 당신이 참 좋아요.',
+'오늘 산책할 곳이 되어 줘서 고마워요.',
+'하루 중 가장 좋은 순간은 어쩌면 지금일지도 몰라요.',
+'보이지 않는 포옹을 보낼게요. 받았나요?',
+'다음 꽃을 기다리고 있을게요. 서두르지 않아도 돼요.',
+'잘 자요, 미리 말해 둘게요. 오늘도 수고했어요.',
+'당신의 정원이 날마다 북적여 가는 걸 보면 저도 행복해요.',
+'말로 하기 어려운 마음은 꽃이 대신 전해 줄 거예요.'
+]};
+const DK=['cabin','swing','mushroom','pond','bench','stones','windmill','lantern','birdhouse','fountain','mailbox','picnic','fence','planter'];
+const DR={cabin:.5,swing:.42,mushroom:.36,pond:.55,bench:.38,stones:.42,windmill:.34,lantern:.2,birdhouse:.22,fountain:.46,mailbox:.2,picnic:.42,fence:.38,planter:.22};
+const T={
+en:{gb:'Little gifts',gEmpty:'Animals sometimes leave little gifts in the garden. Decorations you receive will be kept here.',gIn:'In the garden',gKept:'Collected',gPick:'Collect',gPut:'Place',gOk:'Got it',gFrom:w=>'A note from '+w,
+ gn:{bee:'a little bee',bird:'a little chick',ladybug:'a ladybug',butterfly:'a butterfly',snail:'a snail'},giftT:w=>'A gift from '+w+'!',
+ gGot:n=>'You got: '+n+'!',gPlaceNow:'Place in garden',gKeepB:'Keep for later',gPlaced:'Placed in the garden',gStored:'Collected',gNoSpot:'No room to place it. Try collecting something first.',
+ gDeco:'Garden decoration',gHint:'Collect it, or use Arrange to drag it somewhere else.',gStoreB:'Collect',gMoveB:'Move',
+ dn:['Little Cabin','Mini Swing','Mushroom House','Tiny Pond','Wooden Bench','Stepping Stones','Windmill','Little Lantern','Birdhouse','Fountain','Mailbox','Picnic Blanket','Picket Fence','Flower Pot']},
+zh:{gb:'小禮物',gEmpty:'小動物有時會在花園裡留下小禮物，收到的裝飾品會收在這裡。',gIn:'在花園裡',gKept:'收藏中',gPick:'收藏',gPut:'放置',gOk:'收下了',gFrom:w=>w+'送來的紙條',
+ gn:{bee:'小蜜蜂',bird:'小雞',ladybug:'瓢蟲',butterfly:'蝴蝶',snail:'蝸牛'},giftT:w=>w+'在花園裡留下了一份小禮物！',
+ gGot:n=>'收到了「'+n+'」！',gPlaceNow:'放進花園',gKeepB:'先收藏',gPlaced:'已放進花園',gStored:'已收藏',gNoSpot:'附近沒有空位可以放，先收藏幾個再試試吧。',
+ gDeco:'花園裝飾',gHint:'可以收藏起來，或進入佈置模式拖曳移動。',gStoreB:'收藏',gMoveB:'移動',
+ dn:['小木屋','迷你鞦韆','蘑菇屋','小池塘','木頭椅子','石頭小路','風車','小燈籠','鳥屋','噴水池','小郵筒','野餐墊','小籬笆','花盆']},
+ja:{gb:'小さなプレゼント',gEmpty:'動物たちが、ときどき庭に小さなプレゼントを置いていきます。もらった飾りはここに保管されます。',gIn:'庭に置いてある',gKept:'保管中',gPick:'しまう',gPut:'置く',gOk:'ありがとう',gFrom:w=>w+'からのメモ',
+ gn:{bee:'ミツバチ',bird:'ひよこ',ladybug:'てんとう虫',butterfly:'チョウ',snail:'カタツムリ'},giftT:w=>w+'からの小さなプレゼントが届きました！',
+ gGot:n=>'「'+n+'」をもらいました！',gPlaceNow:'庭に置く',gKeepB:'とっておく',gPlaced:'庭に置きました',gStored:'しまいました',gNoSpot:'置ける場所がありません。先にひとつしまってみてください。',
+ gDeco:'庭の飾り',gHint:'しまうか、配置モードでドラッグして動かせます。',gStoreB:'しまう',gMoveB:'動かす',
+ dn:['小さなログハウス','ミニブランコ','キノコの家','小さな池','木のベンチ','飛び石の小道','風車','小さなランタン','鳥の巣箱','噴水','ポスト','ピクニックシート','小さな柵','植木鉢']},
+ko:{gb:'작은 선물',gEmpty:'동물들이 가끔 정원에 작은 선물을 놓고 가요. 받은 장식은 여기에 보관돼요.',gIn:'정원에 있음',gKept:'보관 중',gPick:'보관',gPut:'놓기',gOk:'고마워요',gFrom:w=>w+'의 쪽지',
+ gn:{bee:'꿀벌',bird:'병아리',ladybug:'무당벌레',butterfly:'나비',snail:'달팽이'},giftT:w=>w+'의 작은 선물이 도착했어요!',
+ gGot:n=>'「'+n+'」을(를) 받았어요!',gPlaceNow:'정원에 놓기',gKeepB:'나중에',gPlaced:'정원에 놓았어요',gStored:'보관했어요',gNoSpot:'놓을 자리가 없어요. 먼저 하나를 보관해 보세요.',
+ gDeco:'정원 장식',gHint:'보관하거나 배치 모드에서 끌어 옮길 수 있어요.',gStoreB:'보관',gMoveB:'옮기기',
+ dn:['작은 통나무집','미니 그네','버섯 집','작은 연못','나무 벤치','징검돌 길','풍차','작은 등불','새집','분수','우체통','피크닉 돗자리','작은 울타리','화분']}};
+for(const k in T)Object.assign(L[k],T[k]);
+
+/* ---- 小圖示（跟花朵圖示一樣用 SVG 手繪） ---- */
+const ICO={
+cabin:'<path d="M6 20 20 8l14 12z" fill="#B8654A"/><rect x="9" y="20" width="22" height="14" rx="1" fill="#E3B98A"/><rect x="17" y="25" width="6" height="9" fill="#7A5236"/><rect x="11" y="23" width="5" height="5" fill="#FFF1B0"/><rect x="26" y="9" width="3" height="6" fill="#9A8F86"/>',
+swing:'<path d="M7 34 12 6M33 34 28 6" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M10 6h20" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round"/><path d="M16 7v18M24 7v18" stroke="#6B5848" stroke-width="1.4"/><rect x="13" y="25" width="14" height="4" rx="1.5" fill="#C98F5B"/>',
+mushroom:'<rect x="15" y="20" width="10" height="14" rx="3" fill="#F6EBD9"/><path d="M5 22a15 13 0 0130 0z" fill="#E5574F"/><circle cx="13" cy="16" r="2.4" fill="#fff"/><circle cx="22" cy="12" r="2" fill="#fff"/><circle cx="28" cy="18" r="1.8" fill="#fff"/><rect x="18" y="27" width="4" height="7" rx="1.5" fill="#7A5236"/>',
+pond:'<ellipse cx="20" cy="24" rx="16" ry="9" fill="#CFC8BC"/><ellipse cx="20" cy="24" rx="12.5" ry="6.5" fill="#8CC8E8"/><ellipse cx="16" cy="24" rx="3" ry="1.6" fill="#7DBB78"/><path d="M26 22q2-3 4 0" stroke="#fff" stroke-width="1.2" fill="none"/>',
+bench:'<rect x="7" y="13" width="26" height="6" rx="1.5" fill="#B98A5B"/><rect x="5" y="21" width="30" height="5" rx="1.5" fill="#C99C6B"/><rect x="8" y="26" width="3.5" height="9" fill="#8A5E3B"/><rect x="28.5" y="26" width="3.5" height="9" fill="#8A5E3B"/>',
+stones:'<ellipse cx="10" cy="14" rx="6" ry="3.6" fill="#B9B2A6"/><ellipse cx="19" cy="21" rx="6.5" ry="3.8" fill="#C8C1B4"/><ellipse cx="28" cy="28" rx="6" ry="3.6" fill="#B9B2A6"/><ellipse cx="11" cy="31" rx="4.6" ry="2.8" fill="#C8C1B4"/>',
+windmill:'<path d="M13 35 16 17h8l3 18z" fill="#F3E6CF"/><path d="M14 17 20 9l6 8z" fill="#C4604F"/><rect x="18" y="28" width="5" height="7" fill="#7A5236"/><g transform="translate(20 17)"><path d="M0 0-3-14h6zM0 0 3 14h-6zM0 0-14 3v-6zM0 0 14-3v6z" fill="#fff" stroke="#d9cfbe" stroke-width=".8"/></g><circle cx="20" cy="17" r="2" fill="#8A5E3B"/>',
+lantern:'<rect x="19" y="4" width="2.6" height="32" rx="1" fill="#6B5848"/><path d="M21 7h8" stroke="#6B5848" stroke-width="2.4"/><rect x="25" y="9" width="9" height="12" rx="3.5" fill="#FFD27A" stroke="#E9A93E" stroke-width="1.2"/><rect x="26" y="7.6" width="7" height="2.4" rx="1" fill="#C4604F"/>',
+birdhouse:'<rect x="19" y="20" width="2.6" height="16" fill="#8A6A4A"/><rect x="10" y="14" width="20" height="14" rx="1" fill="#E9C58F"/><path d="M7 15 20 5l13 10z" fill="#C4604F"/><circle cx="20" cy="21" r="3" fill="#4A3535"/>',
+fountain:'<path d="M5 28h30l-3 7H8z" fill="#CFC8BC"/><rect x="5" y="25" width="30" height="4" rx="2" fill="#E3DDD2"/><rect x="18.5" y="14" width="3" height="11" fill="#CFC8BC"/><path d="M12 14h16l-3 3H15z" fill="#E3DDD2"/><path d="M20 12v-3M16 13l-3-3M24 13l3-3" stroke="#8CC8E8" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="20" cy="27" rx="11" ry="1.6" fill="#8CC8E8"/>',
+mailbox:'<rect x="18" y="20" width="3" height="16" fill="#8A6A4A"/><rect x="9" y="11" width="22" height="12" rx="5" fill="#E86A5C"/><rect x="29" y="5" width="2.2" height="9" fill="#FFD54A"/><rect x="29" y="5" width="6" height="4" fill="#FFD54A"/><rect x="12" y="15" width="8" height="2" rx="1" fill="#fff" opacity=".7"/>',
+picnic:'<path d="M4 30 9 14h27l-5 16z" fill="#E8685F"/><path d="M13 14h5l-2 16h-5zM26 14h5l-3 16h-5z" fill="#fff" opacity=".85"/><rect x="15" y="9" width="10" height="7" rx="2" fill="#C98F5B"/><circle cx="29" cy="22" r="2.6" fill="#E54B4B"/>',
+fence:'<g fill="#F4EBDD" stroke="#D9CFBE" stroke-width="1"><path d="M6 34V15l3-4 3 4v19zM15 34V15l3-4 3 4v19zM24 34V15l3-4 3 4v19z"/></g><rect x="3" y="20" width="34" height="3" fill="#E7DCCB"/><rect x="3" y="28" width="34" height="3" fill="#E7DCCB"/>',
+planter:'<path d="M12 22h16l-2 12H14z" fill="#D98B6A"/><rect x="11" y="19" width="18" height="4" rx="1.5" fill="#E39C7C"/><path d="M20 19V11M14 19l-2-6M26 19l2-6" stroke="#7DBB78" stroke-width="1.8"/><circle cx="20" cy="9" r="3.6" fill="#F29BB5"/><circle cx="12" cy="11" r="3" fill="#FFD54A"/><circle cx="28" cy="11" r="3" fill="#fff" stroke="#e9dccb"/>'};
+const dIcon=(k,s)=>SV(s,ICO[k]||'');
+
+/* ---- 3D 小模型（全部用基本形狀拼出來，每件都小小的） ---- */
+const BOXG=shade(new THREE.BoxGeometry(1,1,1),.78),PYR=shade(new THREE.ConeGeometry(.7071,1,4),.8),TRI=shade(new THREE.CylinderGeometry(1,1,1,3),.85),CYLT=shade(new THREE.CylinderGeometry(.6,1,1,14),.8);
+const WARM=new THREE.MeshStandardMaterial({color:'#FFD98A',emissive:new THREE.Color('#FFB84A'),emissiveIntensity:.8,roughness:.6});
+const bx=(g,geo,c,x,y,z,sx,sy,sz,rx,ry,rz)=>{const m=mk(geo,c,[x,y,z],[sx,sy,sz],[rx||0,ry||0,rz||0]);g.add(m);return m};
+const DM={
+cabin(g){const w='#E3B98A',r='#B8654A';bx(g,BOXG,w,0,.2,0,.55,.4,.45);bx(g,TRI,w,0,.48,0,.318,.47,.16,-Math.PI/2);bx(g,BOXG,r,-.16,.5,0,.4,.04,.58,0,0,.8);bx(g,BOXG,r,.16,.5,0,.4,.04,.58,0,0,-.8);bx(g,BOXG,'#7A5236',0,.12,.226,.12,.22,.02);bx(g,BOXG,'#FFF1B0',.18,.26,.226,.1,.1,.02);bx(g,BOXG,'#9A8F86',.15,.62,-.1,.07,.16,.07)},
+swing(g){const wd='#8A5E3B';bx(g,CYL,wd,-.3,.28,0,.025,.56,.025);bx(g,CYL,wd,.3,.28,0,.025,.56,.025);bx(g,CYL,wd,0,.57,0,.025,.66,.025,0,0,Math.PI/2);
+  const pv=new THREE.Group();pv.position.y=.56;g.add(pv);bx(pv,CYL,'#6B5848',-.1,-.2,0,.006,.4,.006);bx(pv,CYL,'#6B5848',.1,-.2,0,.006,.4,.006);bx(pv,BOXG,'#C98F5B',0,-.41,0,.26,.025,.1);g.userData.sw=pv},
+mushroom(g){bx(g,CYL,'#F6EBD9',0,.17,0,.14,.34,.14);bx(g,SPH,'#E5574F',0,.38,0,.34,.2,.34);[[.14,.55,.08],[-.12,.545,.12],[.02,.565,-.1],[-.17,.535,-.1],[.2,.53,-.05]].forEach(p=>bx(g,SPH,'#FFFFFF',p[0],p[1],p[2],.05,.02,.05));bx(g,BOXG,'#7A5236',0,.12,.136,.09,.16,.02)},
+pond(g){bx(g,CYL,'#7FBFE2',0,.015,0,.46,.03,.34);for(let i=0;i<10;i++){const a=i/10*6.283;bx(g,SPH,i%2?'#C8C1B4':'#B9B2A6',Math.cos(a)*.5,.035,Math.sin(a)*.38,.07,.05,.07)}bx(g,CYL,'#7DBB78',.12,.035,.05,.07,.01,.07);bx(g,SPH,'#F8C6D8',.12,.05,.05,.025,.02,.025)},
+bench(g){bx(g,BOXG,'#B98A5B',0,.2,0,.5,.04,.2);bx(g,BOXG,'#C99C6B',0,.34,-.09,.5,.16,.03);[[-.2,.07],[.2,.07],[-.2,-.07],[.2,-.07]].forEach(p=>bx(g,BOXG,'#8A5E3B',p[0],.1,p[1],.04,.2,.04));bx(g,BOXG,'#8A5E3B',-.22,.28,-.09,.03,.3,.03);bx(g,BOXG,'#8A5E3B',.22,.28,-.09,.03,.3,.03)},
+stones(g){[[-.3,-.1,.1,'#B9B2A6'],[-.08,.04,.12,'#C8C1B4'],[.14,-.03,.1,'#B9B2A6'],[.33,.12,.09,'#C8C1B4']].forEach((p,i)=>bx(g,CYL,p[3],p[0],.02,p[1],p[2],.04,p[2]*.85,0,i,0))},
+windmill(g){bx(g,CYLT,'#F3E6CF',0,.3,0,.17,.6,.17);bx(g,CONE,'#C4604F',0,.69,0,.2,.2,.2);bx(g,BOXG,'#7A5236',0,.1,.15,.09,.18,.02);
+  const pv=new THREE.Group();pv.position.set(0,.55,.17);g.add(pv);bx(pv,SPH,'#8A5E3B',0,0,0,.035,.035,.035);for(let i=0;i<4;i++){const a=new THREE.Group();a.rotation.z=i*Math.PI/2;pv.add(a);bx(a,BOXG,'#8A5E3B',0,.16,0,.02,.32,.012);bx(a,BOXG,'#FFFFFF',.035,.18,.004,.06,.22,.008)}g.userData.bl=pv},
+lantern(g){bx(g,CYL,'#6B5848',0,.3,0,.014,.6,.014);bx(g,BOXG,'#6B5848',.07,.58,0,.16,.014,.014);bx(g,CONE,'#C4604F',.14,.6,0,.065,.04,.065);const m=mk(SPH,'#FFD98A',[.14,.52,0],[.06,.08,.06],null,WARM);g.add(m);bx(g,CYL,'#6B5848',.14,.43,0,.03,.02,.03);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFD27A',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.15}));s.scale.set(.6,.6,1);s.position.set(.14,.52,0);g.add(s);g.userData.gl=s},
+birdhouse(g){bx(g,CYL,'#8A6A4A',0,.3,0,.02,.6,.02);bx(g,BOXG,'#E9C58F',0,.66,0,.2,.18,.2);bx(g,PYR,'#C4604F',0,.82,0,.3,.14,.3,0,Math.PI/4);bx(g,SPH,'#4A3535',0,.67,.1,.04,.04,.012);bx(g,CYL,'#8A6A4A',0,.58,.12,.008,.06,.008,Math.PI/2)},
+fountain(g){const s='#CFC8BC';bx(g,CYL,s,0,.07,0,.42,.14,.42);bx(g,CYL,'#8CC8E8',0,.138,0,.36,.02,.36);bx(g,CYL,s,0,.24,0,.05,.2,.05);bx(g,CYL,s,0,.35,0,.16,.04,.16);bx(g,CYL,'#8CC8E8',0,.372,0,.13,.012,.13);
+  g.userData.dr=[];for(let i=0;i<8;i++){const d=mk(SPH,'#CDEBFF',[0,.4,0],[.018,.022,.018],null,DROPM);d.castShadow=false;g.add(d);g.userData.dr.push(d)}},
+mailbox(g){bx(g,BOXG,'#8A6A4A',0,.2,0,.04,.4,.04);bx(g,BOXG,'#E86A5C',0,.45,0,.16,.12,.24);bx(g,CYL,'#E86A5C',0,.51,0,.08,.24,.08,Math.PI/2);bx(g,BOXG,'#FFD54A',.095,.5,.02,.012,.1,.03)},
+picnic(g){const q=new THREE.Group();q.rotation.y=.25;g.add(q);bx(q,BOXG,'#E8685F',0,.012,0,.62,.024,.5);for(let i=0;i<3;i++)for(let j=0;j<3;j++)if((i+j)%2===0)bx(q,BOXG,'#FFF6EA',(i-1)*.2,.026,(j-1)*.16,.2,.004,.16);bx(q,BOXG,'#C98F5B',.08,.08,.05,.14,.1,.1);bx(q,SPH,'#E54B4B',-.13,.05,.1,.035,.035,.035)},
+fence(g){[-.3,-.1,.1,.3].forEach(x=>{bx(g,BOXG,'#F4EBDD',x,.13,0,.05,.26,.04);bx(g,PYR,'#F4EBDD',x,.29,0,.05,.06,.05,0,Math.PI/4)});bx(g,BOXG,'#E7DCCB',0,.09,0,.7,.03,.025);bx(g,BOXG,'#E7DCCB',0,.19,0,.7,.03,.025)},
+planter(g){bx(g,CYLT,'#D98B6A',0,.1,0,.13,.2,.13,Math.PI);bx(g,CYL,'#5B4A3A',0,.2,0,.12,.012,.12);[[0,.34,0,'#F29BB5'],[-.09,.3,.02,'#FFD54A'],[.09,.31,-.02,'#FFFFFF']].forEach(p=>{bx(g,CYL,'#7DBB78',p[0],(p[1]+.2)/2,p[2],.008,p[1]-.2,.008);bx(g,SPH,p[3],p[0],p[1],p[2],.05,.04,.05)})}};
+function buildDecor(k){const g=new THREE.Group();DM[k](g);g.userData.k=k;const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.y=.28;hb.scale.setScalar(Math.max(.3,DR[k]));g.add(hb);return g}
+
+/* ---- 資料 ---- */
+const DEC=window.DEC=[],GIFTS=[];
+const G=()=>{const g=S.g||(S.g={});g.pend=g.pend||[];g.decor=g.decor||[];g.rec=g.rec||[];return g};
+const gsave=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const nameOf=k=>tr('dn')[DK.indexOf(k)];
+
+function spawnDecor(o,anim){removeDecorObj(o.id);const g=buildDecor(o.k);g.position.set(o.x,gh(o.x,o.z),o.z);g.rotation.y=o.ry||0;g.userData.did=o.id;
+  if(anim&&!S.rm){g.userData.pop=0;g.scale.setScalar(.001)}scene.add(g);DEC.push({id:o.id,k:o.k,x:o.x,z:o.z,r:DR[o.k],g})}
+function removeDecorObj(id){const i=DEC.findIndex(d=>d.id===id);if(i>=0){scene.remove(DEC[i].g);DEC.splice(i,1)}}
+
+/* 裝飾品能不能放在這裡：花園柵欄內、不擋橋頭通道與障礙物、不壓到花、別的裝飾品和還沒拆的禮物 */
+function decorSpotOK(x,z,self,r){
+  if(!(inG1(x,z,6.9-r*.3)||inG2(x,z,.84)))return false;
+  if(Math.abs(z)<1.3+r*.4&&((x>4.9&&x<8)||(x>BB-.5&&x<BB+2)))return false;
+  if(OBS.some(o=>Math.hypot(x-o[0],z-o[1])<o[2]+r*.5))return false;
+  for(const d in flowers){const f=flowers[d];if(Math.hypot(f.position.x-x,f.position.z-z)<.4+r)return false}
+  if(DEC.some(o=>o.id!==self&&Math.hypot(o.x-x,o.z-z)<o.r+r-.05))return false;
+  if(GIFTS.some(o=>Math.hypot(o.to.x-x,o.to.z-z)<.45))return false;
+  return true}
+function findSpot(cx,cz,r,self){
+  for(let i=0;i<70;i++){const a=Math.random()*6.283,rr=Math.sqrt(Math.random())*(1.2+i*.06),x=cx+Math.cos(a)*rr,z=cz+Math.sin(a)*rr;if(decorSpotOK(x,z,self,r))return[x,z]}
+  for(let i=0;i<150;i++){const q=rndPt();if(decorSpotOK(q[0],q[1],self,r))return q}
+  return null}
+function putDecor(o,cx,cz){const r=DR[o.k],sp=findSpot(cx==null?tgG.x:cx,cz==null?tgG.z:cz,r,o.id);
+  if(!sp){toast(tr('gNoSpot'));sfx('deny');return false}
+  o.x=sp[0];o.z=sp[1];o.ry=Math.random()*6.283;o.p=1;o.nw=0;spawnDecor(o,true);gsave();
+  tgG.set(o.x,gh(o.x,o.z)+.3,o.z);if(radG>14)radG=12;sfx('plant');burst('spark',{x:o.x,y:gh(o.x,o.z)+.3,z:o.z},6);toast(tr('gPlaced'));gbRefresh();return true}
+function storeDecor(id){const o=G().decor.find(x=>x.id===id);if(!o)return;removeDecorObj(id);o.p=0;gsave();sfx('move');toast(tr('gStored'));gbRefresh()}
+
+/* ---- 小視窗：紙條 / 收到裝飾品 / 我的小禮物 ---- */
+const gOpen=h=>{$('gsh').innerHTML=h;$('gmod').hidden=false},gClose=()=>{$('gmod').hidden=true};
+$('gmod').onclick=e=>{if(e.target===$('gmod'))gClose()};
+function showNote(p){const notes=GNOTES[S.lang]||GNOTES.en,em={bee:'🐝',bird:'🐥',ladybug:'🐞',butterfly:'🦋',snail:'🐌'}[p.ty]||'🌼';
+  gOpen(`<div class="paper"><div style="font-size:13px;opacity:.75">${em} ${esc(tr('gFrom',tr('gn')[p.ty]))}</div><p class="gt">“${esc(notes[p.i]||'')}”</p></div><div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn p" id="gok">${esc(tr('gOk'))}</button></div>`);
+  $('gok').onclick=gClose}
+function showDecorGot(o,gx,gz){
+  gOpen(`<div class="gpop">${dIcon(o.k,84)}</div><h2 style="text-align:center;font-size:22px">${esc(tr('gGot',nameOf(o.k)))}</h2><div style="display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn" id="gk">${esc(tr('gKeepB'))}</button><button class="btn p" id="gp">${esc(tr('gPlaceNow'))}</button></div>`);
+  $('gk').onclick=gClose;$('gp').onclick=()=>{if(putDecor(o,gx,gz))gClose()}}
+function openGifts(){const g=G();g.decor.forEach(o=>o.nw=0);gsave();gbRefresh();
+  const rows=g.decor.map(o=>`<div class="si"><span class="gi">${dIcon(o.k,34)}</span><span class="sx"><b>${esc(nameOf(o.k))}</b><small>${esc(tr(o.p?'gIn':'gKept'))}</small></span><button class="btn ${o.p?'':'p'}" data-id="${o.id}">${esc(tr(o.p?'gPick':'gPut'))}</button></div>`).join('');
+  gOpen(`<h2 class="gsh-h">${ic('redeem')} ${esc(tr('gb'))}</h2>${rows?`<div class="sc">${rows}</div>`:`<p style="margin:12px 0;opacity:.8">${esc(tr('gEmpty'))}</p>`}<div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn" id="gcl">${esc(tr('close'))}</button></div>`);
+  $('gcl').onclick=gClose;
+  $('gsh').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const o=g.decor.find(x=>x.id===b.dataset.id);if(!o)return;if(o.p){storeDecor(o.id);openGifts()}else if(putDecor(o))gClose()})}
+$('gb').onclick=openGifts;
+function gbRefresh(){const b=$('gb');if(!b)return;const n=G().decor.filter(o=>o.nw).length;b.innerHTML=ic('redeem')+(n?`<span class="gbd">${n}</span>`:'');b.setAttribute('aria-label',tr('gb'));b.title=tr('gb')}
+
+/* ---- 點花園裡的裝飾品：小卡片（收藏 / 移動） ---- */
+function decorCard(did){const d=DEC.find(o=>o.id===did);if(!d)return;const c=$('card');c.hidden=false;
+  c.innerHTML=`<div style="font-size:12px;opacity:.7">${esc(tr('gDeco'))}</div><h2 style="display:flex;align-items:center;gap:8px">${dIcon(d.k,36)}<span>${esc(nameOf(d.k))}</span></h2><p>${esc(tr('gHint'))}</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="gst" aria-label="${esc(tr('gStoreB'))}" title="${esc(tr('gStoreB'))}">${ic('inventory_2')}</button><button class="btn" id="gmv" aria-label="${esc(tr('gMoveB'))}" title="${esc(tr('gMoveB'))}">${ic('open_with')}</button><button class="btn" id="gcx" style="margin-left:auto" aria-label="${esc(tr('close'))}" title="${esc(tr('close'))}">${ic('close')}</button></div>`;
+  $('gst').onclick=()=>{storeDecor(did);c.hidden=true};
+  $('gmv').onclick=()=>{c.hidden=true;if(!arrange)setArrange(true)};
+  $('gcx').onclick=()=>{c.hidden=true}}
+
+/* ---- 禮物盒（3D） ---- */
+function spawnGift(p,from){const g=new THREE.Group(),pal=['#F5C7D5','#B9D8EB','#F5DEA0','#D4C7EA','#B9D9C2'],c=pal[(parseInt(p.id.slice(-2),36)||0)%5];
+  bx(g,BOXG,c,0,.09,0,.2,.16,.2);bx(g,BOXG,'#FFFFFF',0,.09,0,.215,.165,.04);bx(g,BOXG,'#FFFFFF',0,.09,0,.04,.165,.215);bx(g,SPH,'#FFFFFF',-.035,.2,0,.05,.032,.035);bx(g,SPH,'#FFFFFF',.035,.2,0,.05,.032,.035);
+  const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFE9A8',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.4}));gl.scale.set(.75,.75,1);gl.position.y=.2;g.add(gl);
+  const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.y=.15;hb.scale.setScalar(.38);hb.userData.gid=p.id;g.add(hb);
+  const to={x:p.x,y:gh(p.x,p.z),z:p.z};g.position.set(from.x,from.y,from.z);g.scale.setScalar(.4);scene.add(g);
+  GIFTS.push({id:p.id,g,gl,hb,from:{x:from.x,y:from.y+.2,z:from.z},to,t:S.rm?9:0,i:Math.random()*6})}
+function pickGift(e){if(!GIFTS.length)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(GIFTS.map(o=>o.hb),false)[0];return h?h.object.userData.gid:null}
+function pickDecor(e){if(!DEC.length)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(DEC.map(o=>o.g),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.did)o=o.parent;return o?o.userData.did:null}
+function openGift(gid){const g=G(),i=g.pend.findIndex(p=>p.id===gid);if(i<0)return;const p=g.pend[i];g.pend.splice(i,1);
+  const j=GIFTS.findIndex(o=>o.id===gid);if(j>=0){const o=GIFTS[j],q={x:o.to.x,y:o.to.y+.2,z:o.to.z};burst('spark',q,6);burst('heart',q,3);scene.remove(o.g);GIFTS.splice(j,1)}
+  sfx('bloom');
+  if(p.k==='n'){gsave();showNote(p)}
+  else{const o={id:p.id,k:p.i,x:p.x,z:p.z,p:0,nw:1};g.decor.push(o);gsave();gbRefresh();showDecorGot(o,p.x,p.z)}}
+
+/* ---- 拖曳裝飾品（在「佈置花園」模式裡） ---- */
+let dd=null;
+function groundAt(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;let x=0,z=0,sky=true;
+  if(dr.y<-.01){const k=-o.y/dr.y;x=o.x+dr.x*k;z=o.z+dr.z*k;const k2=(gh(x,z)-o.y)/dr.y;x=o.x+dr.x*k2;z=o.z+dr.z*k2;sky=false;const l=Math.hypot(x-MX,z);if(l>40){x=MX+(x-MX)*40/l;z*=40/l;sky=true}}
+  return{x,z,sky}}
+function dragDown(did){const d=DEC.find(o=>o.id===did);if(!d)return;dd={id:did,ok:true,dm:0,cx:d.x,cz:d.z};selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(d.x,gh(d.x,d.z)+.05,d.z)}
+function dragMove(e){const d=DEC.find(o=>o.id===dd.id);if(!d)return;const q=groundAt(e);if(q.sky)dd.ok=false;else dd.ok=decorSpotOK(q.x,q.z,dd.id,d.r);
+  if(!q.sky){dd.cx=q.x;dd.cz=q.z;d.g.position.set(q.x,gh(q.x,q.z)+(dd.ok?0:.3),q.z);selRing.position.set(q.x,gh(q.x,q.z)+.05,q.z)}
+  dd.dm++;selRing.material.color.set(dd.ok?'#F29BB5':'#E8685F')}
+function dragBack(d){d.g.position.set(d.x,gh(d.x,d.z),d.z)}
+function dragUp(){const x=dd;dd=null;selRing.visible=false;const d=DEC.find(o=>o.id===x.id);if(!d)return;
+  if(x.dm>2&&x.ok){d.x=x.cx;d.z=x.cz;dragBack(d);const s=G().decor.find(o=>o.id===x.id);if(s){s.x=d.x;s.z=d.z;gsave()}sfx('move');toast(tr('moved'))}
+  else{dragBack(d);if(x.dm>2){sfx('deny');toast(tr('badSpot'))}else decorCard(x.id)}}
+function dragCancel(){const x=dd;dd=null;selRing.visible=false;if(!x)return;const d=DEC.find(o=>o.id===x.id);if(d)dragBack(d)}
+
+/* ---- 送禮物：每天抽 0–2 份，有小動物才送，由其中一隻「送來」 ---- */
+let FORCE=/[?&]gift=1/.test(location.search)?1:0;
+function giftReady(){const ld=$('ld');return !!ld&&(ld.hidden||ld.classList.contains('out'))&&$('ob').hidden&&$('modal').hidden&&$('dlg').hidden&&$('gmod').hidden&&document.body.dataset.v==='garden'&&!arrange&&!drag&&!dd&&!P&&!document.hidden}
+function giftSpotOK(x,z){return legalSpot(x,z,'\u0000')&&!GIFTS.some(o=>Math.hypot(o.to.x-x,o.to.z-z)<.5)}
+function pickKind(){const g=G(),w=DK.map(k=>1/(1+g.decor.filter(o=>o.k===k).length)),sum=w.reduce((a,b)=>a+b,0);let r=Math.random()*sum;for(let i=0;i<DK.length;i++){r-=w[i];if(r<=0)return DK[i]}return DK[0]}
+function pickNote(){const g=G(),n=GNOTES.zh.length;let i,t=0;do{i=Math.random()*n|0}while(g.rec.includes(i)&&++t<40);g.rec.push(i);if(g.rec.length>14)g.rec.shift();return i}
+function giftDeliver(force,kind){const g=G();if(!cr.length||g.pend.length>=3)return false;
+  const c=cr[Math.random()*cr.length|0],u=c.userData;let sp=null;
+  for(let i=0;i<30&&!sp;i++){const a=Math.random()*6.283,r=.45+Math.random()*1.1,x=c.position.x+Math.cos(a)*r,z=c.position.z+Math.sin(a)*r;if(giftSpotOK(x,z))sp=[x,z]}
+  for(let i=0;i<40&&!sp;i++){const q=rndPt();if(giftSpotOK(q[0],q[1]))sp=q}
+  if(!sp)return false;
+  const isDecor=kind?kind==='decor':Math.random()<.4,p={id:newId(),ty:u.type,x:sp[0],z:sp[1],k:isDecor?'d':'n',i:isDecor?pickKind():pickNote()};
+  g.pend.push(p);if(!force)g.n=(g.n||0)+1;g.last=Date.now();gsave();
+  spawnGift(p,c.position.clone());
+  if(!S.rm&&!u.act)u.act={t:0,p0:c.position.clone(),r0:c.rotation.y,s0:c.scale.x,f1:0};
+  burst('heart',{x:c.position.x,y:c.position.y+.1,z:c.position.z},3);sfx('animal_'+u.type,'animal');
+  toast(tr('giftT',tr('gn')[u.type]));
+  tgG.set(p.x,gh(p.x,p.z)+.3,p.z);if(radG>11)radG=9;
+  return true}
+function giftTick(){const g=G(),td=today();
+  if(g.day!==td){g.day=td;g.n=0;const r=Math.random();g.q=r<.3?0:r<.78?1:2;const d1=Date.now()+(Math.random()<.6?30e3+Math.random()*120e3:(20+Math.random()*220)*6e4);g.due=[d1,d1+(30+Math.random()*270)*6e4];gsave()}
+  if(!giftReady())return;
+  if(FORCE){if(giftDeliver(1))FORCE=0;return}
+  if(g.n>=g.q||Date.now()<g.due[g.n]||Date.now()-(g.last||0)<60e3)return;
+  giftDeliver()}
+
+/* ---- 每一幀：禮物落地與漂浮、裝飾品的小動作 ---- */
+let gT=0,gWarn=0;
+function step(t,dt,rm){try{
+  for(const o of GIFTS){o.t+=dt;const f=Math.min(1,o.t/.85),b=o.g;
+    if(f<1&&!rm){const e=ez(f);b.position.set(o.from.x+(o.to.x-o.from.x)*e,o.from.y+(o.to.y-o.from.y)*e+Math.sin(f*Math.PI)*.55,o.from.z+(o.to.z-o.from.z)*e);b.scale.setScalar(.4+.6*e)}
+    else{b.scale.setScalar(1);b.position.set(o.to.x,o.to.y+(rm?0:.035+.03*Math.sin(t*2.2+o.i)),o.to.z);if(!rm)b.rotation.y=t*.5+o.i}
+    o.gl.material.opacity=rm?.45:.35+.2*Math.sin(t*3+o.i)}
+  for(const o of DEC){const u=o.g.userData;
+    if(u.pop!=null){u.pop+=dt/.6;const x=Math.min(1,u.pop),ob=1+2.70158*Math.pow(x-1,3)+1.70158*Math.pow(x-1,2);o.g.scale.setScalar(Math.max(.001,ob));if(x>=1){u.pop=null;o.g.scale.setScalar(1)}}
+    if(!rm){if(u.sw)u.sw.rotation.z=Math.sin(t*1.4+o.x)*.16;if(u.bl)u.bl.rotation.z-=dt*(.35+(WX.wind||0)*1.1);
+      if(u.dr)u.dr.forEach((d,i)=>{const ph=(t*.9+i/8)%1,a=i/8*6.283+ph*.8,rr=ph*.2;d.position.set(Math.cos(a)*rr,.42+.14*Math.sin(ph*Math.PI)-.3*ph*ph,Math.sin(a)*rr)})}
+    if(u.gl){const dv=window.dfv==null?1:window.dfv;u.gl.material.opacity=.1+.5*(1-dv)}}
+  if(t-gT>2){gT=t;giftTick()}
+}catch(e){if(!gWarn){gWarn=1;console.warn('[gift]',e)}}}
+
+/* 手動測試：在瀏覽器主控台輸入 giveGift() / giveGift('note') / giveGift('decor')；或在網址後面加 ?gift=1 */
+window.giveGift=k=>giftDeliver(1,k);
+
+/* ---- 開站時還原：已放在花園裡的裝飾品、還沒拆的禮物 ---- */
+if(ok){const g=G();g.decor.forEach(o=>{if(o.p)spawnDecor(o,false)});g.pend.forEach(p=>spawnGift(p,{x:p.x,y:gh(p.x,p.z),z:p.z}))}
+return{step,refresh:gbRefresh,pickGift,openGift,pickDecor,decorCard,down:dragDown,move:dragMove,up:dragUp,cancel:dragCancel,active:()=>!!dd}
+})();
+
 function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
   /* 放開手指後的慣性滑行 */
   if(!panning&&(Math.abs(panV.x)>.1||Math.abs(panV.z)>.1)){
@@ -735,7 +1202,7 @@ function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta()
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
   if(!rm){if(window.mts)mts.forEach((p,j)=>{p.rotation.y+=dt*(.03+j*.02);p.position.y=Math.sin(t*.5+j*2)*.15;p.material.opacity=window.glowF*(.55+Math.sin(t*1.7+j*2.4)*.35)});cr.forEach(c=>crStep(c,dt,t));cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>50)c.position.x=-32});
     bf.forEach(b=>{const u=b.userData;if(u.bee){beeStep(b,dt,t);return}const s=.28,a=t*s+u.i*2,x=Math.cos(a)*5.2*(u.bee?.8:1),z=Math.sin(a*1.3)*4.4,y=(u.bee?1:1.5)+Math.sin(t*1.1+u.i)*.35;b.position.set(x,y,z);b.rotation.y=-Math.atan2(-Math.sin(a*1.3)*1.3*4.4,-Math.sin(a)*5.2)+Math.PI/2;if(!u.bee){const w=Math.sin(t*16+u.i)*.9;u.w[0].rotation.z=w;u.w[1].rotation.z=-w}})}
-  partStep(dt);wxFrame(dt,t,rm);slideStep(dt);stageStep(t,dt);if(window.WMB&&!rm)WMB.rotation.z-=dt*(.4+WX.wind*1.3);if(P){P.t+=rm?dt*8:dt;const f=flowers[P.d];setGrow(f,Math.min(1,(P.t-1.2)/3));
+  partStep(dt);wxFrame(dt,t,rm);slideStep(dt);stageStep(t,dt);GF.step(t,dt,rm);if(window.WMB&&!rm)WMB.rotation.z-=dt*(.4+WX.wind*1.3);if(P){P.t+=rm?dt*8:dt;const f=flowers[P.d];setGrow(f,Math.min(1,(P.t-1.2)/3));
     P.seed.visible=P.t<1.1;P.seed.position.y=Math.max(.05,2-P.t*2.2)+f.position.y;
     if(sparkle){const a=sparkle.geometry.attributes.position;for(let i=0;i<a.count;i++)a.setY(i,a.getY(i)+dt*.4);a.needsUpdate=true;sparkle.material.opacity=Math.max(0,Math.min(1,(P.t-.9)*2,(5-P.t)))}
     if(P.t>3.9&&!P.toast){P.toast=1;sfx('bloom');toast(tr('bloomed'))}
@@ -746,9 +1213,10 @@ if(ok)frame();
 /* ---------- camera input ---------- */
 const cv=$('c'),pts=new Map(),ray=new THREE.Raycaster(),mv=new THREE.Vector2();let pd=0,moved=0,pinch=0;
 function pick(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?o.userData.date:null}
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;panV.x=panV.z=0;panning=true;panT=performance.now();if(arrange&&pts.size==1){const d=pick(e);if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;panV.x=panV.z=0;panning=true;panT=performance.now();if(arrange&&pts.size==1&&!pick(e)){const di=GF.pickDecor(e);if(di){GF.down(di);return}}if(arrange&&pts.size==1){const d=pick(e);if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
 cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
-  if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg)?'pointer':'grab';return}
+  if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg||GF.pickGift(e)||GF.pickDecor(e))?'pointer':'grab';return}
+  if(GF.active()){GF.move(e);pts.set(e.pointerId,e);return}
   if(drag){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;
     let x=f.position.x,z=f.position.z,sky=true;
     if(dr.y<-.01){const k=-o.y/dr.y;x=o.x+dr.x*k;z=o.z+dr.z*k;const k2=(gh(x,z)-o.y)/dr.y;x=o.x+dr.x*k2;z=o.z+dr.z*k2;sky=false;const l=Math.hypot(x-MX,z);if(l>40){x=MX+(x-MX)*40/l;z*=40/l;sky=true}}
@@ -757,11 +1225,11 @@ cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
   pts.set(e.pointerId,e);return}
   if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);thG-=((c.clientX+d.clientX)/2-ox)*.006;phG=Math.min(1.4,Math.max(.35,phG-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(64,Math.max(4.5,radG*od/nd));moved=99;panV.x=panV.z=0;return}
   const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType!='mouse'||e.buttons&4)pan(dx,dy,e.pointerType=='mouse');else{thG-=dx*.006;phG=Math.min(1.4,Math.max(.35,phG-dy*.005))}pts.set(e.pointerId,e)});
-cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;if(performance.now()-panT>90||moved<6||drag)panV.x=panV.z=0}if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
+cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;if(performance.now()-panT>90||moved<6||drag)panV.x=panV.z=0}if(GF.active()){panV.x=panV.z=0;GF.up();return}if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
     if(f&&en){if(dm>2&&dragOK){en.x=f.position.x;en.z=f.position.z;f.position.y=gh(en.x,en.z);save();sfx('move');toast(tr('moved'))}
       else{slideBack(d,dragO);if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
-    return}if(moved<6&&!pts.size){const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else $('card').hidden=true}});
-cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;panV.x=panV.z=0}if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}});
+    return}if(moved<6&&!pts.size){const gf=GF.pickGift(e);if(gf){GF.openGift(gf);return}const dc=GF.pickDecor(e);if(dc){GF.decorCard(dc);return}const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else $('card').hidden=true}});
+cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;panV.x=panV.z=0}if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}if(GF.active())GF.cancel();});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('mousedown',e=>{if(e.button==1)e.preventDefault()});
 /* 平移：手指移動量乘上增益；滑得越快放大越多；拉近時也不會變得太慢（距離下限 12） */
@@ -789,11 +1257,11 @@ function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter
   $('hi').innerHTML=ic('local_florist')+(S.e[today()]?tr('hi1'):tr('hi0'));
   $('cnt').innerHTML=ic('eco')+' '+tr('cnt',en.length);
   $('mon').innerHTML=mo.length?tr('mon')+' '+Object.entries(c).map(([k,v])=>flo(k,18)+'×'+v).join(' '):tr('monNone');
-  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'));$('arr').title=tr(arrange?'done':'arr')}
+  $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist')+' '+tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'));$('arr').title=tr(arrange?'done':'arr');if(window.GF)GF.refresh()}
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
-  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${matureOf(e)?'':`<div style="font-size:12px;opacity:.75;margin-top:4px">🌱 ${tr('sprout',hrsLeft(e))}</div>`}${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
-  $('ce').onclick=()=>openModal(d);$('cx').onclick=()=>{c.hidden=true;home()};
+  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${matureOf(e)?'':`<div style="font-size:12px;opacity:.75;margin-top:4px">${e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e))}</div>`}${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px">${thirstyOf(e)?`<button class="btn w" id="cw" data-sfx="off" aria-label="${tr('waterB')}" title="${tr('waterB')}">${ic('water_drop')}</button>`:''}<button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
+  $('ce').onclick=()=>openModal(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true;home()};
   $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
 let ed,sel,tg2=[];
 function openModal(d){ed=d||today();const e=S.e[ed];sel=e?e.mood:null;tg2=e?[...(e.tags||[])]:[];
