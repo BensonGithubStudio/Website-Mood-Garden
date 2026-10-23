@@ -182,7 +182,7 @@ const SND={
   vol:{sfx:.7,amb:.35},
   sfx:{
     click:'audio/sfx/click.wav',animal:'audio/sfx/animal.wav',flower:'audio/sfx/flower.wav',
-    plant:'audio/sfx/plant.wav',water:'audio/sfx/water.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',deny:'audio/sfx/deny.wav',
+    plant:'audio/sfx/plant.wav',water:'audio/sfx/water.wav',gift_drop:'audio/sfx/gift_drop.wav',gift_open:'audio/sfx/gift_open.wav',decor_place:'audio/sfx/decor_place.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',deny:'audio/sfx/deny.wav',
     animal_bee:'audio/sfx/animal_bee.wav',animal_bird:'audio/sfx/animal_bird.wav',animal_ladybug:'audio/sfx/animal_ladybug.wav',
     animal_butterfly:'audio/sfx/animal_butterfly.wav',animal_snail:'audio/sfx/animal_snail.wav',animal_frog:'audio/sfx/animal_frog.wav'
   },
@@ -686,7 +686,7 @@ function crStep(c,dt,t){const u=c.userData,T=CT[u.type],p=c.position,fly=T.fly,L
 function slideBack(d,to){const f=flowers[d];if(!f||!to)return;slideDrop(d);const T=new THREE.Vector3(to.x,gh(to.x,to.z),to.z);
   if(S.rm){f.position.copy(T);return}slides.push({d,fr:f.position.clone(),to:T,t:0})}
 function slideDrop(d){for(let i=slides.length-1;i>=0;i--)if(slides[i].d===d)slides.splice(i,1)}
-function slideStep(dt){for(let i=slides.length-1;i>=0;i--){const q=slides[i],f=flowers[q.d];if(!f){slides.splice(i,1);continue}
+function slideStep(dt){for(let i=slides.length-1;i>=0;i--){const q=slides[i],f=q.o||flowers[q.d];if(!f){slides.splice(i,1);continue}
   q.t+=dt/.55;const u=Math.min(1,q.t),e=u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;f.position.lerpVectors(q.fr,q.to,e);f.position.y+=Math.sin(u*Math.PI)*.35;
   if(u>=1){f.position.copy(q.to);slides.splice(i,1)}}}
 function setArrange(on){arrange=on;document.body.classList.toggle('arr',on);$('card').hidden=true;if(on){home();toast(tr('hintArr'))}else{selRing.visible=false;drag=null}refresh()}
@@ -1061,14 +1061,15 @@ function buildDecor(k){const g=new THREE.Group();DM[k](g);g.userData.k=k;const h
 
 /* ---- 資料 ---- */
 const DEC=window.DEC=[],GIFTS=[];
-const G=()=>{const g=S.g||(S.g={});g.pend=g.pend||[];g.decor=g.decor||[];g.rec=g.rec||[];return g};
-const gsave=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const G=()=>{const g=S.g||(S.g={});g.pend=g.pend||[];g.decor=g.decor||[];g.rec=g.rec||[];g.gone=g.gone||{};return g};
+const gsave=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}try{window.cloud&&cloud.dirty()}catch(e){}};   // 存本機，同時通知雲端同步
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const nameOf=k=>tr('dn')[DK.indexOf(k)];
 
 function spawnDecor(o,anim){removeDecorObj(o.id);const g=buildDecor(o.k);g.position.set(o.x,gh(o.x,o.z),o.z);g.rotation.y=o.ry||0;g.userData.did=o.id;
   if(anim&&!S.rm){g.userData.pop=0;g.scale.setScalar(.001)}scene.add(g);DEC.push({id:o.id,k:o.k,x:o.x,z:o.z,r:DR[o.k],g})}
-function removeDecorObj(id){const i=DEC.findIndex(d=>d.id===id);if(i>=0){scene.remove(DEC[i].g);DEC.splice(i,1)}}
+function removeDecorObj(id){slideDrop('dec:'+id);const i=DEC.findIndex(d=>d.id===id);if(i>=0){scene.remove(DEC[i].g);DEC.splice(i,1)}}
+function removeGiftObj(id){const j=GIFTS.findIndex(o=>o.id===id);if(j>=0){scene.remove(GIFTS[j].g);GIFTS.splice(j,1)}}
 
 /* 裝飾品能不能放在這裡：花園柵欄內、不擋橋頭通道與障礙物、不壓到花、別的裝飾品和還沒拆的禮物 */
 function decorSpotOK(x,z,self,r){
@@ -1085,9 +1086,9 @@ function findSpot(cx,cz,r,self){
   return null}
 function putDecor(o,cx,cz){const r=DR[o.k],sp=findSpot(cx==null?tgG.x:cx,cz==null?tgG.z:cz,r,o.id);
   if(!sp){toast(tr('gNoSpot'));sfx('deny');return false}
-  o.x=sp[0];o.z=sp[1];o.ry=Math.random()*6.283;o.p=1;o.nw=0;spawnDecor(o,true);gsave();
-  tgG.set(o.x,gh(o.x,o.z)+.3,o.z);if(radG>14)radG=12;sfx('plant');burst('spark',{x:o.x,y:gh(o.x,o.z)+.3,z:o.z},6);toast(tr('gPlaced'));gbRefresh();return true}
-function storeDecor(id){const o=G().decor.find(x=>x.id===id);if(!o)return;removeDecorObj(id);o.p=0;gsave();sfx('move');toast(tr('gStored'));gbRefresh()}
+  o.x=sp[0];o.z=sp[1];o.ry=Math.random()*6.283;o.p=1;o.nw=0;o.u=Date.now();spawnDecor(o,true);gsave();
+  tgG.set(o.x,gh(o.x,o.z)+.3,o.z);if(radG>14)radG=12;sfx('decor_place','plant');burst('spark',{x:o.x,y:gh(o.x,o.z)+.3,z:o.z},6);toast(tr('gPlaced'));gbRefresh();return true}
+function storeDecor(id){const o=G().decor.find(x=>x.id===id);if(!o)return;removeDecorObj(id);o.p=0;o.u=Date.now();gsave();sfx('move');toast(tr('gStored'));gbRefresh()}
 
 /* ---- 小視窗：紙條 / 收到裝飾品 / 我的小禮物 ---- */
 const gOpen=h=>{$('gsh').innerHTML=h;$('gmod').hidden=false},gClose=()=>{$('gmod').hidden=true};
@@ -1124,24 +1125,26 @@ function pickGift(e){if(!GIFTS.length)return null;mv.set(e.clientX/innerWidth*2-
 function pickDecor(e){if(!DEC.length)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(DEC.map(o=>o.g),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.did)o=o.parent;return o?o.userData.did:null}
 function openGift(gid){const g=G(),i=g.pend.findIndex(p=>p.id===gid);if(i<0)return;const p=g.pend[i];g.pend.splice(i,1);
   const j=GIFTS.findIndex(o=>o.id===gid);if(j>=0){const o=GIFTS[j],q={x:o.to.x,y:o.to.y+.2,z:o.to.z};burst('spark',q,6);burst('heart',q,3);scene.remove(o.g);GIFTS.splice(j,1)}
-  sfx('bloom');
-  if(p.k==='n'){gsave();showNote(p)}
-  else{const o={id:p.id,k:p.i,x:p.x,z:p.z,p:0,nw:1};g.decor.push(o);gsave();gbRefresh();showDecorGot(o,p.x,p.z)}}
+  sfx('gift_open','bloom');
+  if(p.k==='n'){g.gone[p.id]=Date.now();gsave();showNote(p)}
+  else{const o={id:p.id,k:p.i,x:p.x,z:p.z,p:0,nw:1,u:Date.now()};g.decor.push(o);gsave();gbRefresh();showDecorGot(o,p.x,p.z)}}
 
-/* ---- 拖曳裝飾品（在「佈置花園」模式裡） ---- */
+/* ---- 拖曳裝飾品（在「佈置花園」模式裡）：邏輯與動畫跟花朵完全一樣 ----
+   點住拖曳＝移動；拖到不能放的地方（空中、橋上、柵欄外、障礙物、花或別的裝飾品上）放開 → 滑回原位並提示；
+   佈置模式裡不會跳出資訊卡。 */
 let dd=null;
-function groundAt(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;let x=0,z=0,sky=true;
+function groundAt(e,d){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;let x=d.g.position.x,z=d.g.position.z,sky=true;
   if(dr.y<-.01){const k=-o.y/dr.y;x=o.x+dr.x*k;z=o.z+dr.z*k;const k2=(gh(x,z)-o.y)/dr.y;x=o.x+dr.x*k2;z=o.z+dr.z*k2;sky=false;const l=Math.hypot(x-MX,z);if(l>40){x=MX+(x-MX)*40/l;z*=40/l;sky=true}}
   return{x,z,sky}}
-function dragDown(did){const d=DEC.find(o=>o.id===did);if(!d)return;dd={id:did,ok:true,dm:0,cx:d.x,cz:d.z};selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(d.x,gh(d.x,d.z)+.05,d.z)}
-function dragMove(e){const d=DEC.find(o=>o.id===dd.id);if(!d)return;const q=groundAt(e);if(q.sky)dd.ok=false;else dd.ok=decorSpotOK(q.x,q.z,dd.id,d.r);
-  if(!q.sky){dd.cx=q.x;dd.cz=q.z;d.g.position.set(q.x,gh(q.x,q.z)+(dd.ok?0:.3),q.z);selRing.position.set(q.x,gh(q.x,q.z)+.05,q.z)}
-  dd.dm++;selRing.material.color.set(dd.ok?'#F29BB5':'#E8685F')}
-function dragBack(d){d.g.position.set(d.x,gh(d.x,d.z),d.z)}
-function dragUp(){const x=dd;dd=null;selRing.visible=false;const d=DEC.find(o=>o.id===x.id);if(!d)return;
-  if(x.dm>2&&x.ok){d.x=x.cx;d.z=x.cz;dragBack(d);const s=G().decor.find(o=>o.id===x.id);if(s){s.x=d.x;s.z=d.z;gsave()}sfx('move');toast(tr('moved'))}
-  else{dragBack(d);if(x.dm>2){sfx('deny');toast(tr('badSpot'))}else decorCard(x.id)}}
-function dragCancel(){const x=dd;dd=null;selRing.visible=false;if(!x)return;const d=DEC.find(o=>o.id===x.id);if(d)dragBack(d)}
+function dragDown(did){const d=DEC.find(o=>o.id===did);if(!d)return;slideDrop('dec:'+did);hover=null;dd={id:did,ok:true,dm:0,o:{x:d.x,z:d.z}};selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(d.g.position.x,d.g.position.y+.05,d.g.position.z)}
+function slideBackD(d){const T=new THREE.Vector3(d.x,gh(d.x,d.z),d.z);slideDrop('dec:'+d.id);if(S.rm){d.g.position.copy(T);return}slides.push({d:'dec:'+d.id,o:d.g,fr:d.g.position.clone(),to:T,t:0})}
+function dragMove(e){const d=DEC.find(o=>o.id===dd.id);if(!d)return;const q=groundAt(e,d);
+  dd.ok=!q.sky&&decorSpotOK(q.x,q.z,dd.id,d.r);dd.cx=q.x;dd.cz=q.z;
+  d.g.position.set(q.x,gh(q.x,q.z)+(dd.ok?0:.3),q.z);dd.dm++;selRing.position.set(q.x,gh(q.x,q.z)+.05,q.z);selRing.material.color.set(dd.ok?'#F29BB5':'#E8685F')}
+function dragUp(){const x=dd;dd=null;selRing.visible=false;const d=DEC.find(o=>o.id===x.id),s=G().decor.find(o=>o.id===x.id);if(!d||!s)return;
+  if(x.dm>2&&x.ok){d.x=x.cx;d.z=x.cz;d.g.position.set(d.x,gh(d.x,d.z),d.z);s.x=d.x;s.z=d.z;s.u=Date.now();gsave();sfx('move');toast(tr('moved'))}
+  else{slideBackD(d);if(x.dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
+function dragCancel(){const x=dd;dd=null;selRing.visible=false;if(!x)return;const d=DEC.find(o=>o.id===x.id);if(d)slideBackD(d)}
 
 /* ---- 送禮物：每天抽 0–2 份，有小動物才送，由其中一隻「送來」 ---- */
 let FORCE=/[?&]gift=1/.test(location.search)?1:0;
@@ -1154,16 +1157,17 @@ function giftDeliver(force,kind){const g=G();if(!cr.length||g.pend.length>=3)ret
   for(let i=0;i<30&&!sp;i++){const a=Math.random()*6.283,r=.45+Math.random()*1.1,x=c.position.x+Math.cos(a)*r,z=c.position.z+Math.sin(a)*r;if(giftSpotOK(x,z))sp=[x,z]}
   for(let i=0;i<40&&!sp;i++){const q=rndPt();if(giftSpotOK(q[0],q[1]))sp=q}
   if(!sp)return false;
-  const isDecor=kind?kind==='decor':Math.random()<.4,p={id:newId(),ty:u.type,x:sp[0],z:sp[1],k:isDecor?'d':'n',i:isDecor?pickKind():pickNote()};
+  const isDecor=kind?kind==='decor':Math.random()<.4,p={id:newId(),ty:u.type,x:sp[0],z:sp[1],k:isDecor?'d':'n',i:isDecor?pickKind():pickNote(),u:Date.now()};
   g.pend.push(p);if(!force)g.n=(g.n||0)+1;g.last=Date.now();gsave();
   spawnGift(p,c.position.clone());
   if(!S.rm&&!u.act)u.act={t:0,p0:c.position.clone(),r0:c.rotation.y,s0:c.scale.x,f1:0};
-  burst('heart',{x:c.position.x,y:c.position.y+.1,z:c.position.z},3);sfx('animal_'+u.type,'animal');
+  burst('heart',{x:c.position.x,y:c.position.y+.1,z:c.position.z},3);sfx('gift_drop','animal_'+u.type);
   toast(tr('giftT',tr('gn')[u.type]));
   tgG.set(p.x,gh(p.x,p.z)+.3,p.z);if(radG>11)radG=9;
   return true}
 function giftTick(){const g=G(),td=today();
-  if(g.day!==td){g.day=td;g.n=0;const r=Math.random();g.q=r<.3?0:r<.78?1:2;const d1=Date.now()+(Math.random()<.6?30e3+Math.random()*120e3:(20+Math.random()*220)*6e4);g.due=[d1,d1+(30+Math.random()*270)*6e4];gsave()}
+  if(window.cloud&&cloud.user&&performance.now()<8000)return;   // 已登入雲端：先等第一次同步，才知道今天在別台裝置是否已領過
+  if(g.day!==td){g.day=td;g.rt=Date.now();g.n=0;const r=Math.random();g.q=r<.3?0:r<.78?1:2;const d1=Date.now()+(Math.random()<.6?30e3+Math.random()*120e3:(20+Math.random()*220)*6e4);g.due=[d1,d1+(30+Math.random()*270)*6e4];gsave()}
   if(!giftReady())return;
   if(FORCE){if(giftDeliver(1))FORCE=0;return}
   if(g.n>=g.q||Date.now()<g.due[g.n]||Date.now()-(g.last||0)<60e3)return;
@@ -1184,12 +1188,44 @@ function step(t,dt,rm){try{
   if(t-gT>2){gT=t;giftTick()}
 }catch(e){if(!gWarn){gWarn=1;console.warn('[gift]',e)}}}
 
+/* ---- 雲端同步：今天領過幾份、禮物（未拆）、裝飾品庫存與在花園的位置／狀態 ----
+   雲端檔多一個 g 欄位：{d:今天的領取狀態, i:{id:項目}}；每個項目有更新時間 u，逐項比較，較新的贏（跟花朵一樣）。
+   項目狀態 s：'p'＝還沒拆的禮物、'd'＝裝飾品（p=1 放在花園、p=0 收藏中）、'x'＝已拆開的紙條（墓碑，讓其他裝置也一起消失）。 */
+const WEEK45=45*864e5;
+function localItems(){const g=G(),m={},now=Date.now();
+  g.pend.forEach(p=>{if(!p.u)p.u=now;m[p.id]={id:p.id,s:'p',ty:p.ty,x:p.x,z:p.z,k:p.k,i:p.i,u:p.u}});
+  g.decor.forEach(o=>{if(!o.u)o.u=now;m[o.id]={id:o.id,s:'d',k:o.k,x:o.x,z:o.z,ry:o.ry||0,p:o.p?1:0,nw:o.nw?1:0,u:o.u}});
+  for(const id in g.gone){if(now-g.gone[id]>WEEK45){delete g.gone[id];continue}m[id]={id,s:'x',u:g.gone[id]}}
+  return m}
+function mrgDay(a,b){if(!a||!b)return a||b||null;if(a.day>b.day)return a;if(b.day>a.day)return b;const base=(a.rt&&b.rt&&b.rt<a.rt)?b:a;return{...base,n:Math.max(a.n||0,b.n||0),last:Math.max(a.last||0,b.last||0)}}
+function mrgRemote(a,b){a=a||{};b=b||{};const o={d:mrgDay(a.d,b.d),i:{...(a.i||{})}};for(const id in (b.i||{}))if(!o.i[id]||b.i[id].u>o.i[id].u)o.i[id]=b.i[id];return o}
+function applyItem(r){const g=G(),pi=g.pend.findIndex(p=>p.id===r.id),di=g.decor.findIndex(o=>o.id===r.id);
+  if(r.s==='p'){if(di>=0||pi>=0||g.gone[r.id])return;const p={id:r.id,ty:r.ty,x:r.x,z:r.z,k:r.k,i:r.i,u:r.u};g.pend.push(p);if(ok)spawnGift(p,{x:p.x,y:gh(p.x,p.z),z:p.z})}
+  else if(r.s==='d'){if(pi>=0){g.pend.splice(pi,1);removeGiftObj(r.id)}
+    const o={id:r.id,k:r.k,x:r.x,z:r.z,ry:r.ry||0,p:r.p?1:0,nw:r.nw?1:0,u:r.u},old=g.decor[di];
+    if(di>=0)g.decor[di]=o;else g.decor.push(o);
+    if(ok){const cur=DEC.find(d=>d.id===o.id);if(!o.p)removeDecorObj(o.id);else if(!cur||cur.x!==o.x||cur.z!==o.z)spawnDecor(o,false)}}
+  else if(r.s==='x'){if(pi>=0){g.pend.splice(pi,1);removeGiftObj(r.id)}g.gone[r.id]=r.u}}
+function syncG(R){R=R||{};const g=G(),Li=localItems(),Ri=R.i||{},out={};let touched=false,dirty=false;
+  new Set([...Object.keys(Li),...Object.keys(Ri)]).forEach(id=>{const l=Li[id],r=Ri[id];
+    if(l&&!r){out[id]=l;dirty=true}
+    else if(r&&!l){if(Date.now()-r.u<=(r.s==='x'?WEEK45:1/0)){applyItem(r);out[id]=r;touched=true}}
+    else if(r.u>l.u){applyItem(r);out[id]=r;touched=true}
+    else{out[id]=l;if(l.u>r.u)dirty=true}});
+  const a=g.day?{day:g.day,q:g.q,n:g.n||0,due:g.due,last:g.last||0,rt:g.rt||0}:null,b=R.d||null,d=mrgDay(a,b);
+  if(d&&(!a||JSON.stringify(d)!==JSON.stringify(a))){g.day=d.day;g.q=d.q;g.n=d.n;g.due=d.due;g.last=d.last;g.rt=d.rt}
+  if(d&&(!b||JSON.stringify(d)!==JSON.stringify(b)))dirty=true;
+  if(touched)gsave2();
+  return{g:(d||Object.keys(out).length)?{d:d||undefined,i:out}:undefined,touched,dirty}}
+const gsave2=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};   // 同步途中只存本機（不再觸發一次同步）
+function wipe(){while(DEC.length)removeDecorObj(DEC[0].id);while(GIFTS.length)removeGiftObj(GIFTS[0].id);S.g=null;G()}
+
 /* 手動測試：在瀏覽器主控台輸入 giveGift() / giveGift('note') / giveGift('decor')；或在網址後面加 ?gift=1 */
 window.giveGift=k=>giftDeliver(1,k);
 
 /* ---- 開站時還原：已放在花園裡的裝飾品、還沒拆的禮物 ---- */
 if(ok){const g=G();g.decor.forEach(o=>{if(o.p)spawnDecor(o,false)});g.pend.forEach(p=>spawnGift(p,{x:p.x,y:gh(p.x,p.z),z:p.z}))}
-return{step,refresh:gbRefresh,pickGift,openGift,pickDecor,decorCard,down:dragDown,move:dragMove,up:dragUp,cancel:dragCancel,active:()=>!!dd}
+return{step,refresh:gbRefresh,pickGift,openGift,pickDecor,decorCard,down:dragDown,move:dragMove,up:dragUp,cancel:dragCancel,active:()=>!!dd,sync:syncG,mrg:mrgRemote,wipe}
 })();
 
 function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
@@ -1541,7 +1577,7 @@ window.cloud=(()=>{
   function reauth(){if(!client)return;client.requestAccessToken({prompt:'',hint:user&&user.email})}
   function arm(){if(armed||!user)return;armed=true;addEventListener('click',()=>{armed=false;if(user&&!tokOK())reauth()},{once:true,capture:true})}
   function signOut(){tok=null;user=null;api.user=null;persist();setSt('out');toast(tr('cOut'))}
-  function wipeLocal(){for(const d in flowers)rmFlower(d);S.e={};S.del={};for(const d in _bj)delete _bj[d];S.wx=null;S.wxd=null;setWeather(null);try{syncCr()}catch(e){}}
+  function wipeLocal(){try{GF.wipe()}catch(e){}for(const d in flowers)rmFlower(d);S.e={};S.del={};for(const d in _bj)delete _bj[d];S.wx=null;S.wxd=null;setWeather(null);try{syncCr()}catch(e){}}
   async function onTok(r){
     if(r.error){if(manual)toast(esc(tr('cFail')+' ('+r.error+')'));manual=false;return}
     if(!google.accounts.oauth2.hasGrantedAllScopes(r,DRIVE_SCOPE)){manual=false;toast(tr('cScope'));return}
@@ -1564,7 +1600,7 @@ window.cloud=(()=>{
       const fs=await list();
       if(fs.length===1&&fs[0].version===lastVer&&!wasDirty){lastOk=Date.now();setSt('ok');busy=false;return}
       const R={e:{},del:{}};
-      for(const f of fs){const j=await dl(f.id);for(const d in j.e||{})if(!(d in R.e)||ts(j.e[d])>ts(R.e[d]))R.e[d]=j.e[d];for(const d in j.del||{})R.del[d]=Math.max(R.del[d]||0,j.del[d])}
+      for(const f of fs){const j=await dl(f.id);for(const d in j.e||{})if(!(d in R.e)||ts(j.e[d])>ts(R.e[d]))R.e[d]=j.e[d];for(const d in j.del||{})R.del[d]=Math.max(R.del[d]||0,j.del[d]);if(j.g)R.g=GF.mrg(R.g,j.g)}
       const out={v:1,e:{},del:{}};let touched=false,dirty=fs.length>1;
       const dates=new Set([...Object.keys(S.e),...Object.keys(S.del),...Object.keys(R.e),...Object.keys(R.del)]);
       dates.forEach(d=>{
@@ -1573,6 +1609,7 @@ window.cloud=(()=>{
         else if(lts>rts){dirty=true;if(le){if(!le.u)le.u=le.pt||Date.now();out.e[d]=le}else if(rts>0)out.del[d]=lts}
         else if(rts>0){if(rIsE)out.e[d]=R.e[d];else out.del[d]=b}
         else if(le){le.u=Date.now();out.e[d]=le;dirty=true}});   // 沒有任何時間資訊的舊花：補上時間後上傳
+      {const gr=GF.sync(R.g);if(gr.g)out.g=gr.g;if(gr.dirty)dirty=true;if(gr.touched)touched=true}   // 禮物與裝飾品
       if(dirty||!fs.length){const body=JSON.stringify(out),r=fs.length?await update(fs[0].id,body):await create(body);lastVer=r.version;
         for(const f of fs.slice(1))gx(D+'/'+f.id,{method:'DELETE'}).catch(()=>{})}
       else lastVer=fs[0].version;
