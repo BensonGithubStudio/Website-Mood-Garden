@@ -636,7 +636,7 @@ if(ok){
     {const wm=new THREE.Group(),bl=new THREE.Group();
       wm.add(mk(shade(new THREE.CylinderGeometry(.5,.78,1.9,14),.8),'#FBEFDD',[0,.95,0],[1,1,1]),mk(new THREE.ConeGeometry(.82,.95,14),'#F29BB5',[0,2.35,0],[1,1,1]),
         mk(bx,'#B58B66',[0,.3,.74],[.3,.55,.1]),mk(bx,'#B9D8EB',[0,1.2,.6],[.26,.26,.07]),mk(SPH,'#E3C9A8',[0,1.75,.56],[.1,.1,.1]));
-      bl.position.set(0,1.75,.62);
+      bl.position.set(0,1.75,1.0);wm.add(mk(bx,'#B58B66',[0,1.75,.76],[.09,.09,.56]),mk(SPH,'#E3C9A8',[0,1.75,1.0],[.12,.12,.12]));
       for(let k=0;k<4;k++){const g=new THREE.Group();g.rotation.z=k*Math.PI/2;g.add(mk(bx,'#E3C9A8',[0,.58,0],[.07,1.16,.05]),mk(bx,'#FFFFFF',[.17,.72,0],[.3,.7,.02]));bl.add(g)}
       wm.add(bl);wm.position.set(WM[0],gh(WM[0],WM[1])-.02,WM[1]);wm.rotation.y=.35;scene.add(wm);window.WMB=bl}
     {const bn=new THREE.Group();bn.add(mk(bx,'#D9B88F',[0,.34,0],[.95,.07,.36]),mk(bx,'#D9B88F',[0,.62,-.17],[.95,.3,.05]),mk(bx,'#B58B66',[-.4,.17,0],[.07,.34,.3]),mk(bx,'#B58B66',[.4,.17,0],[.07,.34,.3]));
@@ -1110,7 +1110,7 @@ pond(g){bx(g,CYL,'#7FBFE2',0,.015,0,.46,.03,.34);for(let i=0;i<10;i++){const a=i
 bench(g){bx(g,BOXG,'#B98A5B',0,.2,0,.5,.04,.2);bx(g,BOXG,'#C99C6B',0,.34,-.09,.5,.16,.03);[[-.2,.07],[.2,.07],[-.2,-.07],[.2,-.07]].forEach(p=>bx(g,BOXG,'#8A5E3B',p[0],.1,p[1],.04,.2,.04));bx(g,BOXG,'#8A5E3B',-.22,.28,-.09,.03,.3,.03);bx(g,BOXG,'#8A5E3B',.22,.28,-.09,.03,.3,.03)},
 stones(g){[[-.3,-.1,.1,'#B9B2A6'],[-.08,.04,.12,'#C8C1B4'],[.14,-.03,.1,'#B9B2A6'],[.33,.12,.09,'#C8C1B4']].forEach((p,i)=>bx(g,CYL,p[3],p[0],.02,p[1],p[2],.04,p[2]*.85,0,i,0))},
 windmill(g){bx(g,CYLT,'#F3E6CF',0,.3,0,.17,.6,.17);bx(g,CONE,'#C4604F',0,.69,0,.2,.2,.2);bx(g,BOXG,'#7A5236',0,.1,.15,.09,.18,.02);
-  const pv=new THREE.Group();pv.position.set(0,.55,.17);g.add(pv);bx(pv,SPH,'#8A5E3B',0,0,0,.035,.035,.035);for(let i=0;i<4;i++){const a=new THREE.Group();a.rotation.z=i*Math.PI/2;pv.add(a);bx(a,BOXG,'#8A5E3B',0,.16,0,.02,.32,.012);bx(a,BOXG,'#FFFFFF',.035,.18,.004,.06,.22,.008)}g.userData.bl=pv},
+  const pv=new THREE.Group();pv.position.set(0,.55,.3);g.add(pv);bx(g,BOXG,'#8A5E3B',0,.55,.2,.03,.03,.2);bx(pv,SPH,'#8A5E3B',0,0,0,.035,.035,.035);for(let i=0;i<4;i++){const a=new THREE.Group();a.rotation.z=i*Math.PI/2;pv.add(a);bx(a,BOXG,'#8A5E3B',0,.16,0,.02,.32,.012);bx(a,BOXG,'#FFFFFF',.035,.18,.004,.06,.22,.008)}g.userData.bl=pv},
 lantern(g){bx(g,CYL,'#6B5848',0,.3,0,.014,.6,.014);bx(g,BOXG,'#6B5848',.07,.58,0,.16,.014,.014);bx(g,CONE,'#C4604F',.14,.6,0,.065,.04,.065);const m=mk(SPH,'#FFD98A',[.14,.52,0],[.06,.08,.06],null,WARM);g.add(m);bx(g,CYL,'#6B5848',.14,.43,0,.03,.02,.03);
   const s=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFD27A',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.15}));s.scale.set(.6,.6,1);s.position.set(.14,.52,0);g.add(s);g.userData.gl=s},
 birdhouse(g){bx(g,CYL,'#8A6A4A',0,.3,0,.02,.6,.02);bx(g,BOXG,'#E9C58F',0,.66,0,.2,.18,.2);bx(g,PYR,'#C4604F',0,.82,0,.3,.14,.3,0,Math.PI/4);bx(g,SPH,'#4A3535',0,.67,.1,.04,.04,.012);bx(g,CYL,'#8A6A4A',0,.58,.12,.008,.06,.008,Math.PI/2)},
@@ -1916,7 +1916,7 @@ try{
       if(!m.isMesh||!m.material||!m.material.color||m.material.color.getHexString()!=='b9d8eb')return;
       const mt=m.material.clone();mt.emissive=new T.Color('#FFC77A');mt.emissiveIntensity=0;m.material=mt;
       const gl=new T.Sprite(new T.SpriteMaterial({map:GLOW,color:'#FFD9A0',blending:T.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));
-      gl.scale.set(.62,.62,1);gl.position.copy(m.localToWorld(new T.Vector3(0,0,3)));scene.add(gl);WINS.push({mt,gl})})});
+      gl.scale.set(.9,.9,1);gl.position.copy(m.localToWorld(new T.Vector3(0,0,3)));scene.add(gl);WINS.push({mt,gl,c0:mt.color.clone()})})});
 }catch(e){}
 
 /* ---------- 漂流的葉子 ---------- */
@@ -1953,7 +1953,7 @@ function step(now){
   hint.gl.material.opacity=.06+(rm?0:.025*Math.sin(t*1.6))+(hint.hov?.05:0);hint.gl.position.y=hint.sp.position.y;
   /* 夜晚：燈籠亮、螢火蟲、霧的顏色 */
   lm.emissiveIntensity=.2+1.3*night;lampGl.material.opacity=.06+.55*night;
-  WINS.forEach(w=>{w.mt.emissiveIntensity=.8*night;w.mt.envMapIntensity=.1+.9*day;w.gl.material.opacity=.32*night;w.gl.visible=night>.02})
+  WINS.forEach(w=>{w.mt.color.copy(w.c0).lerp(lm.color,night);w.mt.emissiveIntensity=.2+1.3*night;w.mt.envMapIntensity=.1+.9*day;w.gl.material.opacity=.06+.55*night;w.gl.visible=night>.02})
   ffm.opacity=night*.9;fireflies.visible=night>.05;
   if(fireflies.visible){const a=ffg.attributes.position;ffs.forEach((f,i)=>{const q=rm?0:t*f.s+f.a;a.setXYZ(i,IX+Math.cos(q)*f.r,f.y+Math.sin(t*.8+f.p)*.15,IZ+Math.sin(q*1.3)*f.r*.8)});a.needsUpdate=true}
   try{mists.forEach(o=>{o.m.material.color.copy(scene.fog.color).lerp(WHITE,.35);o.m.material.opacity=.14+.1*day;if(!rm)o.m.position.x=o.x+Math.sin(t*.12+o.p)*.8})}catch(e){}
