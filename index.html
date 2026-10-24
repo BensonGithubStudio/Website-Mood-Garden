@@ -1953,7 +1953,7 @@ function step(now){
   hint.gl.material.opacity=.06+(rm?0:.025*Math.sin(t*1.6))+(hint.hov?.05:0);hint.gl.position.y=hint.sp.position.y;
   /* 夜晚：燈籠亮、螢火蟲、霧的顏色 */
   lm.emissiveIntensity=.2+1.3*night;lampGl.material.opacity=.06+.55*night;
-  WINS.forEach(w=>{w.mt.color.copy(w.c0).lerp(lm.color,night);w.mt.emissiveIntensity=.2+1.3*night;w.mt.envMapIntensity=.1+.9*day;w.gl.material.opacity=.06+.55*night;w.gl.visible=night>.02})
+  WINS.forEach(w=>{w.mt.color.copy(w.c0).lerp(lm.color,night);w.mt.emissiveIntensity=1.5*night;w.mt.envMapIntensity=.1+.9*day;w.gl.material.opacity=.61*night;w.gl.visible=night>.02})
   ffm.opacity=night*.9;fireflies.visible=night>.05;
   if(fireflies.visible){const a=ffg.attributes.position;ffs.forEach((f,i)=>{const q=rm?0:t*f.s+f.a;a.setXYZ(i,IX+Math.cos(q)*f.r,f.y+Math.sin(t*.8+f.p)*.15,IZ+Math.sin(q*1.3)*f.r*.8)});a.needsUpdate=true}
   try{mists.forEach(o=>{o.m.material.color.copy(scene.fog.color).lerp(WHITE,.35);o.m.material.opacity=.14+.1*day;if(!rm)o.m.position.x=o.x+Math.sin(t*.12+o.p)*.8})}catch(e){}
