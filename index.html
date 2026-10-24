@@ -2312,7 +2312,7 @@ function pick(e){
 /* ---------- 佈告欄視窗 ---------- */
 const css=document.createElement('style');css.textContent=`
 #mbo{z-index:21;background:rgba(90,110,130,.28);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px)}
-.mbs{width:min(660px,100%);max-height:100%;display:flex;flex-direction:column;border-radius:26px;padding:12px;background:linear-gradient(#C99B67,#B98B58);box-shadow:0 18px 40px rgba(70,45,20,.38),inset 0 0 0 2px rgba(255,235,200,.35);animation:mbin .5s cubic-bezier(.2,.9,.3,1.1) both}
+.mbs{width:min(660px,100%);max-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 20px);max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 20px);display:flex;flex-direction:column;border-radius:26px;padding:12px;background:linear-gradient(#C99B67,#B98B58);box-shadow:0 18px 40px rgba(70,45,20,.38),inset 0 0 0 2px rgba(255,235,200,.35);animation:mbin .5s cubic-bezier(.2,.9,.3,1.1) both}
 .mbh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:4px 10px 10px;color:#FFF6E6;text-shadow:0 1px 3px rgba(70,45,20,.4)}
 .mbh h2{font-size:22px;display:flex;align-items:center;gap:6px}.mbh span{font-size:13px;opacity:.92}
 .mbb{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:16px;padding:24px 14px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:26px 16px;align-content:start;
@@ -2331,10 +2331,10 @@ const css=document.createElement('style');css.textContent=`
 .mbc b{font-size:14px}.mbk{display:flex;gap:6px;flex-wrap:wrap}.mbk button{background:#fff;border-radius:99px;padding:4px 12px;font-size:13px;box-shadow:0 2px 6px #0001}
 .mbr{font-size:13.5px;line-height:1.5}
 .mbv{align-self:flex-start;margin-top:auto;background:rgba(255,255,255,.7);border-radius:99px;padding:5px 12px;font-size:13px;display:inline-flex;align-items:center;gap:4px}.mbv .ms{font-size:18px}
-.mbf{display:flex;justify-content:space-between;gap:8px;padding:10px 6px 2px}
+.mbf{flex:none;display:flex;justify-content:space-between;gap:8px;padding:10px 6px 2px}.mbh{flex:none}
 @keyframes mbin{from{opacity:0;transform:translateY(24px) scale(.94)}}
 @keyframes mbd{from{opacity:0;transform:translateY(-16px) rotate(calc(var(--r) - 7deg)) scale(.92)}}
-@media(max-width:520px){.mbb{grid-template-columns:1fr}}
+@media(max-width:520px){.mbb{grid-template-columns:1fr;padding:22px 12px 14px;gap:24px}.mbs{padding:10px;border-radius:22px}}
 @media(prefers-reduced-motion:reduce){.mbs,.mbn{animation:none}.mbn,.mbn::before{transition:none}}body.rm .mbs,body.rm .mbn{animation:none}
 `;document.head.appendChild(css);
 document.body.insertAdjacentHTML('beforeend',`<div class="scrim" id="mbo" hidden><div class="mbs" id="mbd" role="dialog" aria-modal="true"><div class="mbh"><h2 id="mbh"></h2><span id="mbn"></span></div><div class="mbb" id="mbb"></div><div class="mbf"><button class="btn" id="mbsh"></button><button class="btn p" id="mbx"></button></div></div></div>`);
