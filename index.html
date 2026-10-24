@@ -1230,7 +1230,43 @@ const DECOR=[
   n:{zh:'小路標',en:'Signpost',ja:'道しるべ',ko:'이정표'},
   ico:'<rect x="18.5" y="6" width="3" height="30" rx="1" fill="#8A6A4A"/><path d="M8 8h20l4 3.5-4 3.5H8z" fill="#E9C58F" stroke="#B98A5B" stroke-width="1"/><path d="M32 18H12l-4 3.5 4 3.5h20z" fill="#F4EBDD" stroke="#D9CFBE" stroke-width="1"/><ellipse cx="20" cy="36" rx="6" ry="1.8" fill="#B9B2A6"/>',
   m(g){bx(g,CYL,'#B9B2A6',0,.02,0,.09,.04,.09);bx(g,BOXG,'#8A6A4A',0,.3,0,.05,.6,.05);bx(g,BOXG,'#E9C58F',.09,.5,.03,.3,.09,.02);bx(g,BOXG,'#E9C58F',.255,.5,.03,.065,.065,.02,0,0,Math.PI/4);
-  bx(g,BOXG,'#F4EBDD',-.09,.38,-.03,.3,.09,.02);bx(g,BOXG,'#F4EBDD',-.255,.38,-.03,.065,.065,.02,0,0,Math.PI/4);bx(g,SPH,'#8A6A4A',0,.61,0,.04,.04,.04)}}
+  bx(g,BOXG,'#F4EBDD',-.09,.38,-.03,.3,.09,.02);bx(g,BOXG,'#F4EBDD',-.255,.38,-.03,.065,.065,.02,0,0,Math.PI/4);bx(g,SPH,'#8A6A4A',0,.61,0,.04,.04,.04)}},
+/* No.17 */ {k:'windchime',r:.26,
+  n:{zh:'彩虹風鈴',en:'Rainbow Wind Chime',ja:'虹色の風鈴',ko:'무지개 풍경'},
+  ico:'<rect x="7" y="6" width="2.8" height="30" rx="1" fill="#8A6A4A"/><rect x="7" y="6" width="22" height="2.8" rx="1.2" fill="#8A6A4A"/><path d="M27 8v3" stroke="#6B5848" stroke-width="1.2"/><ellipse cx="27" cy="12" rx="6" ry="1.8" fill="#C98F5B"/><g stroke-linecap="round" stroke-width="2.6"><path d="M22 13v13" stroke="#F29BB5"/><path d="M25 13v18" stroke="#FFD54A"/><path d="M28 13v15" stroke="#8FD3B6"/><path d="M31 13v19" stroke="#8CC8E8"/><path d="M34 13v12" stroke="#C3A6E8"/></g><rect x="25" y="34" width="5" height="3.4" rx="1" fill="#F4EBDD" stroke="#D9CFBE" stroke-width=".8"/><ellipse cx="14" cy="36" rx="5" ry="1.6" fill="#B9B2A6"/>',
+  m(g){const wd='#8A6A4A';bx(g,CYL,'#B9B2A6',0,.02,0,.09,.04,.09);bx(g,CYL,wd,0,.37,0,.022,.7,.022);bx(g,CYL,wd,.11,.72,0,.016,.24,.016,0,0,Math.PI/2);
+  const pv=new THREE.Group();pv.position.set(.22,.72,0);g.add(pv);bx(pv,CYL,'#6B5848',0,-.025,0,.006,.05,.006);bx(pv,CYL,'#C98F5B',0,-.055,0,.08,.016,.08);
+  const cols=['#F29BB5','#FFD54A','#8FD3B6','#8CC8E8','#C3A6E8'],lens=[.17,.24,.2,.27,.15],tubes=[];
+  cols.forEach((c,i)=>{const a=i/5*6.283,tg=new THREE.Group();tg.position.set(Math.cos(a)*.045,-.065,Math.sin(a)*.045);pv.add(tg);bx(tg,CYL,c,0,-lens[i]/2,0,.014,lens[i],.014);bx(tg,CYL,'#FFFFFF',0,-lens[i],0,.014,.01,.014);tubes.push(tg)});
+  bx(pv,CYL,'#6B5848',0,-.17,0,.004,.2,.004);bx(pv,SPH,'#6B5848',0,-.27,0,.014,.014,.014);bx(pv,BOXG,'#F4EBDD',0,-.33,0,.075,.075,.008,0,.5,0);
+  g.userData.wc=pv;g.userData.wt=tubes},
+  tick(g,t,dt,o){const u=g.userData,wd=(typeof WX!=='undefined'&&WX.wind)||0,am=.05+wd*.28;
+    if(u.wc){u.wc.rotation.z=Math.sin(t*1.3+o.x)*am*.55;u.wc.rotation.x=Math.cos(t*1.05+o.z)*am*.4}
+    if(u.wt)u.wt.forEach((tg,i)=>{tg.rotation.x=Math.sin(t*2.2+i*1.3+o.x)*am;tg.rotation.z=Math.cos(t*1.9+i*1.1+o.z)*am})}},
+/* No.18 */ {k:'fireflyjar',r:.18,
+  n:{zh:'螢火蟲罐',en:'Firefly Jar',ja:'ホタルのびん',ko:'반딧불이 병'},
+  ico:'<ellipse cx="20" cy="35" rx="11" ry="3" fill="#9A7B5A"/><rect x="10" y="30" width="20" height="5" rx="2" fill="#B98A5B"/><rect x="12" y="12" width="16" height="19" rx="5" fill="#DDF3F0" fill-opacity=".7" stroke="#A9D8D2" stroke-width="1.4"/><rect x="14" y="7" width="12" height="5" rx="2" fill="#C98F5B"/><circle cx="18" cy="19" r="2.2" fill="#FFE27A"/><circle cx="24" cy="23" r="1.8" fill="#FFD54A"/><circle cx="20" cy="27" r="1.6" fill="#FFE9A0"/><circle cx="18" cy="19" r="4.6" fill="#FFE27A" opacity=".25"/><circle cx="24" cy="23" r="4" fill="#FFD54A" opacity=".25"/>',
+  m(g){bx(g,CYL,'#9A7B5A',0,.06,0,.15,.12,.15);bx(g,CYL,'#B98A5B',0,.121,0,.12,.012,.12);
+  bx(g,CYL,'#7DBB78',.08,.14,.05,.03,.02,.03,0,.4,0);bx(g,SPH,'#7DBB78',.1,.15,.07,.025,.012,.04,0,.6,0);
+  const gm=new THREE.MeshStandardMaterial({color:'#E3F6F3',transparent:true,opacity:.38,roughness:.08,metalness:.1,depthWrite:false});
+  g.add(mk(CYL,'#E3F6F3',[0,.24,0],[.095,.2,.095],null,gm));g.add(mk(CYL,'#E3F6F3',[0,.355,0],[.06,.03,.06],null,gm));bx(g,CYL,'#C98F5B',0,.385,0,.07,.03,.07);bx(g,SPH,'#8A5E3B',0,.405,0,.018,.014,.018);
+  g.userData.ff=[];for(let i=0;i<5;i++){const f=mk(SPH,'#FFE9A0',[0,.24,0],[.014,.014,.014],null,WARM);f.castShadow=false;g.add(f);g.userData.ff.push(f)}
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFE27A',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.15}));s.scale.set(.55,.55,1);s.position.set(0,.25,0);g.add(s);g.userData.gl=s},
+  tick(g,t,dt,o){const ff=g.userData.ff;if(!ff)return;ff.forEach((f,i)=>{const a=t*(.55+i*.14)+i*1.7,r=.04+.015*Math.sin(t*.8+i),p=.5+.5*Math.sin(t*2.4+i*1.9),sc=.009+.01*p;
+    f.position.set(Math.cos(a)*r,.2+.07*(.5+.5*Math.sin(t*.9+i*2.1)),Math.sin(a*1.3)*r);f.scale.set(sc,sc,sc)})}},
+/* No.19 */ {k:'balloon',r:.28,
+  n:{zh:'小熱氣球',en:'Little Hot Air Balloon',ja:'小さな熱気球',ko:'작은 열기구'},
+  ico:'<ellipse cx="20" cy="15" rx="11" ry="12" fill="#F29BB5"/><path d="M20 3c-5 3-6 20 0 24 6-4 5-21 0-24z" fill="#FFF1B0"/><path d="M10 20q10 4 20 0" stroke="#8CC8E8" stroke-width="2.6" fill="none"/><path d="M13 26 17 31M27 26 23 31" stroke="#6B5848" stroke-width="1.2"/><rect x="15.5" y="31" width="9" height="6" rx="1.4" fill="#C98F5B"/><path d="M15.5 33.5h9" stroke="#A9794F" stroke-width="1"/>',
+  m(g){bx(g,CYL,'#8A6A4A',.14,.03,0,.012,.06,.012);bx(g,BOXG,'#C98F5B',.14,.065,0,.035,.012,.035);
+  bx(g,CYL,'#E9D3A0',.07,.16,0,.004,.33,.004,0,0,.43);
+  const pv=new THREE.Group();pv.position.set(0,.3,0);g.add(pv);
+  bx(pv,BOXG,'#C98F5B',0,.035,0,.11,.07,.11);bx(pv,BOXG,'#A9794F',0,.052,0,.115,.012,.115);bx(pv,BOXG,'#E3B98A',0,.074,0,.12,.01,.12);
+  [[-.045,-.045],[.045,-.045],[-.045,.045],[.045,.045]].forEach(p=>bx(pv,CYL,'#6B5848',p[0],.17,p[1],.004,.2,.004,-p[1]*2.2,0,p[0]*2.2));
+  bx(pv,SPH,'#F29BB5',0,.4,0,.17,.195,.17);bx(pv,SPH,'#FFF1B0',0,.4,0,.173,.19,.058);bx(pv,SPH,'#FFF1B0',0,.4,0,.058,.19,.173);
+  bx(pv,SPH,'#8CC8E8',0,.4,0,.178,.03,.178);bx(pv,SPH,'#8CC8E8',0,.5,0,.15,.024,.15);bx(pv,SPH,'#8CC8E8',0,.3,0,.15,.024,.15);
+  bx(pv,CONE,'#F29BB5',0,.235,0,.05,.07,.05,Math.PI);bx(pv,SPH,'#E86A5C',0,.6,0,.02,.02,.02);
+  g.userData.bp=pv},
+  tick(g,t,dt,o){const pv=g.userData.bp;if(!pv)return;pv.position.y=.3+Math.sin(t*1.1+o.x)*.022;pv.rotation.z=Math.sin(t*.8+o.z)*.05;pv.rotation.x=Math.cos(t*.65+o.x)*.04;pv.rotation.y=Math.sin(t*.3+o.x)*.25}}
 ];
 const DK=DECOR.map(d=>d.k),DR={},ICO={},DM={},DBY={};
 DECOR.forEach(d=>{if(DBY[d.k])console.warn('[decor] 代號重複：'+d.k);DBY[d.k]=d;DR[d.k]=d.r;ICO[d.k]=d.ico;DM[d.k]=d.m;
