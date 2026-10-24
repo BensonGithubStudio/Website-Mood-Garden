@@ -800,7 +800,7 @@ function slideDrop(d){for(let i=slides.length-1;i>=0;i--)if(slides[i].d===d)slid
 function slideStep(dt){for(let i=slides.length-1;i>=0;i--){const q=slides[i],f=q.o||flowers[q.d];if(!f){slides.splice(i,1);continue}
   q.t+=dt/.55;const u=Math.min(1,q.t),e=u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;f.position.lerpVectors(q.fr,q.to,e);f.position.y+=Math.sin(u*Math.PI)*.35;
   if(u>=1){f.position.copy(q.to);slides.splice(i,1)}}}
-function setArrange(on){arrange=on;document.body.classList.toggle('arr',on);$('card').hidden=true;if(on){home();toast(tr('hintArr'))}else{selRing.visible=false;drag=null}refresh()}
+function setArrange(on){arrange=on;document.body.classList.toggle('arr',on);$('card').hidden=true;if(on){toast(tr('hintArr'))}else{selRing.visible=false;drag=null}refresh()}
 $('arr').onclick=()=>setArrange(!arrange);
 const DROPM=new THREE.MeshStandardMaterial({color:'#E6F4FF',roughness:.05,metalness:.2,transparent:true,opacity:.85,emissive:new THREE.Color('#9CC8EE'),emissiveIntensity:.25});
 const WT={none:{cover:0,rain:0,flt:0,fx:.3,fy:.3,wind:.25,rb:0,sun:0,wet:0,dark:0,pink:0}};
@@ -1557,7 +1557,7 @@ function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
   const m=M[e.mood],c=$('card');c.hidden=false;
   c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${matureOf(e)?'':`<div style="font-size:12px;opacity:.75;margin-top:4px">${e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e))}</div>`}${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px">${thirstyOf(e)?`<button class="btn w" id="cw" data-sfx="off" aria-label="${tr('waterB')}" title="${tr('waterB')}">${ic('water_drop')}</button>`:''}<button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn" id="cr" data-sfx="off" aria-label="${tr('gRotB')}" title="${tr('gRotB')}">${ic('rotate_right')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
-  $('ce').onclick=()=>openModal(d);$('cr').onclick=()=>rotateFlower(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true;home()};
+  $('ce').onclick=()=>openModal(d);$('cr').onclick=()=>rotateFlower(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true};
   $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
 /* 旋轉花朵：每按一次轉 45 度（帶緩動）；角度存在 S.e[d].r，save() 會偵測到變更並更新時間，因此會隨花朵一起同步到 Google 雲端 */
 function rotateFlower(d){const e=S.e[d];if(!e)return;const f=flowers[d],TP=Math.PI*2,u=f&&f.userData;
