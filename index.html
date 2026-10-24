@@ -1711,26 +1711,58 @@ scene.children.slice().forEach(c=>{if(skip.has(c))return;
 /* --- 水坑：天空倒影＋依畫面明暗調整；順便取得水坑位置給地面做泥濘 --- */
 const PW=[],PDs=[];scene.traverse(m=>{if(isStd(m)&&m.material.roughness===.05&&m.material.transparent){m.material.envMap=ENV;m.material.envMapIntensity=1.2;m.material.needsUpdate=true;PW.push(m.material);m.geometry.computeBoundingSphere();const p=m.geometry.attributes.position;PDs.push([p.getX(0),p.getZ(0),m.geometry.boundingSphere.radius/1.2])}});
 /* --- 地面：世界座標混合草地／泥土貼圖，水坑周圍變泥濘、下雨時更濕更亮 --- */
-const U={tGr:{value:TG},tDt:{value:TD},uWet:{value:0},uT:{value:0},uW:{value:.5},uPD:{value:Array.from({length:8},(_,i)=>PDs[i]?new T.Vector3(...PDs[i]):new T.Vector3(1e4,1e4,1))}};
+const U={tGr:{value:TG},tDt:{value:TD},uWet:{value:0},uRip:{value:0},uT:{value:0},uW:{value:.5},uPD:{value:Array.from({length:8},(_,i)=>PDs[i]?new T.Vector3(...PDs[i]):new T.Vector3(1e4,1e4,1))}};
 const GR2=[];function skinGround(m){GR2.push(m);m.customProgramCacheKey=()=>'xgr';m.extensions=m.extensions||{};m.extensions.derivatives=true;m.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec2 xWP;').replace('#include <begin_vertex>','#include <begin_vertex>\nxWP=(modelMatrix*vec4(transformed,1.0)).xz;');
  sh.fragmentShader=sh.fragmentShader.replace('#include <common>',`#include <common>
-varying vec2 xWP;uniform sampler2D tGr,tDt;uniform float uWet;uniform vec3 uPD[8];
+varying vec2 xWP;uniform sampler2D tGr,tDt;uniform float uWet,uT,uRip;uniform vec3 uPD[8];
+float xH1(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 vec3 xBump(vec3 sp,vec3 sn,vec2 dh,float fd){vec3 sx=dFdx(sp),sy=dFdy(sp),r1=cross(sy,sn),r2=cross(sn,sx);float dt=dot(sx,r1)*fd;vec3 g=sign(dt)*(dh.x*r1+dh.y*r2);return normalize(abs(dt)*sn-g);}`)
  .replace('#include <color_fragment>',`#include <color_fragment>
  vec4 xg1=texture2D(tGr,xWP*.55),xg2=texture2D(tGr,xWP*.11+vec2(.37,.11)),xgl=texture2D(tGr,xWP*.025),xd1=texture2D(tDt,xWP*.7),xd2=texture2D(tDt,xWP*.13);
  float xed=smoothstep(-.02,.08,diffuseColor.r-diffuseColor.g),xpt=smoothstep(.68,.84,xgl.b)*.9,xmud=0.;
  for(int i=0;i<8;i++){xmud=max(xmud,1.-smoothstep(.55,1.15,length(xWP-uPD[i].xy)/(uPD[i].z*1.25)));}
  xmud*=uWet;
+ /* 雨滴落在水漥上的漣漪：水漥裡持續有雨滴落下，圈圈向外擴散並漸漸淡去 */
+ float xrpL=0.,xrpH=0.;
+ if(uRip>.02){
+  for(int i=0;i<8;i++){
+   vec3 xpd=uPD[i];
+   float xdn=length(xWP-xpd.xy)/xpd.z;
+   if(xdn<1.){
+    float xmk=1.-smoothstep(.5,.85,xdn);
+    /* 連續落雨：每 0.3~0.6 秒（平均約 0.45 秒）就在水漥裡落下一滴，漣漪各自擴散、互相重疊，
+       不再是固定 3 個的循環。每一滴的位置、大小、壽命都不同。 */
+    float xP=.45,xtq=uT+xH1(vec2(float(i)*7.31,2.7))*60.,xn0=floor(xtq/xP);
+    for(int k=0;k<5;k++){
+     float xn=xn0-float(k),xsd=float(i)*7.31;
+     float xst=xn*xP+xH1(vec2(xn,xsd+1.3))*.15;
+     float xdur=1.1+xH1(vec2(xn+8.1,xsd))*.7,xage=xtq-xst;
+     if(xage>0.&&xage<xdur){
+      float xph=xage/xdur,xsz=.75+xH1(vec2(xn+2.9,xsd+4.4))*.5;
+      vec2 xc=xpd.xy+(vec2(xH1(vec2(xn,xsd+9.1)),xH1(vec2(xn+3.7,xsd+6.2)))-.5)*xpd.z*.9;
+      float xd=length(xWP-xc),xR=xph*xpd.z*.5*xsz,xw=.03+.035*xph,xfd=(1.-xph)*(1.-xph)*smoothstep(0.,.08,xph);
+      float xa=(xd-xR)/xw,xb2=(xd-xR*.62)/xw;
+      float xr1=exp(-xa*xa),xr2=.55*exp(-xb2*xb2);
+      xrpL+=(xr1+xr2)*xfd*xmk;
+      xrpH+=(sin((xd-xR)*55.)*exp(-xa*xa*.12)+.5*sin((xd-xR*.62)*55.)*exp(-xb2*xb2*.12))*xfd*xmk;
+     }
+    }
+   }
+  }
+  float xrg=smoothstep(.2,.7,uRip);
+  xrpL*=xrg;xrpH*=xrg;
+ }
  float xdt=clamp(max(xed,xpt),0.,1.);
  vec3 xb=mix(diffuseColor.rgb,vec3(.56,.43,.30),xpt*(1.-xed));
  xb*=mix(mix(vec3(.94,1.,.84),vec3(1.04,1.,.98),xgl.r),vec3(1.),xdt);
  xb=mix(xb,vec3(.30,.22,.15),xmud*.85);
  xb=mix(xb,vec3(.66,.62,.58),step(.87,xd1.b)*xdt*.9);
- diffuseColor.rgb=xb*mix((xg1.r*.6+xg2.r*.55)*(.8+.4*xd1.g),xd1.r*.6+xd2.r*.55,xdt)*1.1*mix(1.,.75,xmud);`)
+ diffuseColor.rgb=xb*mix((xg1.r*.6+xg2.r*.55)*(.8+.4*xd1.g),xd1.r*.6+xd2.r*.55,xdt)*1.1*mix(1.,.75,xmud);
+ diffuseColor.rgb+=vec3(.72,.86,1.)*min(xrpL,1.2)*.38;`)
  .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\n roughnessFactor=mix(roughnessFactor,.25,xmud);')
  .replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
- {float xgh=xg1.g*.3+xg2.g*.15+xd1.g*.4+xd2.g*.15,xh=mix(xgh,xd1.g*.7+xd2.g*.3,xdt);xh=mix(xh,.5,xmud);normal=xBump(-vViewPosition,normal,vec2(dFdx(xh),dFdy(xh))*mix(2.2,2.5,xdt),gl_FrontFacing?1.0:-1.0);}`);};m.needsUpdate=true}
+ {float xgh=xg1.g*.3+xg2.g*.15+xd1.g*.4+xd2.g*.15,xh=mix(xgh,xd1.g*.7+xd2.g*.3,xdt);xh=mix(xh,.5,xmud)+xrpH*.05;normal=xBump(-vViewPosition,normal,vec2(dFdx(xh),dFdy(xh))*mix(2.2,2.5,xdt),gl_FrontFacing?1.0:-1.0);}`);};m.needsUpdate=true}
 (window.GRS||[]).forEach(g=>skinGround(g.material));
 /* --- 草叢：兩片交叉的草葉面片，隨風輕搖 --- */
 const tg=new T.BufferGeometry(),ps=[],uvs=[],ix=[],nm=[];[0,Math.PI/2].forEach((a,k)=>{const c=Math.cos(a),s=Math.sin(a);ps.push(-.5*c,0,-.5*s,.5*c,0,.5*s,.5*c,1,.5*s,-.5*c,1,-.5*s);uvs.push(0,0,1,0,1,1,0,1);nm.push(0,1,0,0,1,0,0,1,0,0,1,0);const b=k*4;ix.push(b,b+1,b+2,b,b+2,b+3)});
@@ -1747,7 +1779,7 @@ const gl=R.getContext(),chk=m=>{try{const p=R.properties.get(m).currentProgram;r
 R.compile(scene,cam);
 [...GR2,tm].forEach(m=>{if(!chk(m)){console.warn('texture shader fallback');m.onBeforeCompile=()=>{};m.customProgramCacheKey=()=>'x0';m.needsUpdate=true}});
 /* --- 每幀同步：濕度、風、日夜對倒影的影響 --- */
-let lh=false;function lp(t){if(SLP.on){lh=true;return}requestAnimationFrame(lp);try{const w=WX.wet||0,d=window.dfv==null?1:window.dfv;U.uWet.value=w;U.uT.value=S.rm?0:t/1000;U.uW.value=S.rm?0:.5+WX.wind*1.1;PW.forEach(m=>m.envMapIntensity=.12+1.5*d);GLm.forEach(m=>m.envMapIntensity=.1+.9*d);tm.color.setScalar(1-.16*w)}catch(e){}}
+let lh=false;function lp(t){if(SLP.on){lh=true;return}requestAnimationFrame(lp);try{const w=WX.wet||0,d=window.dfv==null?1:window.dfv;U.uWet.value=w;U.uRip.value=S.rm?0:w;U.uT.value=S.rm?0:t/1000;U.uW.value=S.rm?0:.5+WX.wind*1.1;PW.forEach(m=>m.envMapIntensity=.12+1.5*d);GLm.forEach(m=>m.envMapIntensity=.1+.9*d);tm.color.setScalar(1-.16*w)}catch(e){}}
 SLP.cbs.push(()=>{if(lh){lh=false;requestAnimationFrame(lp)}});lp(0);
 window.SKIN={V,SM,TB,TS,TSo,TR,wood,skinGround,TRUNK,CAN,RKG,tg,tm,DECK};
 }catch(e){console.warn('skin layer skipped',e)}
