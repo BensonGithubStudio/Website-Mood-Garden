@@ -156,6 +156,39 @@ nav{max-width:calc(100% - 16px)}
 .paper .gt{font-size:18px;line-height:1.55;margin:10px 0 2px;font-style:italic}
 .gsh-h{display:flex;align-items:center;gap:8px;font-size:22px}#gsh .sc{margin-top:10px}.gpop{display:grid;place-items:center;margin:6px 0 8px}
 
+/* ---- 小禮物圖鑑 ---- */
+.dx-view{display:flex;flex-direction:column;max-height:calc(100vh - 72px);max-height:calc(100dvh - 72px)}
+.dx-hd{flex:none;padding-bottom:12px;border-bottom:1px solid #0000000d}
+.dx-body{flex:1;min-height:0;overflow:auto;margin:0 -22px;padding:16px 22px;overscroll-behavior:contain}
+.dx-ft{flex:none;display:flex;justify-content:flex-end;padding-top:12px;border-top:1px solid #0000000d}
+.dx-hd .gsh-h{margin:0}
+.dx-sum{display:flex;align-items:center;gap:10px;margin:10px 0 0;font-size:13px;white-space:nowrap}
+.dx-bar{flex:1;height:10px;border-radius:99px;background:#0000000f;overflow:hidden}.dx-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#F5C7D5,#F29BB5);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.dx-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+@media(min-width:560px){.dx-g{grid-template-columns:repeat(4,1fr)}}
+.dx-c{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 9px;border-radius:20px;background:#fff;box-shadow:0 3px 10px #0001;transition:transform .2s,box-shadow .2s;min-width:0}
+.dx-c:hover{transform:translateY(-2px);box-shadow:0 6px 14px #0001}.dx-c:active{transform:scale(.97)}
+.dx-c.no{background:#ffffff70;box-shadow:none;border:1.5px dashed #0000001f}
+.dx-c.no svg,.dx-hero.no svg{filter:brightness(0);opacity:.14}
+.dx-n{font:500 10.5px/1 Fredoka,Nunito,sans-serif;opacity:.42;letter-spacing:.02em}
+.dx-t{font-size:12.5px;font-weight:600;line-height:1.25;text-align:center;overflow-wrap:anywhere;padding:0 2px}
+.dx-s{font-size:11.5px;opacity:.7;line-height:1.3;display:flex;align-items:center;gap:6px;white-space:nowrap}.dx-c.no .dx-s{opacity:.45}
+.dx-s .ms{font-size:14px;vertical-align:-.18em;opacity:.7}
+.dx-x{position:absolute;top:6px;right:7px;font:600 11.5px/1 Fredoka,Nunito,sans-serif;background:#E5DBF7;border-radius:99px;padding:3px 7px}
+.dx-new{position:absolute;top:-5px;left:-3px;font:600 10px/1 Fredoka,Nunito,sans-serif;background:#F29BB5;color:#fff;border-radius:99px;padding:4px 7px;box-shadow:0 2px 6px #0003;animation:dxp 1.6s ease-in-out infinite}
+@keyframes dxp{50%{transform:scale(1.12)}}
+.dx-top{display:flex;align-items:center;justify-content:space-between}
+.dx-top button{background:#fff;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;box-shadow:0 3px 10px #0001}.dx-top .ms{font-size:20px;vertical-align:0}
+.dx-d{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
+.dx-d h2{font-size:22px;margin:2px 0 0}.dx-d small{opacity:.65;font-size:13px}
+.dx-hero{width:124px;height:124px;border-radius:36px;background:#E5DBF7;display:grid;place-items:center;margin:2px 0 4px}.dx-hero.no{background:#0000000a}
+.dx-st{display:flex;gap:8px;width:100%;margin:10px 0 4px}
+.dx-st div{flex:1;background:#fff;border-radius:16px;padding:10px 4px;box-shadow:0 3px 10px #0001}.dx-st b{display:block;font:600 22px/1.2 Fredoka,Nunito,sans-serif}.dx-st small{font-size:12px}
+.dx-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%;margin-top:10px}
+.dx-lock{margin:10px 6px 4px;font-size:14px;line-height:1.5;opacity:.75}
+#gsh .btn:disabled{opacity:.4;cursor:default;box-shadow:none}
+.dx-got{text-align:center;margin:6px 0 0;font-size:14px;opacity:.75}.dx-got.new{opacity:1;color:#d0668a;font-weight:700}
+
 /* ---- 底部按鈕版位（記錄心情／佈置花園／小禮物） ----
    <400px（很窄）：選單列兩側放不下，按鈕浮在選單列上方；左側兩顆上下排列，小禮物在上、佈置花園在下。
    400–559px（一般直式手機）：按鈕貼在選單列兩側、與它同一水平線；左側兩顆仍上下排列。
@@ -1068,80 +1101,146 @@ ko:[
 '당신의 정원이 날마다 북적여 가는 걸 보면 저도 행복해요.',
 '말로 하기 어려운 마음은 꽃이 대신 전해 줄 거예요.'
 ]};
-const DK=['cabin','swing','mushroom','pond','bench','stones','windmill','lantern','birdhouse','fountain','mailbox','picnic','fence','planter'];
-const DR={cabin:.5,swing:.42,mushroom:.36,pond:.55,bench:.38,stones:.42,windmill:.34,lantern:.2,birdhouse:.22,fountain:.46,mailbox:.2,picnic:.42,fence:.38,planter:.22};
 const T={
 en:{gb:'Little gifts',gEmpty:'Animals sometimes leave little gifts in the garden. Decorations you receive will be kept here.',gIn:'In the garden',gKept:'Collected',gPick:'Collect',gPut:'Place',gOk:'Got it',gFrom:w=>'A note from '+w,
  gn:{bee:'a little bee',bird:'a little chick',ladybug:'a ladybug',butterfly:'a butterfly',snail:'a snail'},giftT:w=>'A gift from '+w+'!',
  gGot:n=>'You got: '+n+'!',gPlaceNow:'Place in garden',gKeepB:'Keep for later',gPlaced:'Placed in the garden',gStored:'Collected',gNoSpot:'No room to place it. Try collecting something first.',
- gDeco:'Garden decoration',gHint:'Collect it, rotate it, or use Arrange to drag it somewhere else.',gStoreB:'Collect',gMoveB:'Move',gRotB:'Rotate',
- dn:['Little Cabin','Mini Swing','Mushroom House','Tiny Pond','Wooden Bench','Stepping Stones','Windmill','Little Lantern','Birdhouse','Fountain','Mailbox','Picnic Blanket','Picket Fence','Flower Pot']},
+ gDeco:'Garden decoration',gHint:'Collect it, rotate it, or use Arrange to drag it somewhere else.',gStoreB:'Collect',gMoveB:'Move',gRotB:'Rotate',gDex:'Gift Collection',gDexSum:(a,b)=>'Discovered '+a+' / '+b,gLocked:'Not found yet',gLockedHint:'Maybe an animal friend will bring it to the garden someday.',gNew:'NEW',gTotal:'Owned',gStoreOne:'Collect one',gBack:'Back to collection',gFirst:'New entry in your collection!',gHave:n=>'You now have '+n,
+ },
 zh:{gb:'小禮物',gEmpty:'小動物有時會在花園裡留下小禮物，收到的裝飾品會收在這裡。',gIn:'在花園裡',gKept:'收藏中',gPick:'收藏',gPut:'放置',gOk:'收下了',gFrom:w=>w+'送來的紙條',
  gn:{bee:'小蜜蜂',bird:'小雞',ladybug:'瓢蟲',butterfly:'蝴蝶',snail:'蝸牛'},giftT:w=>w+'在花園裡留下了一份小禮物！',
  gGot:n=>'收到了「'+n+'」！',gPlaceNow:'放進花園',gKeepB:'先收藏',gPlaced:'已放進花園',gStored:'已收藏',gNoSpot:'附近沒有空位可以放，先收藏幾個再試試吧。',
- gDeco:'花園裝飾',gHint:'可以收藏、旋轉，或進入佈置模式拖曳移動。',gStoreB:'收藏',gMoveB:'移動',gRotB:'旋轉',
- dn:['小木屋','迷你鞦韆','蘑菇屋','小池塘','木頭椅子','石頭小路','風車','小燈籠','鳥屋','噴水池','小郵筒','野餐墊','小籬笆','花盆']},
+ gDeco:'花園裝飾',gHint:'可以收藏、旋轉，或進入佈置模式拖曳移動。',gStoreB:'收藏',gMoveB:'移動',gRotB:'旋轉',gDex:'禮物圖鑑',gDexSum:(a,b)=>'已發現 '+a+' / '+b+' 種',gLocked:'還沒收到過',gLockedHint:'也許哪天，某隻小動物會把它帶來花園。',gNew:'NEW',gTotal:'共擁有',gStoreOne:'收藏一個',gBack:'回到圖鑑',gFirst:'圖鑑新增一種！',gHave:n=>'你現在有 '+n+' 個了',
+ },
 ja:{gb:'小さなプレゼント',gEmpty:'動物たちが、ときどき庭に小さなプレゼントを置いていきます。もらった飾りはここに保管されます。',gIn:'庭に置いてある',gKept:'保管中',gPick:'しまう',gPut:'置く',gOk:'ありがとう',gFrom:w=>w+'からのメモ',
  gn:{bee:'ミツバチ',bird:'ひよこ',ladybug:'てんとう虫',butterfly:'チョウ',snail:'カタツムリ'},giftT:w=>w+'からの小さなプレゼントが届きました！',
  gGot:n=>'「'+n+'」をもらいました！',gPlaceNow:'庭に置く',gKeepB:'とっておく',gPlaced:'庭に置きました',gStored:'しまいました',gNoSpot:'置ける場所がありません。先にひとつしまってみてください。',
- gDeco:'庭の飾り',gHint:'しまう・回転するほか、配置モードでドラッグして動かせます。',gStoreB:'しまう',gMoveB:'動かす',gRotB:'回転',
- dn:['小さなログハウス','ミニブランコ','キノコの家','小さな池','木のベンチ','飛び石の小道','風車','小さなランタン','鳥の巣箱','噴水','ポスト','ピクニックシート','小さな柵','植木鉢']},
+ gDeco:'庭の飾り',gHint:'しまう・回転するほか、配置モードでドラッグして動かせます。',gStoreB:'しまう',gMoveB:'動かす',gRotB:'回転',gDex:'プレゼント図鑑',gDexSum:(a,b)=>a+' / '+b+' 種類を発見',gLocked:'まだ見つけていません',gLockedHint:'いつか動物たちが庭に届けてくれるかもしれません。',gNew:'NEW',gTotal:'所持数',gStoreOne:'ひとつしまう',gBack:'図鑑にもどる',gFirst:'図鑑に新しく追加されました！',gHave:n=>'これで '+n+' 個になりました',
+ },
 ko:{gb:'작은 선물',gEmpty:'동물들이 가끔 정원에 작은 선물을 놓고 가요. 받은 장식은 여기에 보관돼요.',gIn:'정원에 있음',gKept:'보관 중',gPick:'보관',gPut:'놓기',gOk:'고마워요',gFrom:w=>w+'의 쪽지',
  gn:{bee:'꿀벌',bird:'병아리',ladybug:'무당벌레',butterfly:'나비',snail:'달팽이'},giftT:w=>w+'의 작은 선물이 도착했어요!',
  gGot:n=>'「'+n+'」을(를) 받았어요!',gPlaceNow:'정원에 놓기',gKeepB:'나중에',gPlaced:'정원에 놓았어요',gStored:'보관했어요',gNoSpot:'놓을 자리가 없어요. 먼저 하나를 보관해 보세요.',
- gDeco:'정원 장식',gHint:'보관하거나 돌릴 수 있고, 배치 모드에서 끌어 옮길 수도 있어요.',gStoreB:'보관',gMoveB:'옮기기',gRotB:'회전',
- dn:['작은 통나무집','미니 그네','버섯 집','작은 연못','나무 벤치','징검돌 길','풍차','작은 등불','새집','분수','우체통','피크닉 돗자리','작은 울타리','화분']}};
+ gDeco:'정원 장식',gHint:'보관하거나 돌릴 수 있고, 배치 모드에서 끌어 옮길 수도 있어요.',gStoreB:'보관',gMoveB:'옮기기',gRotB:'회전',gDex:'선물 도감',gDexSum:(a,b)=>a+' / '+b+'종 발견',gLocked:'아직 받지 못했어요',gLockedHint:'언젠가 동물 친구가 정원에 가져다줄지도 몰라요.',gNew:'NEW',gTotal:'보유',gStoreOne:'하나 보관',gBack:'도감으로',gFirst:'도감에 새로 추가됐어요!',gHave:n=>'이제 '+n+'개를 가지고 있어요',
+ }};
 for(const k in T)Object.assign(L[k],T[k]);
 
 /* ---- 小圖示（跟花朵圖示一樣用 SVG 手繪） ---- */
-const ICO={
-cabin:'<path d="M6 20 20 8l14 12z" fill="#B8654A"/><rect x="9" y="20" width="22" height="14" rx="1" fill="#E3B98A"/><rect x="17" y="25" width="6" height="9" fill="#7A5236"/><rect x="11" y="23" width="5" height="5" fill="#FFF1B0"/><rect x="26" y="9" width="3" height="6" fill="#9A8F86"/>',
-swing:'<path d="M7 34 12 6M33 34 28 6" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M10 6h20" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round"/><path d="M16 7v18M24 7v18" stroke="#6B5848" stroke-width="1.4"/><rect x="13" y="25" width="14" height="4" rx="1.5" fill="#C98F5B"/>',
-mushroom:'<rect x="15" y="20" width="10" height="14" rx="3" fill="#F6EBD9"/><path d="M5 22a15 13 0 0130 0z" fill="#E5574F"/><circle cx="13" cy="16" r="2.4" fill="#fff"/><circle cx="22" cy="12" r="2" fill="#fff"/><circle cx="28" cy="18" r="1.8" fill="#fff"/><rect x="18" y="27" width="4" height="7" rx="1.5" fill="#7A5236"/>',
-pond:'<ellipse cx="20" cy="24" rx="16" ry="9" fill="#CFC8BC"/><ellipse cx="20" cy="24" rx="12.5" ry="6.5" fill="#8CC8E8"/><ellipse cx="16" cy="24" rx="3" ry="1.6" fill="#7DBB78"/><path d="M26 22q2-3 4 0" stroke="#fff" stroke-width="1.2" fill="none"/>',
-bench:'<rect x="7" y="13" width="26" height="6" rx="1.5" fill="#B98A5B"/><rect x="5" y="21" width="30" height="5" rx="1.5" fill="#C99C6B"/><rect x="8" y="26" width="3.5" height="9" fill="#8A5E3B"/><rect x="28.5" y="26" width="3.5" height="9" fill="#8A5E3B"/>',
-stones:'<ellipse cx="10" cy="14" rx="6" ry="3.6" fill="#B9B2A6"/><ellipse cx="19" cy="21" rx="6.5" ry="3.8" fill="#C8C1B4"/><ellipse cx="28" cy="28" rx="6" ry="3.6" fill="#B9B2A6"/><ellipse cx="11" cy="31" rx="4.6" ry="2.8" fill="#C8C1B4"/>',
-windmill:'<path d="M13 35 16 17h8l3 18z" fill="#F3E6CF"/><path d="M14 17 20 9l6 8z" fill="#C4604F"/><rect x="18" y="28" width="5" height="7" fill="#7A5236"/><g transform="translate(20 17)"><path d="M0 0-3-14h6zM0 0 3 14h-6zM0 0-14 3v-6zM0 0 14-3v6z" fill="#fff" stroke="#d9cfbe" stroke-width=".8"/></g><circle cx="20" cy="17" r="2" fill="#8A5E3B"/>',
-lantern:'<rect x="19" y="4" width="2.6" height="32" rx="1" fill="#6B5848"/><path d="M21 7h8" stroke="#6B5848" stroke-width="2.4"/><rect x="25" y="9" width="9" height="12" rx="3.5" fill="#FFD27A" stroke="#E9A93E" stroke-width="1.2"/><rect x="26" y="7.6" width="7" height="2.4" rx="1" fill="#C4604F"/>',
-birdhouse:'<rect x="19" y="20" width="2.6" height="16" fill="#8A6A4A"/><rect x="10" y="14" width="20" height="14" rx="1" fill="#E9C58F"/><path d="M7 15 20 5l13 10z" fill="#C4604F"/><circle cx="20" cy="21" r="3" fill="#4A3535"/>',
-fountain:'<path d="M5 28h30l-3 7H8z" fill="#CFC8BC"/><rect x="5" y="25" width="30" height="4" rx="2" fill="#E3DDD2"/><rect x="18.5" y="14" width="3" height="11" fill="#CFC8BC"/><path d="M12 14h16l-3 3H15z" fill="#E3DDD2"/><path d="M20 12v-3M16 13l-3-3M24 13l3-3" stroke="#8CC8E8" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="20" cy="27" rx="11" ry="1.6" fill="#8CC8E8"/>',
-mailbox:'<rect x="18" y="20" width="3" height="16" fill="#8A6A4A"/><rect x="9" y="11" width="22" height="12" rx="5" fill="#E86A5C"/><rect x="29" y="5" width="2.2" height="9" fill="#FFD54A"/><rect x="29" y="5" width="6" height="4" fill="#FFD54A"/><rect x="12" y="15" width="8" height="2" rx="1" fill="#fff" opacity=".7"/>',
-picnic:'<path d="M4 30 9 14h27l-5 16z" fill="#E8685F"/><path d="M13 14h5l-2 16h-5zM26 14h5l-3 16h-5z" fill="#fff" opacity=".85"/><rect x="15" y="9" width="10" height="7" rx="2" fill="#C98F5B"/><circle cx="29" cy="22" r="2.6" fill="#E54B4B"/>',
-fence:'<g fill="#F4EBDD" stroke="#D9CFBE" stroke-width="1"><path d="M6 34V15l3-4 3 4v19zM15 34V15l3-4 3 4v19zM24 34V15l3-4 3 4v19z"/></g><rect x="3" y="20" width="34" height="3" fill="#E7DCCB"/><rect x="3" y="28" width="34" height="3" fill="#E7DCCB"/>',
-planter:'<path d="M12 22h16l-2 12H14z" fill="#D98B6A"/><rect x="11" y="19" width="18" height="4" rx="1.5" fill="#E39C7C"/><path d="M20 19V11M14 19l-2-6M26 19l2-6" stroke="#7DBB78" stroke-width="1.8"/><circle cx="20" cy="9" r="3.6" fill="#F29BB5"/><circle cx="12" cy="11" r="3" fill="#FFD54A"/><circle cx="28" cy="11" r="3" fill="#fff" stroke="#e9dccb"/>'};
 const dIcon=(k,s)=>SV(s,ICO[k]||'');
 
 /* ---- 3D 小模型（全部用基本形狀拼出來，每件都小小的） ---- */
 const BOXG=shade(new THREE.BoxGeometry(1,1,1),.78),PYR=shade(new THREE.ConeGeometry(.7071,1,4),.8),TRI=shade(new THREE.CylinderGeometry(1,1,1,3),.85),CYLT=shade(new THREE.CylinderGeometry(.6,1,1,14),.8);
 const WARM=new THREE.MeshStandardMaterial({color:'#FFD98A',emissive:new THREE.Color('#FFB84A'),emissiveIntensity:.8,roughness:.6});
 const bx=(g,geo,c,x,y,z,sx,sy,sz,rx,ry,rz)=>{const m=mk(geo,c,[x,y,z],[sx,sy,sz],[rx||0,ry||0,rz||0]);g.add(m);return m};
-const DM={
-cabin(g){const w='#E3B98A',r='#B8654A';bx(g,BOXG,w,0,.2,0,.55,.4,.45);bx(g,TRI,w,0,.48,0,.318,.47,.16,-Math.PI/2);bx(g,BOXG,r,-.16,.5,0,.4,.04,.58,0,0,.8);bx(g,BOXG,r,.16,.5,0,.4,.04,.58,0,0,-.8);bx(g,BOXG,'#7A5236',0,.12,.226,.12,.22,.02);bx(g,BOXG,'#FFF1B0',.18,.26,.226,.1,.1,.02);bx(g,BOXG,'#9A8F86',.15,.62,-.1,.07,.16,.07)},
-swing(g){const wd='#8A5E3B';bx(g,CYL,wd,-.3,.28,0,.025,.56,.025);bx(g,CYL,wd,.3,.28,0,.025,.56,.025);bx(g,CYL,wd,0,.57,0,.025,.66,.025,0,0,Math.PI/2);
-  const pv=new THREE.Group();pv.position.y=.56;g.add(pv);bx(pv,CYL,'#6B5848',-.1,-.2,0,.006,.4,.006);bx(pv,CYL,'#6B5848',.1,-.2,0,.006,.4,.006);bx(pv,BOXG,'#C98F5B',0,-.41,0,.26,.025,.1);g.userData.sw=pv},
-mushroom(g){bx(g,CYL,'#F6EBD9',0,.17,0,.14,.34,.14);bx(g,SPH,'#E5574F',0,.38,0,.34,.2,.34);[[.14,.55,.08],[-.12,.545,.12],[.02,.565,-.1],[-.17,.535,-.1],[.2,.53,-.05]].forEach(p=>bx(g,SPH,'#FFFFFF',p[0],p[1],p[2],.05,.02,.05));bx(g,BOXG,'#7A5236',0,.12,.136,.09,.16,.02)},
-pond(g){bx(g,CYL,'#7FBFE2',0,.015,0,.46,.03,.34);for(let i=0;i<10;i++){const a=i/10*6.283;bx(g,SPH,i%2?'#C8C1B4':'#B9B2A6',Math.cos(a)*.5,.035,Math.sin(a)*.38,.07,.05,.07)}bx(g,CYL,'#7DBB78',.12,.035,.05,.07,.01,.07);bx(g,SPH,'#F8C6D8',.12,.05,.05,.025,.02,.025)},
-bench(g){bx(g,BOXG,'#B98A5B',0,.2,0,.5,.04,.2);bx(g,BOXG,'#C99C6B',0,.34,-.09,.5,.16,.03);[[-.2,.07],[.2,.07],[-.2,-.07],[.2,-.07]].forEach(p=>bx(g,BOXG,'#8A5E3B',p[0],.1,p[1],.04,.2,.04));bx(g,BOXG,'#8A5E3B',-.22,.28,-.09,.03,.3,.03);bx(g,BOXG,'#8A5E3B',.22,.28,-.09,.03,.3,.03)},
-stones(g){[[-.3,-.1,.1,'#B9B2A6'],[-.08,.04,.12,'#C8C1B4'],[.14,-.03,.1,'#B9B2A6'],[.33,.12,.09,'#C8C1B4']].forEach((p,i)=>bx(g,CYL,p[3],p[0],.02,p[1],p[2],.04,p[2]*.85,0,i,0))},
-windmill(g){bx(g,CYLT,'#F3E6CF',0,.3,0,.17,.6,.17);bx(g,CONE,'#C4604F',0,.69,0,.2,.2,.2);bx(g,BOXG,'#7A5236',0,.1,.15,.09,.18,.02);
-  const pv=new THREE.Group();pv.position.set(0,.55,.3);g.add(pv);bx(g,BOXG,'#8A5E3B',0,.55,.2,.03,.03,.2);bx(pv,SPH,'#8A5E3B',0,0,0,.035,.035,.035);for(let i=0;i<4;i++){const a=new THREE.Group();a.rotation.z=i*Math.PI/2;pv.add(a);bx(a,BOXG,'#8A5E3B',0,.16,0,.02,.32,.012);bx(a,BOXG,'#FFFFFF',.035,.18,.004,.06,.22,.008)}g.userData.bl=pv},
-lantern(g){bx(g,CYL,'#6B5848',0,.3,0,.014,.6,.014);bx(g,BOXG,'#6B5848',.07,.58,0,.16,.014,.014);bx(g,CONE,'#C4604F',.14,.6,0,.065,.04,.065);const m=mk(SPH,'#FFD98A',[.14,.52,0],[.06,.08,.06],null,WARM);g.add(m);bx(g,CYL,'#6B5848',.14,.43,0,.03,.02,.03);
-  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFD27A',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.15}));s.scale.set(.6,.6,1);s.position.set(.14,.52,0);g.add(s);g.userData.gl=s},
-birdhouse(g){bx(g,CYL,'#8A6A4A',0,.3,0,.02,.6,.02);bx(g,BOXG,'#E9C58F',0,.66,0,.2,.18,.2);bx(g,PYR,'#C4604F',0,.82,0,.3,.14,.3,0,Math.PI/4);bx(g,SPH,'#4A3535',0,.67,.1,.04,.04,.012);bx(g,CYL,'#8A6A4A',0,.58,.12,.008,.06,.008,Math.PI/2)},
-fountain(g){const s='#CFC8BC';bx(g,CYL,s,0,.07,0,.42,.14,.42);bx(g,CYL,'#8CC8E8',0,.138,0,.36,.02,.36);bx(g,CYL,s,0,.24,0,.05,.2,.05);bx(g,CYL,s,0,.35,0,.16,.04,.16);bx(g,CYL,'#8CC8E8',0,.372,0,.13,.012,.13);
-  g.userData.dr=[];for(let i=0;i<8;i++){const d=mk(SPH,'#CDEBFF',[0,.4,0],[.018,.022,.018],null,DROPM);d.castShadow=false;g.add(d);g.userData.dr.push(d)}},
-mailbox(g){bx(g,BOXG,'#8A6A4A',0,.2,0,.04,.4,.04);bx(g,BOXG,'#E86A5C',0,.45,0,.16,.12,.24);bx(g,CYL,'#E86A5C',0,.51,0,.08,.24,.08,Math.PI/2);bx(g,BOXG,'#FFD54A',.095,.5,.02,.012,.1,.03)},
-picnic(g){const q=new THREE.Group();q.rotation.y=.25;g.add(q);bx(q,BOXG,'#E8685F',0,.012,0,.62,.024,.5);for(let i=0;i<3;i++)for(let j=0;j<3;j++)if((i+j)%2===0)bx(q,BOXG,'#FFF6EA',(i-1)*.2,.026,(j-1)*.16,.2,.004,.16);bx(q,BOXG,'#C98F5B',.08,.08,.05,.14,.1,.1);bx(q,SPH,'#E54B4B',-.13,.05,.1,.035,.035,.035)},
-fence(g){[-.3,-.1,.1,.3].forEach(x=>{bx(g,BOXG,'#F4EBDD',x,.13,0,.05,.26,.04);bx(g,PYR,'#F4EBDD',x,.29,0,.05,.06,.05,0,Math.PI/4)});bx(g,BOXG,'#E7DCCB',0,.09,0,.7,.03,.025);bx(g,BOXG,'#E7DCCB',0,.19,0,.7,.03,.025)},
-planter(g){bx(g,CYLT,'#D98B6A',0,.1,0,.13,.2,.13,Math.PI);bx(g,CYL,'#5B4A3A',0,.2,0,.12,.012,.12);[[0,.34,0,'#F29BB5'],[-.09,.3,.02,'#FFD54A'],[.09,.31,-.02,'#FFFFFF']].forEach(p=>{bx(g,CYL,'#7DBB78',p[0],(p[1]+.2)/2,p[2],.008,p[1]-.2,.008);bx(g,SPH,p[3],p[0],p[1],p[2],.05,.04,.05)})}};
+/* ==========================================================================
+   裝飾品登錄表（DECOR）——新增裝飾品只要在清單「最後面」貼一個區塊，其他地方都不用改
+   圖鑑、進度條、抽禮物、放置、拖曳、旋轉、收藏、雲端同步都會自動跟著清單走。
+
+   欄位：
+     k    英文代號（小寫字母）。會存進使用者的存檔與雲端，上線後【不能改名、不能刪除、不能調換順序】
+     r    佔地半徑（約 .2 小物件 ～ .5 大物件），用來避免和花、其他裝飾品重疊
+     n    四種語言的名稱 { zh, en, ja, ko }
+     ico  圖鑑用的圖示：40×40 的 SVG 內容（不含 <svg> 外框）
+     m    3D 模型 m(g){…}：把基本形狀加進群組 g，底面貼在 y=0；常用工具：
+            bx(g, 形狀, 顏色, x,y,z, 縮放x,y,z, 旋轉x,y,z)
+            形狀：BOXG 方塊／CYL 圓柱（縮放 x、z 是半徑，y 是高度）／CYLT 錐柱／SPH 球／CONE 圓錐／PYR 四角錐／TRI 三角柱
+     tick （選填）會動的裝飾品：tick(g,t,dt,o)，每一幀呼叫一次；t＝秒數、dt＝這一幀的時間、
+            g＝這件裝飾品的 3D 群組（可先在 m 裡把會動的零件存到 g.userData，再於 tick 裡轉動）
+            開了「減少動態」時不會呼叫。
+
+   新增範例（貼在最後一個區塊的逗號後面）：
+     {k:'teapot',r:.2,
+       n:{zh:'小茶壺',en:'Teapot',ja:'ティーポット',ko:'찻주전자'},
+       ico:'<ellipse cx="20" cy="24" rx="11" ry="9" fill="#E8685F"/><rect x="15" y="12" width="10" height="4" rx="2" fill="#C4604F"/>',
+       m(g){bx(g,SPH,'#E8685F',0,.12,0,.14,.11,.14);bx(g,CYL,'#C4604F',0,.25,0,.05,.03,.05)}},
+   ========================================================================== */
+const DECOR=[
+/* No.01 */ {k:'cabin',r:.5,
+  n:{zh:'小木屋',en:'Little Cabin',ja:'小さなログハウス',ko:'작은 통나무집'},
+  ico:'<path d="M6 20 20 8l14 12z" fill="#B8654A"/><rect x="9" y="20" width="22" height="14" rx="1" fill="#E3B98A"/><rect x="17" y="25" width="6" height="9" fill="#7A5236"/><rect x="11" y="23" width="5" height="5" fill="#FFF1B0"/><rect x="26" y="9" width="3" height="6" fill="#9A8F86"/>',
+  m(g){const w='#E3B98A',r='#B8654A';bx(g,BOXG,w,0,.2,0,.55,.4,.45);bx(g,TRI,w,0,.48,0,.318,.47,.16,-Math.PI/2);bx(g,BOXG,r,-.16,.5,0,.4,.04,.58,0,0,.8);bx(g,BOXG,r,.16,.5,0,.4,.04,.58,0,0,-.8);bx(g,BOXG,'#7A5236',0,.12,.226,.12,.22,.02);bx(g,BOXG,'#FFF1B0',.18,.26,.226,.1,.1,.02);bx(g,BOXG,'#9A8F86',.15,.62,-.1,.07,.16,.07)}},
+/* No.02 */ {k:'swing',r:.42,
+  n:{zh:'迷你鞦韆',en:'Mini Swing',ja:'ミニブランコ',ko:'미니 그네'},
+  ico:'<path d="M7 34 12 6M33 34 28 6" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M10 6h20" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round"/><path d="M16 7v18M24 7v18" stroke="#6B5848" stroke-width="1.4"/><rect x="13" y="25" width="14" height="4" rx="1.5" fill="#C98F5B"/>',
+  m(g){const wd='#8A5E3B';bx(g,CYL,wd,-.3,.28,0,.025,.56,.025);bx(g,CYL,wd,.3,.28,0,.025,.56,.025);bx(g,CYL,wd,0,.57,0,.025,.66,.025,0,0,Math.PI/2);
+  const pv=new THREE.Group();pv.position.y=.56;g.add(pv);bx(pv,CYL,'#6B5848',-.1,-.2,0,.006,.4,.006);bx(pv,CYL,'#6B5848',.1,-.2,0,.006,.4,.006);bx(pv,BOXG,'#C98F5B',0,-.41,0,.26,.025,.1);g.userData.sw=pv}},
+/* No.03 */ {k:'mushroom',r:.36,
+  n:{zh:'蘑菇屋',en:'Mushroom House',ja:'キノコの家',ko:'버섯 집'},
+  ico:'<rect x="15" y="20" width="10" height="14" rx="3" fill="#F6EBD9"/><path d="M5 22a15 13 0 0130 0z" fill="#E5574F"/><circle cx="13" cy="16" r="2.4" fill="#fff"/><circle cx="22" cy="12" r="2" fill="#fff"/><circle cx="28" cy="18" r="1.8" fill="#fff"/><rect x="18" y="27" width="4" height="7" rx="1.5" fill="#7A5236"/>',
+  m(g){bx(g,CYL,'#F6EBD9',0,.17,0,.14,.34,.14);bx(g,SPH,'#E5574F',0,.38,0,.34,.2,.34);[[.14,.55,.08],[-.12,.545,.12],[.02,.565,-.1],[-.17,.535,-.1],[.2,.53,-.05]].forEach(p=>bx(g,SPH,'#FFFFFF',p[0],p[1],p[2],.05,.02,.05));bx(g,BOXG,'#7A5236',0,.12,.136,.09,.16,.02)}},
+/* No.04 */ {k:'scarecrow',r:.22,
+  n:{zh:'稻草人',en:'Scarecrow',ja:'かかし',ko:'허수아비'},
+  ico:'<rect x="19" y="8" width="2.6" height="28" fill="#8A6A4A"/><rect x="6" y="17" width="28" height="2.6" rx="1.3" fill="#8A6A4A"/><path d="M13 16h14l-1.5 12h-11z" fill="#6E8FB5"/><circle cx="20" cy="11.5" r="5" fill="#E9D3A0"/><rect x="12" y="8.5" width="16" height="2" rx="1" fill="#8A6A4A"/><path d="M15 9 20 1l5 8z" fill="#A9794F"/><circle cx="18" cy="12.5" r=".9" fill="#4A3535"/><circle cx="22" cy="12.5" r=".9" fill="#4A3535"/><path d="M5 18 2 16M5 19l-3 3M35 18l3-2M35 19l3 3M16 28l-1 5M24 28l1 5" stroke="#E6C86E" stroke-width="1.6" stroke-linecap="round"/>',
+  m(g){const w='#8A6A4A',sh='#6E8FB5',st='#E6C86E';bx(g,CYL,w,0,.4,0,.018,.8,.018);bx(g,CYL,w,0,.56,0,.014,.62,.014,0,0,Math.PI/2);bx(g,BOXG,sh,0,.5,0,.2,.26,.1);bx(g,BOXG,sh,-.2,.56,0,.12,.07,.07);bx(g,BOXG,sh,.2,.56,0,.12,.07,.07);
+  bx(g,CONE,st,-.31,.56,0,.03,.07,.03,0,0,Math.PI/2);bx(g,CONE,st,.31,.56,0,.03,.07,.03,0,0,-Math.PI/2);bx(g,CONE,st,0,.34,0,.08,.1,.08,Math.PI);
+  bx(g,SPH,'#E9D3A0',0,.7,0,.09,.09,.09);bx(g,SPH,'#4A3535',-.03,.72,.082,.012,.012,.012);bx(g,SPH,'#4A3535',.03,.72,.082,.012,.012,.012);bx(g,CYL,w,0,.77,0,.15,.014,.15);bx(g,CONE,'#A9794F',0,.85,0,.085,.14,.085)}},
+/* No.05 */ {k:'bench',r:.38,
+  n:{zh:'木頭椅子',en:'Wooden Bench',ja:'木のベンチ',ko:'나무 벤치'},
+  ico:'<rect x="7" y="13" width="26" height="6" rx="1.5" fill="#B98A5B"/><rect x="5" y="21" width="30" height="5" rx="1.5" fill="#C99C6B"/><rect x="8" y="26" width="3.5" height="9" fill="#8A5E3B"/><rect x="28.5" y="26" width="3.5" height="9" fill="#8A5E3B"/>',
+  m(g){bx(g,BOXG,'#B98A5B',0,.2,0,.5,.04,.2);bx(g,BOXG,'#C99C6B',0,.34,-.09,.5,.16,.03);[[-.2,.07],[.2,.07],[-.2,-.07],[.2,-.07]].forEach(p=>bx(g,BOXG,'#8A5E3B',p[0],.1,p[1],.04,.2,.04));bx(g,BOXG,'#8A5E3B',-.22,.28,-.09,.03,.3,.03);bx(g,BOXG,'#8A5E3B',.22,.28,-.09,.03,.3,.03)}},
+/* No.06 */ {k:'stones',r:.42,
+  n:{zh:'石頭小路',en:'Stepping Stones',ja:'飛び石の小道',ko:'징검돌 길'},
+  ico:'<ellipse cx="10" cy="14" rx="6" ry="3.6" fill="#B9B2A6"/><ellipse cx="19" cy="21" rx="6.5" ry="3.8" fill="#C8C1B4"/><ellipse cx="28" cy="28" rx="6" ry="3.6" fill="#B9B2A6"/><ellipse cx="11" cy="31" rx="4.6" ry="2.8" fill="#C8C1B4"/>',
+  m(g){[[-.3,-.1,.1,'#B9B2A6'],[-.08,.04,.12,'#C8C1B4'],[.14,-.03,.1,'#B9B2A6'],[.33,.12,.09,'#C8C1B4']].forEach((p,i)=>bx(g,CYL,p[3],p[0],.02,p[1],p[2],.04,p[2]*.85,0,i,0))}},
+/* No.07 */ {k:'windmill',r:.34,
+  n:{zh:'風車',en:'Windmill',ja:'風車',ko:'풍차'},
+  ico:'<path d="M13 35 16 17h8l3 18z" fill="#F3E6CF"/><path d="M14 17 20 9l6 8z" fill="#C4604F"/><rect x="18" y="28" width="5" height="7" fill="#7A5236"/><g transform="translate(20 17)"><path d="M0 0-3-14h6zM0 0 3 14h-6zM0 0-14 3v-6zM0 0 14-3v6z" fill="#fff" stroke="#d9cfbe" stroke-width=".8"/></g><circle cx="20" cy="17" r="2" fill="#8A5E3B"/>',
+  m(g){bx(g,CYLT,'#F3E6CF',0,.3,0,.17,.6,.17);bx(g,CONE,'#C4604F',0,.69,0,.2,.2,.2);bx(g,BOXG,'#7A5236',0,.1,.15,.09,.18,.02);
+  const pv=new THREE.Group();pv.position.set(0,.55,.3);g.add(pv);bx(g,BOXG,'#8A5E3B',0,.55,.2,.03,.03,.2);bx(pv,SPH,'#8A5E3B',0,0,0,.035,.035,.035);for(let i=0;i<4;i++){const a=new THREE.Group();a.rotation.z=i*Math.PI/2;pv.add(a);bx(a,BOXG,'#8A5E3B',0,.16,0,.02,.32,.012);bx(a,BOXG,'#FFFFFF',.035,.18,.004,.06,.22,.008)}g.userData.bl=pv}},
+/* No.08 */ {k:'lantern',r:.2,
+  n:{zh:'小燈籠',en:'Little Lantern',ja:'小さなランタン',ko:'작은 등불'},
+  ico:'<rect x="19" y="4" width="2.6" height="32" rx="1" fill="#6B5848"/><path d="M21 7h8" stroke="#6B5848" stroke-width="2.4"/><rect x="25" y="9" width="9" height="12" rx="3.5" fill="#FFD27A" stroke="#E9A93E" stroke-width="1.2"/><rect x="26" y="7.6" width="7" height="2.4" rx="1" fill="#C4604F"/>',
+  m(g){bx(g,CYL,'#6B5848',0,.3,0,.014,.6,.014);bx(g,BOXG,'#6B5848',.07,.58,0,.16,.014,.014);bx(g,CONE,'#C4604F',.14,.6,0,.065,.04,.065);const m=mk(SPH,'#FFD98A',[.14,.52,0],[.06,.08,.06],null,WARM);g.add(m);bx(g,CYL,'#6B5848',.14,.43,0,.03,.02,.03);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:'#FFD27A',blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.15}));s.scale.set(.6,.6,1);s.position.set(.14,.52,0);g.add(s);g.userData.gl=s}},
+/* No.09 */ {k:'birdhouse',r:.22,
+  n:{zh:'鳥屋',en:'Birdhouse',ja:'鳥の巣箱',ko:'새집'},
+  ico:'<rect x="19" y="20" width="2.6" height="16" fill="#8A6A4A"/><rect x="10" y="14" width="20" height="14" rx="1" fill="#E9C58F"/><path d="M7 15 20 5l13 10z" fill="#C4604F"/><circle cx="20" cy="21" r="3" fill="#4A3535"/>',
+  m(g){bx(g,CYL,'#8A6A4A',0,.3,0,.02,.6,.02);bx(g,BOXG,'#E9C58F',0,.66,0,.2,.18,.2);bx(g,PYR,'#C4604F',0,.82,0,.3,.14,.3,0,Math.PI/4);bx(g,SPH,'#4A3535',0,.67,.1,.04,.04,.012);bx(g,CYL,'#8A6A4A',0,.58,.12,.008,.06,.008,Math.PI/2)}},
+/* No.10 */ {k:'fountain',r:.46,
+  n:{zh:'噴水池',en:'Fountain',ja:'噴水',ko:'분수'},
+  ico:'<path d="M5 28h30l-3 7H8z" fill="#CFC8BC"/><rect x="5" y="25" width="30" height="4" rx="2" fill="#E3DDD2"/><rect x="18.5" y="14" width="3" height="11" fill="#CFC8BC"/><path d="M12 14h16l-3 3H15z" fill="#E3DDD2"/><path d="M20 12v-3M16 13l-3-3M24 13l3-3" stroke="#8CC8E8" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="20" cy="27" rx="11" ry="1.6" fill="#8CC8E8"/>',
+  m(g){const s='#CFC8BC';bx(g,CYL,s,0,.07,0,.42,.14,.42);bx(g,CYL,'#8CC8E8',0,.138,0,.36,.02,.36);bx(g,CYL,s,0,.24,0,.05,.2,.05);bx(g,CYL,s,0,.35,0,.16,.04,.16);bx(g,CYL,'#8CC8E8',0,.372,0,.13,.012,.13);
+  g.userData.dr=[];for(let i=0;i<8;i++){const d=mk(SPH,'#CDEBFF',[0,.4,0],[.018,.022,.018],null,DROPM);d.castShadow=false;g.add(d);g.userData.dr.push(d)}}},
+/* No.11 */ {k:'mailbox',r:.2,
+  n:{zh:'小郵筒',en:'Mailbox',ja:'ポスト',ko:'우체통'},
+  ico:'<rect x="18" y="20" width="3" height="16" fill="#8A6A4A"/><rect x="9" y="11" width="22" height="12" rx="5" fill="#E86A5C"/><rect x="29" y="5" width="2.2" height="9" fill="#FFD54A"/><rect x="29" y="5" width="6" height="4" fill="#FFD54A"/><rect x="12" y="15" width="8" height="2" rx="1" fill="#fff" opacity=".7"/>',
+  m(g){bx(g,BOXG,'#8A6A4A',0,.2,0,.04,.4,.04);bx(g,BOXG,'#E86A5C',0,.45,0,.16,.12,.24);bx(g,CYL,'#E86A5C',0,.51,0,.08,.24,.08,Math.PI/2);bx(g,BOXG,'#FFD54A',.095,.5,.02,.012,.1,.03)}},
+/* No.12 */ {k:'beehive',r:.24,
+  n:{zh:'小蜂箱',en:'Beehive',ja:'ミツバチの巣箱',ko:'벌집 상자'},
+  ico:'<rect x="9" y="33" width="3" height="4" fill="#8A5E3B"/><rect x="28" y="33" width="3" height="4" fill="#8A5E3B"/><rect x="8" y="24" width="24" height="9" rx="1.5" fill="#E9C25A"/><rect x="8" y="16" width="24" height="8" rx="1.5" fill="#F6EBD9"/><rect x="8" y="9" width="24" height="7" rx="1.5" fill="#E9C25A"/><rect x="6" y="5" width="28" height="4.5" rx="1.5" fill="#C98F5B"/><rect x="16" y="28" width="8" height="2.5" rx="1.2" fill="#4A3535"/>',
+  m(g){[[-.1,-.08],[.1,-.08],[-.1,.08],[.1,.08]].forEach(p=>bx(g,BOXG,'#8A5E3B',p[0],.05,p[1],.03,.1,.03));bx(g,BOXG,'#E9C25A',0,.15,0,.26,.1,.22);bx(g,BOXG,'#F6EBD9',0,.25,0,.26,.1,.22);bx(g,BOXG,'#E9C25A',0,.35,0,.26,.1,.22);bx(g,BOXG,'#C98F5B',0,.42,0,.3,.035,.26);bx(g,SPH,'#B9B2A6',0,.45,0,.045,.028,.045);bx(g,BOXG,'#4A3535',0,.14,.112,.1,.025,.01)}},
+/* No.13 */ {k:'fence',r:.38,
+  n:{zh:'小籬笆',en:'Picket Fence',ja:'小さな柵',ko:'작은 울타리'},
+  ico:'<g fill="#F4EBDD" stroke="#D9CFBE" stroke-width="1"><path d="M6 34V15l3-4 3 4v19zM15 34V15l3-4 3 4v19zM24 34V15l3-4 3 4v19z"/></g><rect x="3" y="20" width="34" height="3" fill="#E7DCCB"/><rect x="3" y="28" width="34" height="3" fill="#E7DCCB"/>',
+  m(g){[-.3,-.1,.1,.3].forEach(x=>{bx(g,BOXG,'#F4EBDD',x,.13,0,.05,.26,.04);bx(g,PYR,'#F4EBDD',x,.29,0,.05,.06,.05,0,Math.PI/4)});bx(g,BOXG,'#E7DCCB',0,.09,0,.7,.03,.025);bx(g,BOXG,'#E7DCCB',0,.19,0,.7,.03,.025)}},
+/* No.14 */ {k:'planter',r:.22,
+  n:{zh:'花盆',en:'Flower Pot',ja:'植木鉢',ko:'화분'},
+  ico:'<path d="M12 22h16l-2 12H14z" fill="#D98B6A"/><rect x="11" y="19" width="18" height="4" rx="1.5" fill="#E39C7C"/><path d="M20 19V11M14 19l-2-6M26 19l2-6" stroke="#7DBB78" stroke-width="1.8"/><circle cx="20" cy="9" r="3.6" fill="#F29BB5"/><circle cx="12" cy="11" r="3" fill="#FFD54A"/><circle cx="28" cy="11" r="3" fill="#fff" stroke="#e9dccb"/>',
+  m(g){bx(g,CYLT,'#D98B6A',0,.1,0,.13,.2,.13,Math.PI);bx(g,CYL,'#5B4A3A',0,.2,0,.12,.012,.12);[[0,.34,0,'#F29BB5'],[-.09,.3,.02,'#FFD54A'],[.09,.31,-.02,'#FFFFFF']].forEach(p=>{bx(g,CYL,'#7DBB78',p[0],(p[1]+.2)/2,p[2],.008,p[1]-.2,.008);bx(g,SPH,p[3],p[0],p[1],p[2],.05,.04,.05)})}},
+/* No.15 */ {k:'well',r:.4,
+  n:{zh:'小水井',en:'Wishing Well',ja:'小さな井戸',ko:'작은 우물'},
+  ico:'<rect x="9" y="22" width="22" height="13" rx="2" fill="#CFC8BC"/><rect x="9" y="22" width="22" height="3.2" rx="1.2" fill="#E3DDD2"/><rect x="11" y="10" width="2.6" height="13" fill="#8A5E3B"/><rect x="26.4" y="10" width="2.6" height="13" fill="#8A5E3B"/><path d="M7 11 20 3l13 8z" fill="#C4604F"/><path d="M20 11v8" stroke="#6B5848" stroke-width="1.2"/><rect x="17.2" y="18" width="5.6" height="4.6" rx="1.2" fill="#B98A5B"/>',
+  m(g){bx(g,CYL,'#CFC8BC',0,.1,0,.25,.2,.25);bx(g,CYL,'#7FBFE2',0,.205,0,.17,.012,.17);for(let i=0;i<10;i++){const a=i/10*6.283;bx(g,SPH,i%2?'#E3DDD2':'#C8C1B4',Math.cos(a)*.21,.21,Math.sin(a)*.21,.045,.035,.045)}
+  bx(g,BOXG,'#8A5E3B',-.2,.38,0,.035,.36,.035);bx(g,BOXG,'#8A5E3B',.2,.38,0,.035,.36,.035);bx(g,CYL,'#6B5848',0,.52,0,.012,.4,.012,0,0,Math.PI/2);bx(g,PYR,'#C4604F',0,.66,0,.56,.2,.4,0,Math.PI/2);
+  bx(g,CYL,'#6B5848',0,.46,0,.006,.1,.006);bx(g,CYL,'#B98A5B',0,.4,0,.04,.07,.04)}},
+/* No.16 */ {k:'signpost',r:.22,
+  n:{zh:'小路標',en:'Signpost',ja:'道しるべ',ko:'이정표'},
+  ico:'<rect x="18.5" y="6" width="3" height="30" rx="1" fill="#8A6A4A"/><path d="M8 8h20l4 3.5-4 3.5H8z" fill="#E9C58F" stroke="#B98A5B" stroke-width="1"/><path d="M32 18H12l-4 3.5 4 3.5h20z" fill="#F4EBDD" stroke="#D9CFBE" stroke-width="1"/><ellipse cx="20" cy="36" rx="6" ry="1.8" fill="#B9B2A6"/>',
+  m(g){bx(g,CYL,'#B9B2A6',0,.02,0,.09,.04,.09);bx(g,BOXG,'#8A6A4A',0,.3,0,.05,.6,.05);bx(g,BOXG,'#E9C58F',.09,.5,.03,.3,.09,.02);bx(g,BOXG,'#E9C58F',.255,.5,.03,.065,.065,.02,0,0,Math.PI/4);
+  bx(g,BOXG,'#F4EBDD',-.09,.38,-.03,.3,.09,.02);bx(g,BOXG,'#F4EBDD',-.255,.38,-.03,.065,.065,.02,0,0,Math.PI/4);bx(g,SPH,'#8A6A4A',0,.61,0,.04,.04,.04)}}
+];
+const DK=DECOR.map(d=>d.k),DR={},ICO={},DM={},DBY={};
+DECOR.forEach(d=>{if(DBY[d.k])console.warn('[decor] 代號重複：'+d.k);DBY[d.k]=d;DR[d.k]=d.r;ICO[d.k]=d.ico;DM[d.k]=d.m;
+  if(!(d.r>0)||!d.n||!d.n.en||!d.ico||typeof d.m!=='function')console.warn('[decor] 欄位不完整：'+d.k)});
 function buildDecor(k){const g=new THREE.Group();DM[k](g);g.userData.k=k;const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.y=.28;hb.scale.setScalar(Math.max(.3,DR[k]));g.add(hb);return g}
 
 /* ---- 資料 ---- */
 const DEC=window.DEC=[],GIFTS=[];
-const G=()=>{const g=S.g||(S.g={});g.pend=g.pend||[];g.decor=g.decor||[];g.rec=g.rec||[];g.gone=g.gone||{};return g};
+const MIG={pond:'scarecrow',picnic:'beehive'};   // 舊版的平面裝飾品（小池塘、野餐墊）改成站得住的新裝飾品
+const G=()=>{const g=S.g||(S.g={});g.pend=g.pend||[];g.decor=g.decor||[];g.rec=g.rec||[];g.gone=g.gone||{};
+  g.decor.forEach(o=>{if(MIG[o.k]){o.k=MIG[o.k];o.u=Date.now()}});g.pend.forEach(p=>{if(p.k==='d'&&MIG[p.i]){p.i=MIG[p.i];p.u=Date.now()}});return g};
 const gsave=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}try{window.cloud&&cloud.dirty()}catch(e){}};   // 存本機，同時通知雲端同步
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const nameOf=k=>tr('dn')[DK.indexOf(k)];
+const nameOf=k=>{const d=DBY[k];return d?(d.n[S.lang]||d.n.en):k};
 
 function spawnDecor(o,anim){removeDecorObj(o.id);const g=buildDecor(o.k);g.position.set(o.x,gh(o.x,o.z),o.z);g.rotation.y=o.ry||0;g.userData.did=o.id;
   if(anim&&!S.rm){g.userData.pop=0;g.scale.setScalar(.001)}scene.add(g);DEC.push({id:o.id,k:o.k,x:o.x,z:o.z,r:DR[o.k],g})}
@@ -1179,14 +1278,30 @@ $('gmod').onclick=e=>{if(e.target===$('gmod'))gClose()};
 function showNote(p){const notes=GNOTES[S.lang]||GNOTES.en,em={bee:'🐝',bird:'🐥',ladybug:'🐞',butterfly:'🦋',snail:'🐌'}[p.ty]||'🌼';
   gOpen(`<div class="paper"><div style="font-size:13px;opacity:.75">${em} ${esc(tr('gFrom',tr('gn')[p.ty]))}</div><p class="gt">“${esc(notes[p.i]||'')}”</p></div><div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn p" id="gok">${esc(tr('gOk'))}</button></div>`);
   $('gok').onclick=gClose}
-function showDecorGot(o,gx,gz){
-  gOpen(`<div class="gpop">${dIcon(o.k,84)}</div><h2 style="text-align:center;font-size:22px">${esc(tr('gGot',nameOf(o.k)))}</h2><div style="display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn" id="gk">${esc(tr('gKeepB'))}</button><button class="btn p" id="gp">${esc(tr('gPlaceNow'))}</button></div>`);
+function showDecorGot(o,gx,gz){const cnt=G().decor.filter(x=>x.k===o.k).length;
+  gOpen(`<div class="gpop">${dIcon(o.k,84)}</div><h2 style="text-align:center;font-size:22px">${esc(tr('gGot',nameOf(o.k)))}</h2><p class="dx-got${cnt<=1?' new':''}">${esc(cnt<=1?tr('gFirst'):tr('gHave',cnt))}</p><div style="display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn" id="gk">${esc(tr('gKeepB'))}</button><button class="btn p" id="gp">${esc(tr('gPlaceNow'))}</button></div>`);
   $('gk').onclick=gClose;$('gp').onclick=()=>{if(putDecor(o,gx,gz))gClose()}}
-function openGifts(){const g=G();g.decor.forEach(o=>o.nw=0);gsave();gbRefresh();
-  const rows=g.decor.map(o=>`<div class="si"><span class="gi">${dIcon(o.k,34)}</span><span class="sx"><b>${esc(nameOf(o.k))}</b><small>${esc(tr(o.p?'gIn':'gKept'))}</small></span><button class="btn ${o.p?'':'p'}" data-id="${o.id}">${esc(tr(o.p?'gPick':'gPut'))}</button></div>`).join('');
-  gOpen(`<h2 class="gsh-h">${ic('redeem')} ${esc(tr('gb'))}</h2>${rows?`<div class="sc">${rows}</div>`:`<p style="margin:12px 0;opacity:.8">${esc(tr('gEmpty'))}</p>`}<div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn" id="gcl">${esc(tr('close'))}</button></div>`);
+/* ---- 小禮物圖鑑：全部裝飾品排成圖鑑，沒拿過的顯示剪影，拿過的顯示數量；點進去可放進花園或收藏 ---- */
+const dxStat=k=>{const a=G().decor.filter(o=>o.k===k),n=a.filter(o=>o.p).length;return{all:a.length,in:n,kept:a.length-n}};
+let dxFresh=new Set(),dxY=0;
+const dxNo=k=>String(DK.indexOf(k)+1).padStart(2,'0');
+function openGifts(){const g=G();dxFresh=new Set(g.decor.filter(o=>o.nw).map(o=>o.k));g.decor.forEach(o=>o.nw=0);gsave();gbRefresh();dxY=0;dexGrid()}
+function dexGrid(){const own=DK.filter(k=>dxStat(k).all>0).length,pct=own/DK.length*100;
+  const cards=DK.map(k=>{const s=dxStat(k),has=s.all>0;
+    return `<button class="dx-c${has?'':' no'}" data-k="${k}" aria-label="${esc(has?nameOf(k):tr('gLocked'))}">${has&&dxFresh.has(k)?`<span class="dx-new">${esc(tr('gNew'))}</span>`:''}${has?`<span class="dx-x">×${s.all}</span>`:''}<span class="dx-n">No.${dxNo(k)}</span>${dIcon(k,52)}<span class="dx-t">${has?esc(nameOf(k)):'???'}</span><span class="dx-s">${has?`<span title="${esc(tr('gIn'))}">${ic('yard')} ${s.in}</span><span title="${esc(tr('gKept'))}">${ic('inventory_2')} ${s.kept}</span>`:esc(tr('gLocked'))}</span></button>`}).join('');
+  gOpen(`<div class="dx-view"><div class="dx-hd"><h2 class="gsh-h">${ic('redeem')} ${esc(tr('gDex'))}</h2><div class="dx-sum"><span>${esc(tr('gDexSum',own,DK.length))}</span><div class="dx-bar"><i></i></div></div></div><div class="dx-body"><div class="dx-g">${cards}</div></div><div class="dx-ft"><button class="btn" id="gcl">${esc(tr('close'))}</button></div></div>`);
+  const bd=$('gsh').querySelector('.dx-body');if(bd)bd.scrollTop=dxY;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{const i=$('gsh').querySelector('.dx-bar i');if(i)i.style.width=pct+'%'}));
   $('gcl').onclick=gClose;
-  $('gsh').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const o=g.decor.find(x=>x.id===b.dataset.id);if(!o)return;if(o.p){storeDecor(o.id);openGifts()}else if(putDecor(o))gClose()})}
+  $('gsh').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const bd=$('gsh').querySelector('.dx-body');dxY=bd?bd.scrollTop:0;dexDetail(b.dataset.k)})}
+function dexDetail(k){const s=dxStat(k),has=s.all>0,nm=has?nameOf(k):'???';
+  const body=has?`<div class="dx-st"><div><b>${s.in}</b><small>${esc(tr('gIn'))}</small></div><div><b>${s.kept}</b><small>${esc(tr('gKept'))}</small></div><div><b>${s.all}</b><small>${esc(tr('gTotal'))}</small></div></div><div class="dx-act"><button class="btn" id="dxs"${s.in?'':' disabled'}>${ic('inventory_2')} ${esc(tr('gStoreOne'))}</button><button class="btn p" id="dxp"${s.kept?'':' disabled'}>${ic('yard')} ${esc(tr('gPlaceNow'))}</button></div>`
+    :`<p class="dx-lock">${esc(tr('gLockedHint'))}</p>`;
+  gOpen(`<div class="dx-top"><button id="dxb" aria-label="${esc(tr('gBack'))}" title="${esc(tr('gBack'))}">${ic('arrow_back')}</button><span class="dx-n">No.${dxNo(k)}</span><button id="dxc" aria-label="${esc(tr('close'))}" title="${esc(tr('close'))}">${ic('close')}</button></div><div class="dx-d"><div class="dx-hero${has?'':' no'}">${dIcon(k,84)}</div><h2>${esc(nm)}</h2>${has?'':`<small>${esc(tr('gLocked'))}</small>`}${body}</div>`);
+  $('dxb').onclick=()=>dexGrid();$('dxc').onclick=gClose;
+  if(!has)return;
+  $('dxs').onclick=()=>{const o=[...G().decor].reverse().find(x=>x.k===k&&x.p);if(!o)return;storeDecor(o.id);dexDetail(k)};
+  $('dxp').onclick=()=>{const o=G().decor.find(x=>x.k===k&&!x.p);if(!o)return;if(putDecor(o))gClose()}}
 $('gb').onclick=openGifts;
 function gbRefresh(){const b=$('gb');if(!b)return;const n=G().decor.filter(o=>o.nw).length;b.innerHTML=ic('redeem')+(n?`<span class="gbd">${n}</span>`:'');b.setAttribute('aria-label',tr('gb'));b.title=tr('gb')}
 
@@ -1268,6 +1383,7 @@ function step(t,dt,rm){try{
     if(u.pop!=null){u.pop+=dt/.6;const x=Math.min(1,u.pop),ob=1+2.70158*Math.pow(x-1,3)+1.70158*Math.pow(x-1,2);o.g.scale.setScalar(Math.max(.001,ob));if(x>=1){u.pop=null;o.g.scale.setScalar(1)}}
     if(!rm){if(u.sw)u.sw.rotation.z=Math.sin(t*1.4+o.x)*.16;if(u.bl)u.bl.rotation.z-=dt*(.35+(WX.wind||0)*1.1);
       if(u.dr)u.dr.forEach((d,i)=>{const ph=(t*.9+i/8)%1,a=i/8*6.283+ph*.8,rr=ph*.2;d.position.set(Math.cos(a)*rr,.42+.14*Math.sin(ph*Math.PI)-.3*ph*ph,Math.sin(a)*rr)})}
+    {const d0=DBY[o.k];if(!rm&&d0&&d0.tick)d0.tick(o.g,t,dt,o)}
     if(u.gl){const dv=window.dfv==null?1:window.dfv;u.gl.material.opacity=.1+.5*(1-dv)}}
   if(t-gT>2){gT=t;giftTick()}
 }catch(e){if(!gWarn){gWarn=1;console.warn('[gift]',e)}}}
@@ -1284,8 +1400,8 @@ function localItems(){const g=G(),m={},now=Date.now();
 function mrgDay(a,b){if(!a||!b)return a||b||null;if(a.day>b.day)return a;if(b.day>a.day)return b;const base=(a.rt&&b.rt&&b.rt<a.rt)?b:a;return{...base,n:Math.max(a.n||0,b.n||0),last:Math.max(a.last||0,b.last||0)}}
 function mrgRemote(a,b){a=a||{};b=b||{};const o={d:mrgDay(a.d,b.d),i:{...(a.i||{})}};for(const id in (b.i||{}))if(!o.i[id]||b.i[id].u>o.i[id].u)o.i[id]=b.i[id];return o}
 function applyItem(r){const g=G(),pi=g.pend.findIndex(p=>p.id===r.id),di=g.decor.findIndex(o=>o.id===r.id);
-  if(r.s==='p'){if(di>=0||pi>=0||g.gone[r.id])return;const p={id:r.id,ty:r.ty,x:r.x,z:r.z,k:r.k,i:r.i,u:r.u};g.pend.push(p);if(ok)spawnGift(p,{x:p.x,y:gh(p.x,p.z),z:p.z})}
-  else if(r.s==='d'){if(pi>=0){g.pend.splice(pi,1);removeGiftObj(r.id)}
+  if(r.s==='p'){if(r.k==='d'&&MIG[r.i])r.i=MIG[r.i];if(di>=0||pi>=0||g.gone[r.id])return;const p={id:r.id,ty:r.ty,x:r.x,z:r.z,k:r.k,i:r.i,u:r.u};g.pend.push(p);if(ok)spawnGift(p,{x:p.x,y:gh(p.x,p.z),z:p.z})}
+  else if(r.s==='d'){if(MIG[r.k])r.k=MIG[r.k];if(pi>=0){g.pend.splice(pi,1);removeGiftObj(r.id)}
     const o={id:r.id,k:r.k,x:r.x,z:r.z,ry:r.ry||0,p:r.p?1:0,nw:r.nw?1:0,u:r.u},old=g.decor[di];
     if(di>=0)g.decor[di]=o;else g.decor.push(o);
     if(ok){const cur=DEC.find(d=>d.id===o.id);if(!o.p)removeDecorObj(o.id);else if(!cur||cur.x!==o.x||cur.z!==o.z)spawnDecor(o,false);else setDecorRy(cur,o.ry||0)}}
