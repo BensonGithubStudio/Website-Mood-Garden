@@ -263,7 +263,7 @@ body.sleeping>*:not(#sl):not(script){display:none!important}
 const SND={
   vol:{sfx:.7,amb:.35},
   sfx:{
-    click:'audio/sfx/click.wav',animal:'audio/sfx/animal.wav',flower:'audio/sfx/flower.wav',
+    click:'audio/sfx/click.wav',animal:'audio/sfx/animal.wav',flower:'audio/sfx/flower.wav',island:'audio/sfx/island.wav',
     plant:'audio/sfx/plant.wav',water:'audio/sfx/water.wav',gift_drop:'audio/sfx/gift_drop.wav',gift_open:'audio/sfx/gift_open.wav',decor_place:'audio/sfx/decor_place.wav',delete:'audio/sfx/delete.wav',bloom:'audio/sfx/bloom.wav',move:'audio/sfx/move.wav',rotate:'audio/sfx/rotate.wav',deny:'audio/sfx/deny.wav',
     animal_bee:'audio/sfx/animal_bee.wav',animal_bird:'audio/sfx/animal_bird.wav',animal_ladybug:'audio/sfx/animal_ladybug.wav',
     animal_butterfly:'audio/sfx/animal_butterfly.wav',animal_snail:'audio/sfx/animal_snail.wav',animal_frog:'audio/sfx/animal_frog.wav',leaf_float:'audio/sfx/leaf_float.wav'
@@ -2360,6 +2360,7 @@ function paintTexts(){
   $sw.querySelectorAll('button').forEach((b,k)=>b.onclick=()=>setPal(k));setPal(ci)}
 function openRest(){
   if(busy||!$m.hidden)return;
+  try{sfx('island')}catch(e){}
   paintTexts();$t.value='';$w.classList.remove('go');$m.hidden=false;$('card').hidden=true;
   tgG.set(IX+.5,0,IZ-.6);radG=Math.min(radG,13);                // 鏡頭靠近小島
   setTimeout(()=>{try{$t.focus({preventScroll:true})}catch(e){}},600)}
@@ -2692,7 +2693,7 @@ function open(){
   const lf=document.getElementById('rvm');if(!$o.hidden||(lf&&!lf.hidden))return;
   shuf=0;render();$o.hidden=false;$('card').hidden=true;
   tgG.set(IX,.4,IZ+.2);radG=Math.min(radG,14);
-  try{sfx('flower','click')}catch(e){}
+  try{sfx('island')}catch(e){}
   setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
 function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')home()}
 function visit(d){if(!S.e[d])return;close(false);try{detail(d)}catch(e){}}
@@ -2879,7 +2880,7 @@ function open(){
   const lf=document.getElementById('rvm'),mb=document.getElementById('mbo');if(!$o.hidden||(lf&&!lf.hidden)||(mb&&!mb.hidden))return;
   render();$o.hidden=false;$('card').hidden=true;
   tgG.set(WIX,.4,WIZ+.2);radG=Math.min(radG,14);
-  try{sfx('flower','click')}catch(e){}
+  try{sfx('island')}catch(e){}
   setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
 function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')home()}
 $x.onclick=()=>close(true);
