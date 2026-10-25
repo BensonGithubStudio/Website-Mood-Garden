@@ -443,6 +443,11 @@ Object.assign(L.en,{slT:'Sleep mode',slD:'Stops all animation and shows a dark s
 Object.assign(L.zh,{slT:'睡眠模式',slD:'停用所有動態效果，只留下背景環境音，螢幕關閉後也會繼續播放。',slB:'開始',slH:'睡眠模式',slP:'所有動態都已暫停以節省電力，目前只播放背景環境音。你可以直接關閉螢幕。',slWake:'喚醒花園'});
 Object.assign(L.ja,{slT:'スリープモード',slD:'すべての動きを止め、暗い画面にします。環境音だけが流れ続け、画面を消しても再生されます。',slB:'開始',slH:'スリープモード',slP:'省電力のため動きを止めています。環境音だけが流れています。画面を消しても大丈夫です。',slWake:'庭に戻る'});
 Object.assign(L.ko,{slT:'수면 모드',slD:'모든 움직임을 멈추고 어두운 화면을 보여줘요. 배경음만 계속 재생되며 화면이 꺼져도 이어져요.',slB:'시작',slH:'수면 모드',slP:'전력을 아끼기 위해 움직임을 멈췄어요. 배경음만 재생 중이에요. 화면을 꺼도 괜찮아요.',slWake:'깨우기'});
+/* 凋零系統的文字（四種語言） */
+Object.assign(L.en,{wDay:n=>`Withers in ${n} ${n==1?'day':'days'}`,wHr:n=>`Withers in about ${n}h`,wMin:n=>`Withers in about ${n} min`,wNow:'This flower has withered',wMoved:'Moved to the Withered Isle',wShovel:'Dig it up',shovelQ:'Dig up this withered flower? It will move to the Withered Isle, and its mood and note are kept.',shovelB:'Dig up',shoveled:'Moved to the Withered Isle',withToast:n=>n==1?'A flower has withered…':`${n} flowers have withered…`,wiT:'Withered Isle',wiSub:n=>`${n} ${n==1?'flower rests':'flowers rest'} here`,wiE0:'It’s quiet here',wiE1:'Flowers you dig up after they wither will rest here. Their moods and notes are always kept.',wiPlant:'Planted',wiWither:'Withered',wiShov:'Moved here'});
+Object.assign(L.zh,{wDay:n=>`${n} 天後凋零`,wHr:n=>`約 ${n} 小時後凋零`,wMin:n=>`約 ${n} 分鐘後凋零`,wNow:'這朵花已經凋零了',wMoved:'已搬到凋零小島',wShovel:'鏟除',shovelQ:'要鏟除這朵凋零的花嗎？它會搬到凋零小島，心情與內容都會保留。',shovelB:'鏟除',shoveled:'已搬到凋零小島',withToast:n=>`有 ${n} 朵花凋零了…`,wiT:'凋零小島',wiSub:n=>`${n} 朵花在這裡休息`,wiE0:'這裡還很安靜',wiE1:'凋零的花被鏟除後，會搬到這座小島。你記錄的心情與文字，都會好好留著。',wiPlant:'種下於',wiWither:'凋零於',wiShov:'搬來於'});
+Object.assign(L.ja,{wDay:n=>`あと${n}日で枯れます`,wHr:n=>`あと約${n}時間で枯れます`,wMin:n=>`あと約${n}分で枯れます`,wNow:'このお花は枯れました',wMoved:'枯れ花の島に移りました',wShovel:'掘り起こす',shovelQ:'枯れたお花を掘り起こしますか？「枯れ花の島」に移り、気分とメモは残ります。',shovelB:'掘り起こす',shoveled:'枯れ花の島に移しました',withToast:n=>`${n}輪のお花が枯れました…`,wiT:'枯れ花の島',wiSub:n=>`${n}輪のお花が休んでいます`,wiE0:'ここはとても静かです',wiE1:'枯れて掘り起こしたお花は、この島で休みます。気分とメモはずっと残ります。',wiPlant:'植えた日',wiWither:'枯れた日',wiShov:'島に来た日'});
+Object.assign(L.ko,{wDay:n=>`${n}일 뒤에 시들어요`,wHr:n=>`약 ${n}시간 뒤에 시들어요`,wMin:n=>`약 ${n}분 뒤에 시들어요`,wNow:'이 꽃은 시들었어요',wMoved:'시든 꽃의 섬으로 옮겼어요',wShovel:'파내기',shovelQ:'시든 꽃을 파낼까요? 「시든 꽃의 섬」으로 옮겨지고, 기분과 메모는 그대로 남아요.',shovelB:'파내기',shoveled:'시든 꽃의 섬으로 옮겼어요',withToast:n=>`꽃 ${n}송이가 시들었어요…`,wiT:'시든 꽃의 섬',wiSub:n=>`꽃 ${n}송이가 쉬고 있어요`,wiE0:'이곳은 아주 고요해요',wiE1:'시들어서 파낸 꽃은 이 섬에서 쉬어요. 기분과 메모는 언제나 남아 있어요.',wiPlant:'심은 날',wiWither:'시든 날',wiShov:'섬에 온 날'});
 function tr(k,...a){const v=(L[S.lang]||L.en)[k]??L.en[k];return typeof v=='function'?v(...a):v}
 function LC(){return{en:'en',zh:'zh-TW',ja:'ja',ko:'ko'}[S.lang]||'en'}
 function applyLang(){document.documentElement.lang=S.lang;Object.keys(M).forEach((k,i)=>{M[k].n=tr('m')[i];M[k].f=tr('f')[i]});
@@ -546,6 +551,16 @@ const matureOf=e=>!e.pt||(e.wt?Date.now()-e.wt>=WATER_MS:e.pt+GROW_MS<=WATER_EPO
 const thirstyOf=e=>!!e.pt&&!e.wt&&!matureOf(e)&&Date.now()-e.pt>=GROW_MS;              // 滿 12 小時、還沒澆水
 const hrsLeft=e=>Math.max(1,Math.ceil((e.pt+GROW_MS-Date.now())/36e5));                // 距離可以澆水還有幾小時
 const minsLeftW=e=>Math.max(1,Math.ceil((e.wt+WATER_MS-Date.now())/6e4));              // 澆水後距離長大還有幾分鐘
+/* ---------- 凋零：花朵種下滿一段時間就會凋零 ----------
+   ★ 想測試凋零，只要改下面這個數字（單位：小時）。預設 2400 小時 = 100 天。
+     例：WITHER_HOURS=0.05 ≈ 3 分鐘。也可以不改檔案，直接在網址後面加 ?wither=0.05 臨時覆蓋。
+   凋零時間從「種下的那一刻」(e.pt) 開始算；鏟除只是把花搬到凋零小島（e.sh），心情與文字都會留著。 */
+const WITHER_HOURS=144;
+const WITHER_MS=(()=>{let q=NaN;try{q=parseFloat(new URLSearchParams(location.search).get('wither'))}catch(e){}return(q>0?q:WITHER_HOURS)*3600*1000})();
+const witherAt=(d,e)=>(e.pt||new Date(d+'T12:00').getTime())+WITHER_MS;           // 沒有種植時間的舊花，用日期當作種下的時間
+const withered=(d,e)=>!!e&&Date.now()>=witherAt(d,e);                              // 已進入凋零期（不論有沒有鏟除）
+const shoveled=e=>!!(e&&e.sh);                                                       // 已鏟除（搬到凋零小島）
+const witherLeftTxt=(d,e)=>{const ms=Math.max(0,witherAt(d,e)-Date.now());return ms>=864e5?tr('wDay',Math.ceil(ms/864e5)):ms>=36e5?tr('wHr',Math.ceil(ms/36e5)):tr('wMin',Math.max(1,Math.ceil(ms/6e4)))};
 function flowerBaby(k){
   const g=new THREE.Group(),H={happy:.8,excited:.65,calm:.5,loved:.6,sad:.6,anxious:.55}[k],h=new THREE.Group();
   g.add(mk(CYL,'#8CC27D',[0,H/2,0],[.04,H,.04]));
@@ -563,18 +578,76 @@ function flowerBaby(k){
   const dr=new THREE.Group();dr.visible=false;for(let i=0;i<3;i++){const a=i*2.1,d=mk(SPH,'#E6F4FF',[Math.cos(a)*.1,Math.random()*.1,Math.sin(a)*.1],[.022,.028,.022],null,DROPM);d.castShadow=false;dr.add(d)}h.add(dr);
   const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.y=H*.55;hb.scale.set(.32,H*.55+.1,.32);g.add(hb);   // 小花苗比較小，加一個隱形觸控範圍方便點選
   g.userData.h=h;g.userData.dr=dr;return g}
+/* ---------- 凋零的樣子：6 種花各有自己的枯萎方式 ----------
+   共通：莖乾枯變褐、頂端垂下去，葉子捲曲下垂，花瓣掉了一地。
+   向日葵＝花瓣稀疏捲起、深褐花盤低頭；鬱金香＝花瓣向外鬆開、掉下一片；雛菊＝花瓣泛灰、只剩幾片；
+   玫瑰＝深酒紅的花瓣層層萎縮、散落；風鈴草＝鈴鐺縮成灰藍、弓著身、掉了一顆；薰衣草＝花穗變灰褐、整串垂下。
+   lite=true 是給凋零小島用的精簡版（少一點零件，島上才不會太吃效能）。 */
+function flowerWither(k,lite){
+  const g=new THREE.Group(),rn=(a,b)=>a+Math.random()*(b-a);
+  const H={happy:1.6,excited:1.3,calm:.9,loved:1.2,sad:1.4,anxious:1.5}[k],
+    bd={happy:.7,excited:.42,calm:.36,loved:.55,sad:.8,anxious:.95}[k],
+    ST={happy:'#8E8556',excited:'#8D8A58',calm:'#919060',loved:'#7B6B45',sad:'#8A8A5E',anxious:'#868356'}[k];
+  /* 莖：三次貝茲曲線，頂端垂下去 */
+  const P0=[0,0],P1=[0,H*.85],P2=[bd*.5,H*1.12],P3=[bd,H*.7],N=lite?5:8;
+  const pt=t=>{const u=1-t;return[u*u*u*P0[0]+3*u*u*t*P1[0]+3*u*t*t*P2[0]+t*t*t*P3[0],u*u*u*P0[1]+3*u*u*t*P1[1]+3*u*t*t*P2[1]+t*t*t*P3[1]]};
+  for(let i=0;i<N;i++){const a=pt(i/N),b=pt((i+1)/N),dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy),r=.05-i*(lite?.004:.0025);
+    g.add(mk(CYL,ST,[(a[0]+b[0])/2,(a[1]+b[1])/2,0],[r,L*1.08,r],[0,0,-Math.atan2(dx,dy)]))}
+  /* 乾枯的葉子：垂下去、顏色變褐 */
+  [1,-1].forEach((s,i)=>g.add(mk(SPH,i?'#A08A52':'#8F7A48',[s*.2,H*.22+i*.16,0],[.24,.035,.1],[0,0,-s*.75])));
+  /* 掉在地上的花瓣 */
+  const fall=(c,n,r,s)=>{n=lite?Math.ceil(n/3):n;for(let i=0;i<n;i++){const a=rn(0,6.28),d=rn(.15,r);g.add(mk(SPH,c,[Math.cos(a)*d+bd*.3,.025,Math.sin(a)*d],[s[0],s[1],s[2]],[0,rn(0,3),rn(-.15,.15)]))}};
+  /* 頭部：+y 軸對準莖尖方向，所以整朵花是低垂的 */
+  const T=[P3[0]-P2[0],P3[1]-P2[1]],hd=new THREE.Group();hd.position.set(P3[0],P3[1],0);hd.rotation.z=-Math.atan2(T[0],T[1]);g.add(hd);
+  const bellM=c=>new THREE.MeshStandardMaterial({color:c,side:2,roughness:.9,vertexColors:true,emissive:new THREE.Color(c).multiplyScalar(.13)});
+  if(k=='happy'){            /* 向日葵：花瓣稀疏、往內捲，深褐色花盤低著頭 */
+    hd.add(mk(SPH,'#4E3A2A',[0,0,0],[.2,.07,.2]));hd.add(mk(SPH,'#3B2B20',[0,.04,0],[.11,.04,.11]));
+    ring(hd,9,.28,-.02,[.17,.03,.065],.9,'#B59A45');ring(hd,lite?3:5,.22,.0,[.14,.03,.06],1.15,'#9C8238');
+    fall('#C9A94F',5,.7,[.14,.025,.06]);fall('#A68A3A',3,.5,[.12,.022,.05])}
+  if(k=='excited'){          /* 鬱金香：花瓣向外鬆開、顏色變褐，掉下一兩片 */
+    hd.add(mk(SPH,'#5A4A35',[0,.1,0],[.04,.1,.04]));
+    ring(hd,5,.13,.1,[.08,.19,.05],-.75,'#A87650');ring(hd,3,.06,.08,[.07,.16,.045],-.4,'#C29A6C');
+    fall('#A87650',2,.55,[.07,.02,.16])}
+  if(k=='calm'){             /* 雛菊：花瓣泛灰、稀疏，花心變暗黃 */
+    hd.add(mk(SPH,'#B79B45',[0,.02,0],[.1,.07,.1]));
+    ring(hd,8,.19,0,[.15,.022,.04],.7,'#D9D3C0');ring(hd,lite?2:4,.14,.012,[.12,.02,.035],1.0,'#BDB59C');
+    fall('#E4DECB',6,.55,[.15,.018,.04])}
+  if(k=='loved'){            /* 玫瑰：酒紅色花瓣一層層萎縮，散落一地 */
+    hd.add(mk(SPH,'#4F2A32',[0,.12,0],[.07,.1,.07]));
+    ring(hd,6,.2,.06,[.1,.14,.04],.15,'#7D3F4C');ring(hd,5,.13,.1,[.09,.13,.04],.3,'#6A3440');ring(hd,4,.06,.14,[.07,.12,.04],.45,'#8B4A57');
+    fall('#7D3F4C',6,.7,[.1,.018,.06]);fall('#5A2D37',3,.5,[.09,.016,.05])}
+  if(k=='sad'){              /* 風鈴草：鈴鐺縮小、變成灰藍，弓著身垂下，還有一顆掉在地上 */
+    for(let i=0;i<3;i++)g.add(mk(bellG,'#7C86A0',[P3[0]+Math.cos(i*2.1)*.17,P3[1]-.02-i*.13,Math.sin(i*2.1)*.17],[.85,.85,.85],null,bellM(i?'#7C86A0':'#8D98B4')));
+    if(!lite)g.add(mk(bellG,'#7C86A0',[.5,.07,.32],[.8,.8,.8],[0,.5,1.5],bellM('#7C86A0')));
+    fall('#8D98B4',2,.6,[.06,.02,.09])}
+  if(k=='anxious'){          /* 薰衣草：花穗變成灰褐色、稀稀落落地垂在尖端 */
+    for(let i=0;i<9;i++){if(i%4==3)continue;g.add(mk(SPH,i%2?'#8E7F8F':'#7A6C7D',[P3[0]+Math.sin(i*1.7)*.045,P3[1]-.03-i*.085,Math.cos(i*1.7)*.045],[.062-i*.003,.08,.062-i*.003]))}
+    fall('#8E7F8F',7,.8,[.045,.045,.045])}
+  /* 隱形的觸控範圍（跟小花苗一樣），方便點選 */
+  const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.set(bd*.5,H*.5,0);hb.scale.set(Math.max(.4,bd*.75),H*.55+.1,.4);g.add(hb);
+  if(lite)g.traverse(o=>{if(o.isMesh)o.castShadow=false});
+  g.userData.wk=k;return g}
 function flower(k){const W=new THREE.Group(),A=flowerAdult(k),Y=flowerBaby(k);W.add(A,Y);
   Object.assign(W.userData,{h:A.userData.h,dr:A.userData.dr,hy:Y.userData.h,dry:Y.userData.dr,ph:A.userData.ph,mood:k,A,Y,st:1,mo:null});return W}
 /* 切換階段：anim=true 時，小花苗縮回去、成熟的花彈出來（還會有星星和愛心） */
-function setStage(f,st,anim){const u=f.userData;u.st=st;
+function setStage(f,st,anim){const u=f.userData,was=u.st;u.st=st;
+  /* 凋零：用 6 種各自的枯萎模型；anim=true 時，原本的花（或小花苗）會慢慢縮回去、枯萎的樣子浮現，並飄下花瓣 */
+  if(st===2){if(!u.Wt){u.Wt=flowerWither(u.mood);f.add(u.Wt)}u.Wt.visible=true;u.mo=null;setThirst(f,false);u.th=false;
+    if(anim){u.wsrc=was===0?u.Y:u.A;u.wsrc.visible=true;u.Wt.scale.setScalar(.001);u.wm=0;witherFx(f)}
+    else{u.wm=null;u.wsrc=null;u.A.visible=false;u.Y.visible=false;u.A.scale.setScalar(.001);u.Y.scale.setScalar(.001);u.Wt.scale.setScalar(1)}
+    return}
+  if(u.Wt){u.Wt.visible=false;u.wm=null}
   if(anim&&st===1){u.mo=0;u.A.visible=true;u.Y.visible=true;u.A.scale.setScalar(.001);
     const p={x:f.position.x,y:f.position.y+.5*u.base,z:f.position.z};burst('spark',p,6);burst('heart',p,3);sfx('bloom');toast(tr('grown'));return}
   u.mo=null;u.A.visible=st===1;u.Y.visible=st===0;u.A.scale.setScalar(st===1?1:.001);u.Y.scale.setScalar(st===0?1:.001)}
 let matT=0;
-function stageStep(t,dt){
-  if(t-matT>3){matT=t;let nt=0;for(const d in flowers){const f=flowers[d],u=f.userData,e=S.e[d];if(!e)continue;
+function stageStep(t,dt){witherStep(t,dt);
+  if(t-matT>3){matT=t;let nt=0,nw=0;for(const d in flowers){const f=flowers[d],u=f.userData,e=S.e[d];if(!e)continue;
+    if(u.st!==2&&withered(d,e)&&!(P&&P.d===d)){setStage(f,2,true);nw++;continue}
+    if(u.st===2)continue;
     if(u.st===0&&matureOf(e)&&!(P&&P.d===d))setStage(f,1,true);
     const th=u.st===0&&thirstyOf(e);setThirst(f,th);if(th&&!u.th)nt++;u.th=th}
+    if(nw&&!P)toast(tr('withToast',nw));
     if(nt&&!P)toast(tr('thirstT',nt))}
   if(!S.rm)for(const d in flowers){const u=flowers[d].userData;if(u.dp)u.dp.position.y=1.25+.07*Math.sin(t*3+u.ph)}
   for(const d in flowers){const f=flowers[d],u=f.userData;if(u.mo==null)continue;
@@ -592,11 +665,41 @@ function waterFx(f){const u=f.userData,p={x:f.position.x,y:f.position.y+1.3*u.ba
   const n0=parts.length;burst('drop',p,14);
   for(let i=n0;i<parts.length;i++){const s=parts[i];s.position.y=p.y+Math.random()*.4;s.userData.v.set((Math.random()-.5)*.35,-1.8-Math.random()*.8,(Math.random()-.5)*.35);s.userData.m=.8+Math.random()*.4}
   setTimeout(()=>burst('bubble',{x:p.x,y:f.position.y+.3*u.base,z:p.z},5),500)}
-function water(d){const e=S.e[d];if(!e||!thirstyOf(e)){sfx('deny');return false}
+function water(d){const e=S.e[d];if(!e||withered(d,e)||!thirstyOf(e)){sfx('deny');return false}
   e.wt=Date.now();save();const f=flowers[d];
   if(f){setThirst(f,false);f.userData.th=false;waterFx(f)}
   sfx('water','plant');toast(tr('waterT'));return true}
-function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined);
+/* ---------- 凋零的小動畫與鏟除 ----------
+   花瓣飄落、鏟土的小碎屑共用同一組「碎屑」；鏟除時花會往土裡縮下去，然後搬到凋零小島。 */
+const DBR=[],SHV=[],WPAL={happy:['#C9A94F','#A68A3A'],excited:['#B5845A','#9A6B45'],calm:['#E4DECB','#CFC8B0'],loved:['#8B4A57','#6A3440'],sad:['#8D98B4','#7C86A0'],anxious:['#9A8E9B','#7F7280']};
+function debris(x,y,z,cols,n,o){o=o||{};const cs=[].concat(cols);
+  for(let i=0;i<n;i++){const s=(o.s||.05)*(.7+Math.random()*.6),m=mk(SPH,cs[i%cs.length],[x,y,z],[s*1.5,s*.45,s]);m.castShadow=false;m.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3);scene.add(m);
+    const a=Math.random()*6.283,v=(o.v||.5)*(.4+Math.random()*.8);
+    DBR.push({m,b:m.scale.clone(),vx:Math.cos(a)*v,vy:(o.up||.3)*(.3+Math.random()),vz:Math.sin(a)*v,g:o.g||1.6,t:0,life:o.life||2.6,sp:(Math.random()-.5)*4,rest:false})}}
+function witherFx(f){const u=f.userData,p=f.position;if(S.rm)return;debris(p.x,p.y+1.0*u.base,p.z,WPAL[u.mood]||WPAL.happy,9,{s:.06,v:.35,up:.4,g:1.5,life:3})}
+function witherStep(t,dt){
+  for(let i=DBR.length-1;i>=0;i--){const q=DBR[i],m=q.m;q.t+=dt;
+    if(!q.rest){q.vy-=q.g*dt;m.position.x+=q.vx*dt;m.position.y+=q.vy*dt;m.position.z+=q.vz*dt;m.rotation.y+=q.sp*dt;m.rotation.x+=q.sp*dt*.6;
+      const gy=gh(m.position.x,m.position.z)+.03;if(m.position.y<=gy&&q.vy<0){m.position.y=gy;q.rest=true}}
+    const k=q.t>q.life-.5?Math.max(.001,(q.life-q.t)/.5):1;m.scale.copy(q.b).multiplyScalar(k);
+    if(q.t>=q.life){scene.remove(m);DBR.splice(i,1)}}
+  /* 花從「盛開 / 小花苗」慢慢枯成凋零的樣子 */
+  for(const d in flowers){const f=flowers[d],u=f.userData;if(u.wm==null)continue;
+    u.wm+=S.rm?dt*8:dt/1.8;const x=Math.min(1,u.wm),out=Math.max(.001,1-ez(Math.min(1,x*1.5))),inn=Math.max(.001,ez((x-.2)/.8));
+    if(u.wsrc)u.wsrc.scale.setScalar(out);u.Wt.scale.setScalar(inn);
+    if(x>=1){u.wm=null;if(u.wsrc){u.wsrc.visible=false;u.wsrc.scale.setScalar(.001)}u.Wt.scale.setScalar(1)}}
+  /* 被鏟除的花：往土裡縮下去 */
+  for(let i=SHV.length-1;i>=0;i--){const q=SHV[i],f=q.f;q.t+=S.rm?dt*8:dt/.55;const x=Math.min(1,q.t);
+    f.position.y=q.y0-.55*ez(x);f.scale.setScalar(Math.max(.001,q.s0*(1-ez(x))));
+    if(x>=1){scene.remove(f);SHV.splice(i,1)}}}
+/* 鏟除：只是把花從花園搬走（e.sh＝搬走的時間）。心情、文字、標籤、種下的時間全部保留，所以月曆、統計、回憶都還在。 */
+function shovelFlower(d){const e=S.e[d];if(!e||e.sh)return;const f=flowers[d];
+  e.sh=Date.now();save();
+  if(f){const p=f.position;delete flowers[d];
+    if(S.rm)scene.remove(f);
+    else{SHV.push({f,t:0,y0:p.y,s0:f.scale.x});debris(p.x,p.y+.05,p.z,['#8A6A47','#6F5238','#9B7B55'],12,{s:.045,v:.7,up:2.2,g:7,life:1.4})}}
+  sfx('delete','move');syncCr();$('card').hidden=true;home();refresh();toast(tr('shoveled'));if(window.WI)WI.refresh()}
+function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined&&!e.sh);
   const n2=ex.filter(e=>inG2(e.x,e.z,1.1)).length,g=n2<ex.length-n2?2:1;let best;       // 新花種在花朵比較少的那座花園
   for(let t=0;t<120;t++){let x,z;
     if(g==1){const r=1+Math.sqrt(rnd())*5.6,a=rnd()*6.283;x=Math.cos(a)*r;z=Math.sin(a)*r}
@@ -604,8 +707,9 @@ function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const 
     best={x,z};
     if(legalSpot(x,z)&&ex.every(e=>Math.hypot(e.x-x,e.z-z)>1))break}
   return{x:best.x,z:best.z,s:.85+rnd()*.5,r:rnd()*6.28}}
-function addFlower(d,grow){const e=S.e[d];if(e.x===undefined){Object.assign(e,pickPos(d));save()}
-  const f=flower(e.mood);f.position.set(e.x,gh(e.x,e.z),e.z);f.rotation.y=e.r;Object.assign(f.userData,{date:d,base:e.s,grow});scene.add(f);flowers[d]=f;setStage(f,matureOf(e)?1:0,false);setGrow(f,grow);syncCr()}
+function addFlower(d,grow){const e=S.e[d];if(e.sh){if(window.WI)WI.refresh();return}   // 已鏟除的花不在花園裡，住在凋零小島上
+  if(e.x===undefined){Object.assign(e,pickPos(d));save()}
+  const f=flower(e.mood);f.position.set(e.x,gh(e.x,e.z),e.z);f.rotation.y=e.r;Object.assign(f.userData,{date:d,base:e.s,grow});scene.add(f);flowers[d]=f;setStage(f,withered(d,e)?2:matureOf(e)?1:0,false);setGrow(f,grow);syncCr()}
 const ez=t=>1-Math.pow(1-Math.min(1,Math.max(0,t)),3);
 function setGrow(f,g){const b=f.userData.base,a=Math.max(.001,ez(g*2))*b;f.scale.set(a,a,a);const h=Math.max(.001,ez((g-.4)/.6));f.userData.h.scale.setScalar(h);if(f.userData.hy)f.userData.hy.scale.setScalar(h)}
 
@@ -1473,7 +1577,7 @@ function frame(){if(SLP.on){fh=true;return}requestAnimationFrame(frame);const dt
   /* 放開手指後的慣性滑行 */
   if(!panning&&(Math.abs(panV.x)>.1||Math.abs(panV.z)>.1)){
     if(S.rm)panV.x=panV.z=0;
-    else{tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+panV.x*dt));tgG.z=Math.min(10,Math.max(-10,tgG.z+panV.z*dt));const d=Math.pow(.015,dt);panV.x*=d;panV.z*=d}}
+    else{tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+panV.x*dt));tgG.z=Math.min(10,Math.max(-19,tgG.z+panV.z*dt));const d=Math.pow(.015,dt);panV.x*=d;panV.z*=d}}
   tg.lerp(tgG,k);rad+=(radG-rad)*k;th+=(thG-th)*k;ph+=(phG-ph)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
   for(const d in flowers){const f=flowers[d],u=f.userData;if(u.ryT!=null){const df=u.ryT-f.rotation.y;if(rm||Math.abs(df)<.002)f.rotation.y=u.ryT;else f.rotation.y+=df*Math.min(1,dt*12)}faceUpdate(f,t,dt);if(u.dr)u.dr.visible=WX.wet>.25&&u.st===1;if(u.dry)u.dry.visible=WX.wet>.25&&u.st===0;if(!rm){const w=.5+WX.wind*1.1;f.rotation.z=Math.sin(t*(1+w*.5)+u.ph)*.03*w;u.h.rotation.z=u.hy.rotation.z=Math.sin(t*(1.4+w*.6)+u.ph)*.045*w}
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
@@ -1492,7 +1596,7 @@ const cv=$('c'),pts=new Map(),ray=new THREE.Raycaster(),mv=new THREE.Vector2();l
 function pick(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?o.userData.date:null}
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;panV.x=panV.z=0;panning=true;panT=performance.now();const lb=e.pointerType!='mouse'||e.button==0;if(arrange&&lb&&pts.size==1&&!pick(e)){const di=GF.pickDecor(e);if(di){GF.down(di);return}}if(arrange&&lb&&pts.size==1){const d=pick(e);if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
 cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
-  if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg||GF.pickGift(e)||GF.pickDecor(e)||(window.RV&&RV.pick(e))||(window.MB&&MB.pick(e)))?'pointer':'grab';return}
+  if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg||GF.pickGift(e)||GF.pickDecor(e)||(window.RV&&RV.pick(e))||(window.MB&&MB.pick(e))||(window.WI&&WI.pick(e)))?'pointer':'grab';return}
   if(GF.active()){GF.move(e);pts.set(e.pointerId,e);return}
   if(drag){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;
     let x=f.position.x,z=f.position.z,sky=true;
@@ -1505,7 +1609,7 @@ cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
 cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;if(performance.now()-panT>90||moved<6||drag)panV.x=panV.z=0}if(GF.active()){panV.x=panV.z=0;GF.up();return}if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
     if(f&&en){if(dm>2&&dragOK){en.x=f.position.x;en.z=f.position.z;f.position.y=gh(en.x,en.z);save();sfx('move');toast(tr('moved'))}
       else{slideBack(d,dragO);if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
-    return}if(moved<6&&!pts.size&&(e.pointerType!='mouse'||e.button==0)){const gf=GF.pickGift(e);if(gf){GF.openGift(gf);return}const dc=GF.pickDecor(e);if(dc){GF.decorCard(dc);return}const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else if(window.RV&&RV.pick(e)){RV.open()}else if(window.MB&&MB.pick(e)){MB.open()}else $('card').hidden=true}});
+    return}if(moved<6&&!pts.size&&(e.pointerType!='mouse'||e.button==0)){const gf=GF.pickGift(e);if(gf){GF.openGift(gf);return}const dc=GF.pickDecor(e);if(dc){GF.decorCard(dc);return}const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else if(window.RV&&RV.pick(e)){RV.open()}else if(window.MB&&MB.pick(e)){MB.open()}else if(window.WI&&WI.pick(e)){WI.open()}else $('card').hidden=true}});
 cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;panV.x=panV.z=0}if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}if(GF.active())GF.cancel();});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('mousedown',e=>{if(e.button==1)e.preventDefault()});
@@ -1513,12 +1617,12 @@ cv.addEventListener('mousedown',e=>{if(e.button==1)e.preventDefault()});
 function pan(dx,dy,mouse){
   if(mouse){/* 電腦滑鼠：維持原本靈敏度，不加速、不慣性 */
     const k=2*Math.tan(cam.fov*Math.PI/360)*rad/innerHeight,s=Math.sin(th),c=Math.cos(th),mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;
-    tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+mx));tgG.z=Math.min(10,Math.max(-10,tgG.z+mz));panV.x=panV.z=0;return}
+    tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+mx));tgG.z=Math.min(10,Math.max(-19,tgG.z+mz));panV.x=panV.z=0;return}
   const now=performance.now(),dt=Math.max(8,Math.min(100,now-panT))/1000;panT=now;
   const boost=1+Math.min(.6,Math.hypot(dx,dy)/dt/2500),
     k=2*Math.tan(cam.fov*Math.PI/360)*Math.max(rad,10)/innerHeight*PAN_GAIN*boost,s=Math.sin(th),c=Math.cos(th),
     mx=-dx*k*c-dy*k*1.2*s,mz=dx*k*s-dy*k*1.2*c;
-  tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+mx));tgG.z=Math.min(10,Math.max(-10,tgG.z+mz));
+  tgG.x=Math.min(G2.x+rho2(0)+1,Math.max(-9,tgG.x+mx));tgG.z=Math.min(10,Math.max(-19,tgG.z+mz));
   panV.x=Math.max(-40,Math.min(40,panV.x*.5+mx/dt*.5));panV.z=Math.max(-40,Math.min(40,panV.z*.5+mz/dt*.5))}
 cv.addEventListener('wheel',e=>{e.preventDefault();radG=Math.min(64,Math.max(4.5,radG*(1+e.deltaY*.001)))},{passive:false});
 
@@ -1551,14 +1655,28 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.
 function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
   $('date').textContent=n.toLocaleDateString(LC(),{weekday:'short',month:'short',day:'numeric'});
   $('hi').innerHTML=ic('local_florist')+(S.e[today()]?tr('hi1'):tr('hi0'));
-  $('cnt').innerHTML=ic('eco')+' '+tr('cnt',en.length);
+  $('cnt').innerHTML=ic('eco')+' '+tr('cnt',en.filter(([,x])=>!x.sh).length);
   $('mon').innerHTML=mo.length?tr('mon')+' '+Object.entries(c).map(([k,v])=>flo(k,18)+'×'+v).join(' '):tr('monNone');
   $('fab').hidden=!!S.e[today()];$('fab').innerHTML=ic('local_florist');$('fab').setAttribute('aria-label',tr('rec'));$('fab').title=tr('rec');{const wi=Object.keys(M).indexOf(window.wxm);$('wxc').innerHTML=wi>=0?ic(['air','auto_awesome','air','filter_vintage','water_drop','cloud'][wi])+' '+tr('wxn')[wi]:''}$('arr').innerHTML=ic(arrange?'check_circle':'open_with');$('arr').setAttribute('aria-label',tr(arrange?'done':'arr'));$('arr').title=tr(arrange?'done':'arr');if(window.GF)GF.refresh()}
 function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d];if(f){tgG.set(f.position.x,f.position.y+.8,f.position.z);radG=5}
-  const m=M[e.mood],c=$('card');c.hidden=false;
-  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px">${flo(e.mood,36)}<span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div>${matureOf(e)?'':`<div style="font-size:12px;opacity:.75;margin-top:4px">${e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e))}</div>`}${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px">${thirstyOf(e)?`<button class="btn w" id="cw" data-sfx="off" aria-label="${tr('waterB')}" title="${tr('waterB')}">${ic('water_drop')}</button>`:''}<button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button><button class="btn" id="cr" data-sfx="off" aria-label="${tr('gRotB')}" title="${tr('gRotB')}">${ic('rotate_right')}</button><button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button><button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button></div>`;
-  $('ce').onclick=()=>openModal(d);$('cr').onclick=()=>rotateFlower(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true};
-  $('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
+  const m=M[e.mood],c=$('card'),sv=shoveled(e),wd=!sv&&withered(d,e);
+  /* 同一行：成長提示（澆水／小花苗）＋凋零提示，放得下就並排，放不下才換行 */
+  const rows=[];
+  if(!sv&&!wd&&!matureOf(e))rows.push(e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e)));
+  rows.push('🥀 '+(sv?tr('wMoved'):wd?tr('wNow'):witherLeftTxt(d,e)));
+  const dim=(sv||wd)?'filter:grayscale(.75) sepia(.25);opacity:.85;':'';
+  const SHOVEL='<svg viewBox="0 0 24 24" width="1.25em" height="1.25em" fill="currentColor" aria-hidden="true" style="vertical-align:-.25em;flex:none"><g transform="rotate(35 12 12)"><rect x="10.9" y="1.8" width="2.2" height="11" rx="1.1"/><rect x="8.2" y="1.8" width="7.6" height="2.3" rx="1.15"/><path d="M7.2 12.4h9.6v3.4c0 3.1-2.1 5.7-4.8 6.9-2.7-1.2-4.8-3.8-4.8-6.9z"/></g></svg>';
+  const rot=`<button class="btn" id="cr" data-sfx="off" aria-label="${tr('gRotB')}" title="${tr('gRotB')}">${ic('rotate_right')}</button>`,
+    cls=`<button class="btn" id="cx" style="margin-left:auto" aria-label="${tr('close')}" title="${tr('close')}">${ic('close')}</button>`;
+  const btns=sv?`<button class="btn" id="cv" aria-label="${tr('wiT')}" title="${tr('wiT')}">${ic('yard')} ${tr('wiT')}</button>${cls}`
+    :wd?`<button class="btn" id="cs" aria-label="${tr('wShovel')}" title="${tr('wShovel')}">${SHOVEL}</button>${rot}${cls}`
+    :`${thirstyOf(e)?`<button class="btn w" id="cw" data-sfx="off" aria-label="${tr('waterB')}" title="${tr('waterB')}">${ic('water_drop')}</button>`:''}<button class="btn" id="ce" aria-label="${tr('edit')}" title="${tr('edit')}">${ic('edit')}</button>${rot}<button class="btn r" id="cd" aria-label="${tr('delete')}" title="${tr('delete')}">${ic('delete')}</button>${cls}`;
+  c.hidden=false;
+  c.innerHTML=`<div style="font-size:12px;opacity:.7">${fmt(d)}</div><h2 style="display:flex;align-items:center;gap:8px"><span style="display:inline-flex;${dim}">${flo(e.mood,36)}</span><span>${m.f}</span></h2><div style="display:flex;align-items:center;gap:6px">${face(e.mood,24)} ${m.n}</div><div style="display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12px;opacity:.75;margin-top:4px">${rows.map(x=>`<span>${x}</span>`).join('')}</div>${e.text?`<p>“${esc(e.text)}”</p>`:'<p style="opacity:.6">'+tr('noNote')+'</p>'}<div class="chips">${(e.tags||[]).map(t=>`<span>${esc(tr('tg')[TAGS.indexOf(t)]||t)}</span>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px">${btns}</div>`;
+  if($('ce'))$('ce').onclick=()=>openModal(d);if($('cr'))$('cr').onclick=()=>rotateFlower(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true};
+  if($('cs'))$('cs').onclick=async()=>{if(await ask(tr('shovelQ'),tr('shovelB')))shovelFlower(d)};
+  if($('cv'))$('cv').onclick=()=>{c.hidden=true;if(window.WI)WI.open()};
+  if($('cd'))$('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
 /* 旋轉花朵：每按一次轉 45 度（帶緩動）；角度存在 S.e[d].r，save() 會偵測到變更並更新時間，因此會隨花朵一起同步到 Google 雲端 */
 function rotateFlower(d){const e=S.e[d];if(!e)return;const f=flowers[d],TP=Math.PI*2,u=f&&f.userData;
   const cur=u?(u.ryT!=null?u.ryT:f.rotation.y):(e.r||0),nx=cur+Math.PI/4;
@@ -2584,6 +2702,191 @@ $o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});
 addEventListener('keydown',e=>{if(!$o.hidden&&e.key==='Escape')close(true)});
 window.MB={pick,open,close};
 try{sig=sigOf();repaint()}catch(e){paintBoard([])}
+})();
+
+/* ===== 凋零小島 =====
+   凋零的花被鏟除後，會搬到這座小島上安靜地待著；點小島可以翻看所有凋零花朵的心情與文字。
+   建造方式與兩座花園相同（極座標地面 + 土壤側壁 + 柵欄），形狀是一座偏圓的小島，放在花園後方。
+   這個區塊獨立運作：沒有 WebGL 時整段跳過；不動花園、花朵、動物、天氣、同步等任何原有功能。 */
+(function(){
+'use strict';
+if(typeof ok==='undefined'||!ok||typeof scene==='undefined'||typeof THREE==='undefined')return;
+const T=THREE,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const hash=s=>{let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0};
+const rng=s=>()=>(s=(Math.imul(s,1664525)+1013904223)>>>0)/4294967296;
+
+/* ---------- 位置與形狀 ---------- */
+const RW=3.7,WIX=.5,WIZ=-16.2,MAXP=24;                                   // 島的半徑、位置；島上最多同時擺幾朵（更多的在視窗裡看得到）
+const rho=a=>RW*(1+.1*Math.sin(2*a+.4)+.08*Math.sin(3*a+1.7)+.05*Math.sin(5*a+.9));
+const hh=(x,z)=>.05*Math.sin(x*1.3+.4)*Math.cos(z*1.1);                 // 島上微微的起伏（相對於島的高度）
+const isl=new T.Group();isl.position.set(WIX,.1,WIZ);scene.add(isl);
+const K=window.SKIN||null;
+const sway=[];
+const rock=m=>{if(K){m.geometry=K.RKG;m.material=K.SM(m.material,'rk',K.V(K.TS,'s',2,2),{roughness:.92,bumpScale:3})}return m};
+
+/* 草地（整片都是乾裂的土地，沿用花園的地面材質） */
+{const KR=22,SG=72,c1=new T.Color('#8F7352'),c2=new T.Color('#B09470'),cc=new T.Color(),pos=[0,hh(0,0),0],col=[],idx=[];
+  const paint=(x,z,dirt)=>{const n=(Math.sin(x*.9)*Math.cos(z*1.1)+Math.sin(x*.3+z*.5))*.25+.5;cc.copy(c1).lerp(c2,clamp(n,0,1));if(dirt)cc.set('#B79B76');col.push(cc.r,cc.g,cc.b)};
+  paint(WIX,WIZ,false);
+  for(let k=1;k<=KR;k++){const f=k/KR;for(let i=0;i<SG;i++){const a=i/SG*6.2832,r=rho(a)*f,x=Math.cos(a)*r,z=Math.sin(a)*r;pos.push(x,k===KR?-.2:hh(x,z)-.1*f*f,z);paint(WIX+x,WIZ+z,f>.97)}}
+  for(let i=0;i<SG;i++)idx.push(0,1+(i+1)%SG,1+i);
+  for(let k=0;k<KR-1;k++)for(let i=0;i<SG;i++){const a=1+k*SG+i,b=1+k*SG+(i+1)%SG,c=a+SG,d=b+SG;idx.push(a,b,c,b,d,c)}
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('color',new T.Float32BufferAttribute(col,3));g.setIndex(idx);g.computeVertexNormals();
+  const gm=new T.MeshStandardMaterial({color:'#ffffff',roughness:1,vertexColors:true});if(K)K.skinGround(gm);
+  const gr=new T.Mesh(g,gm);gr.receiveShadow=true;isl.add(gr)}
+/* 島的側壁與底部 */
+{const SG=72,sp=[],si=[],uv=[];
+  for(let i=0;i<SG;i++){const a=i/SG*6.2832,r=rho(a),x=Math.cos(a),z=Math.sin(a);sp.push(x*r*1.012,-.2,z*r*1.012,x*r*.85,-1.6,z*r*.85);uv.push(i/SG*3,1,i/SG*3,0)}
+  for(let i=0;i<SG;i++){const j=(i+1)%SG;si.push(i*2,j*2,i*2+1,j*2,j*2+1,i*2+1)}
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(sp,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(si);g.computeVertexNormals();
+  let m=new T.MeshStandardMaterial({color:'#E3C9A8',roughness:.88,side:2,emissive:new T.Color('#E3C9A8').multiplyScalar(.13)});
+  if(K)m=K.SM(m,'so',K.V(K.TSo,'o',1,1),{roughness:.95,bumpScale:1.5});
+  const sk=new T.Mesh(g,m);sk.castShadow=true;isl.add(sk);
+  const cp=[0,-1.75,0],ci=[];for(let i=0;i<SG;i++)cp.push(sp[i*6+3],sp[i*6+4],sp[i*6+5]);for(let i=0;i<SG;i++)ci.push(0,1+i,1+(i+1)%SG);
+  const cg=new T.BufferGeometry();cg.setAttribute('position',new T.Float32BufferAttribute(cp,3));cg.setIndex(ci);cg.computeVertexNormals();isl.add(new T.Mesh(cg,new T.MeshStandardMaterial({color:'#D9BD98',roughness:.9,side:2})))}
+/* 柵欄：沿著邊界等距放柱子，有幾段欄杆掉了，看起來舊舊的 */
+{const M2=360,poly=[];for(let i=0;i<=M2;i++){const a=i/M2*6.2832,r=rho(a)*.93;poly.push([Math.cos(a)*r,Math.sin(a)*r])}
+  const cum=[0];for(let i=1;i<=M2;i++)cum.push(cum[i-1]+Math.hypot(poly[i][0]-poly[i-1][0],poly[i][1]-poly[i-1][1]));
+  const tot=cum[M2],n=Math.round(tot/.654),step=tot/n,P=[];let kq=1;
+  for(let j=0;j<n;j++){const dd=j*step;while(kq<M2&&cum[kq]<dd)kq++;const t=(dd-cum[kq-1])/Math.max(1e-6,cum[kq]-cum[kq-1]);P.push([poly[kq-1][0]+(poly[kq][0]-poly[kq-1][0])*t,poly[kq-1][1]+(poly[kq][1]-poly[kq-1][1])*t])}
+  const bx=new T.BoxGeometry(1,1,1),pm=new T.MeshStandardMaterial({roughness:.9,emissive:new T.Color('#CDBB9A'),emissiveIntensity:.1}),
+    posts=new T.InstancedMesh(bx,pm,n),caps=new T.InstancedMesh(SPH,new T.MeshStandardMaterial({roughness:.8}),n),rails=new T.InstancedMesh(bx,pm,n*2),
+    o=new T.Object3D(),c=new T.Color(),cap=['#D9B79A','#CDBF8F','#C9A9A5'];let ri=0;
+  for(let i=0;i<n;i++){const x=P[i][0],z=P[i][1],y=hh(x,z)-.05;
+    o.position.set(x,y+.33,z);o.rotation.set(0,0,0);o.scale.set(.12,.66,.12);o.updateMatrix();posts.setMatrixAt(i,o.matrix);posts.setColorAt(i,c.set('#CDBB9A').offsetHSL(0,0,(Math.random()-.5)*.06));
+    o.position.set(x,y+.69,z);o.scale.setScalar(.075);o.updateMatrix();caps.setMatrixAt(i,o.matrix);caps.setColorAt(i,c.set(cap[i%3]));
+    if(i%7===3)continue;
+    const j=(i+1)%n,x2=P[j][0],z2=P[j][1],xm=(x+x2)/2,zm=(z+z2)/2,ym=hh(xm,zm)-.05,len=Math.hypot(x2-x,z2-z)*1.03,th=-Math.atan2(z2-z,x2-x);
+    [.26,.48].forEach(h=>{o.position.set(xm,ym+h,zm);o.rotation.set(0,th,0);o.scale.set(len,.065,.045);o.updateMatrix();rails.setMatrixAt(ri,o.matrix);rails.setColorAt(ri,c.set('#BFAE8D').offsetHSL(0,0,(Math.random()-.5)*.04));ri++})}
+  rails.count=ri;[posts,caps,rails].forEach(q=>{q.castShadow=true;q.receiveShadow=true;isl.add(q)})}
+/* 一棵光禿禿的老樹（只剩幾片橘褐色的葉子）*/
+const TREE=[-1.55,-1.35],CAIRN=[1.5,-.25];
+{const t=new T.Group(),bk='#8E7357',lc=['#C98B4A','#B5703A','#D6A25A'];let li=0;
+  t.add(mk(CYL,bk,[0,.12,0],[.26,.25,.26]),mk(CYL,bk,[0,.85,0],[.17,1.7,.17]));
+  const br=(par,y,ay,tilt,len,r,dep)=>{const pv=new T.Group();pv.position.y=y;pv.rotation.set(0,ay,-tilt);par.add(pv);pv.add(mk(CYL,bk,[0,len/2,0],[r,len,r]));
+    if(dep>0){br(pv,len*.95,ay+1.2,.7,len*.62,r*.7,dep-1);br(pv,len*.6,ay-1.5,.8,len*.55,r*.7,dep-1)}
+    else{pv.add(mk(SPH,lc[li++%3],[.04,len,0],[.14,.03,.08],[0,0,.5]));if(li%2)pv.add(mk(SPH,lc[li%3],[-.05,len*.7,.03],[.11,.025,.07],[0,0,-.6]))}};
+  br(t,1.1,.3,.55,.95,.055,1);br(t,1.35,2.5,.7,.9,.05,1);br(t,1.55,4.4,.5,.8,.045,1);br(t,1.7,1.4,.2,.55,.04,0);
+  t.position.set(TREE[0],hh(...TREE)-.05,TREE[1]);t.scale.setScalar(1.05);isl.add(t);sway.push({o:t,p:1.1,k:.012,ax:'z'})}
+/* 小石堆：三顆疊起來的石頭 */
+{const g=new T.Group(),I=new T.IcosahedronGeometry(1,0);
+  g.add(rock(mk(I,'#CFC8C0',[0,.17,0],[.42,.3,.36],[.3,.6,0])),rock(mk(I,'#D9D2CE',[.08,.46,-.02],[.3,.22,.27],[.1,1.2,.2])),rock(mk(I,'#C4BDB5',[.02,.68,.0],[.18,.15,.17],[.4,.2,.1])));
+  g.position.set(CAIRN[0],hh(...CAIRN),CAIRN[1]);isl.add(g)}
+/* 地上的小石頭、枯草、落葉 */
+{[[-.6,1.9,.22],[2.2,1.1,.17],[-2.3,.7,.2]].forEach(([x,z,s])=>isl.add(rock(mk(new T.IcosahedronGeometry(1,0),'#D4CEC8',[x,hh(x,z)+s*.35,z],[s,s*.7,s*.85],[.3,.6,0]))));
+  const r=rng(77),n=26,tf=new T.InstancedMesh(SPH,new T.MeshStandardMaterial({roughness:.9}),n),o=new T.Object3D(),lc=['#C98B4A','#B5703A','#D6A25A','#A8642F'];
+  for(let i=0;i<n;i++){const a=r()*6.283,d=Math.sqrt(r())*.86*rho(a),x=Math.cos(a)*d,z=Math.sin(a)*d;o.position.set(x,hh(x,z)+.03,z);o.rotation.set(0,r()*6.28,0);o.scale.set(.09+r()*.04,.014,.055);o.updateMatrix();tf.setMatrixAt(i,o.matrix);tf.setColorAt(i,new T.Color(lc[i%4]))}
+  tf.receiveShadow=true;isl.add(tf)}
+/* 飄落的葉子（動畫）*/
+const FL=[];{const lc=['#C98B4A','#B5703A','#D6A25A','#A8642F'],r=rng(5);for(let i=0;i<9;i++){const m=mk(SPH,lc[i%4],[0,0,0],[.075,.014,.05]);m.castShadow=false;isl.add(m);FL.push({m,a:r()*6.28,d:r()*2.4,y:r()*2.4,sp:.18+r()*.14,ph:r()*6.28})}}
+
+/* ---------- 島上的花：被鏟除的凋零花，最新的最多 MAXP 朵 ---------- */
+const pile=new T.Group();isl.add(pile);
+function gone(){return Object.keys(S.e).filter(d=>S.e[d]&&S.e[d].sh).sort((a,b)=>S.e[b].sh-S.e[a].sh||(a<b?1:-1))}
+function rebuild(){
+  while(pile.children.length)pile.remove(pile.children[0]);
+  const placed=[[TREE[0],TREE[1],.75],[CAIRN[0],CAIRN[1],.7]];
+  gone().slice(0,MAXP).forEach(d=>{const e=S.e[d],R=rng(hash(d));let x=0,z=0;
+    for(let t=0;t<50;t++){const a=R()*6.283,q=Math.sqrt(R())*.76*rho(a);x=Math.cos(a)*q;z=Math.sin(a)*q;if(placed.every(p=>Math.hypot(p[0]-x,p[1]-z)>(p[2]||.58)))break}
+    placed.push([x,z]);
+    const w=flowerWither(e.mood,true);w.position.set(x,hh(x,z),z);w.rotation.y=(e.r||0)+R()*.6;w.scale.setScalar(.72+R()*.16);pile.add(w)})}
+
+/* ---------- 提示用的小圖示（飄在島上，點它或點小島都會打開）---------- */
+const hint=(()=>{
+  const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');
+  const gr=x.createRadialGradient(64,64,6,64,64,62);gr.addColorStop(0,'rgba(255,255,255,.16)');gr.addColorStop(.6,'rgba(255,255,255,.05)');gr.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=gr;x.fillRect(0,0,128,128);
+  x.fillStyle='rgba(255,247,226,.93)';x.beginPath();x.arc(64,66,43,0,6.283);x.fill();x.lineWidth=4;x.strokeStyle='rgba(255,255,255,.95)';x.stroke();
+  x.lineCap='round';x.strokeStyle='#8E8556';x.lineWidth=5;x.beginPath();x.moveTo(50,100);x.bezierCurveTo(50,70,52,44,70,44);x.bezierCurveTo(84,44,90,54,88,66);x.stroke();
+  x.fillStyle='#A08A52';x.beginPath();x.ellipse(43,86,11,4.5,-.7,0,6.283);x.fill();
+  x.save();x.translate(88,76);x.rotate(.15);const pc=['#B9788A','#A8667A'];for(let i=0;i<6;i++){x.save();x.rotate(i*1.047);x.fillStyle=pc[i%2];x.beginPath();x.ellipse(0,-10,5.8,10,0,0,6.283);x.fill();x.restore()}x.fillStyle='#5A3A2E';x.beginPath();x.arc(0,0,5,0,6.283);x.fill();x.restore();
+  x.fillStyle='#B9788A';x.beginPath();x.ellipse(68,96,6,3,.6,0,6.283);x.fill();
+  const sp=new T.Sprite(new T.SpriteMaterial({map:new T.CanvasTexture(c),transparent:true,depthWrite:false}));sp.scale.set(.85,.85,1);sp.position.set(0,2.5,0);isl.add(sp);
+  const gl=new T.Sprite(new T.SpriteMaterial({map:window.GLOW,color:'#FFF0C0',blending:T.AdditiveBlending,transparent:true,depthWrite:false,opacity:.06}));gl.scale.set(1.1,1.1,1);gl.position.copy(sp.position);gl.renderOrder=1;sp.renderOrder=2;isl.add(gl);
+  return{sp,gl,hov:false,y:2.5}})();
+const hit=new T.Mesh(new T.SphereGeometry(1,12,8),new T.MeshBasicMaterial({visible:false}));hit.position.set(0,.7,0);hit.scale.set(RW*.92,1.9,RW*.92);isl.add(hit);
+
+/* ---------- 每一幀 ---------- */
+let T0=performance.now(),sh=false,hovT=0,sigT=0,sig='';
+SLP.cbs.push(()=>{if(sh){sh=false;T0=performance.now();requestAnimationFrame(step)}});
+const sigOf=()=>{let s='';for(const k in S.e)if(S.e[k]&&S.e[k].sh)s+='|'+k+S.e[k].sh+S.e[k].mood;return s};
+function step(now){
+  if(SLP.on){sh=true;return}
+  requestAnimationFrame(step);
+  const dt=Math.min(.05,(now-T0)/1000);T0=now;if(dt<=0)return;
+  let rm=false,wind=.3;try{rm=!!S.rm;wind=WX.wind||0}catch(e){}
+  const t=now/1000;
+  sigT-=dt;if(sigT<=0){sigT=1;try{const g=sigOf();if(g!==sig){sig=g;rebuild();if(!$o.hidden)render()}}catch(e){}}
+  if(!rm){const w=.5+wind*1.1;sway.forEach(s=>{const v=Math.sin(t*(1+w*.5)+s.p)*s.k*w;if(s.ax==='z')s.o.rotation.z=v;else s.o.rotation.x=v});
+    hint.sp.position.y=hint.y+Math.sin(t*1.5+.4)*.06;hint.sp.material.rotation=Math.sin(t*.9)*.1;
+    FL.forEach(l=>{l.y-=dt*l.sp;if(l.y<.05){l.y=2.4+Math.random()*.3;l.a=Math.random()*6.28;l.d=Math.random()*2.4}
+      const q=l.a+Math.sin(t*.7+l.ph)*.35,x=Math.cos(q)*l.d+Math.sin(t*1.3+l.ph)*.25,z=Math.sin(q)*l.d;l.m.position.set(x,Math.max(hh(x,z)+.03,l.y),z);l.m.rotation.set(Math.sin(t*2+l.ph)*.8,t*.8+l.ph,Math.cos(t*1.7+l.ph)*.8)})}
+  else FL.forEach(l=>{const x=Math.cos(l.a)*l.d,z=Math.sin(l.a)*l.d;l.m.position.set(x,hh(x,z)+.03,z);l.m.rotation.set(0,l.ph,0)});
+  if(hint.hov&&now-hovT>400)hint.hov=false;
+  const hv=hint.hov?1.18:1;hint.sp.scale.x+=(.85*hv-hint.sp.scale.x)*.15;hint.sp.scale.y=hint.sp.scale.x;
+  hint.gl.material.opacity=.06+(rm?0:.02*Math.sin(t*1.6))+(hint.hov?.05:0);hint.gl.position.y=hint.sp.position.y}
+requestAnimationFrame(step);
+
+/* ---------- 點擊偵測 ---------- */
+const rc=new T.Raycaster(),mv2=new T.Vector2();
+function pick(e){
+  try{
+    if(typeof arrange!=='undefined'&&arrange){hint.hov=false;return false}
+    mv2.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);rc.setFromCamera(mv2,cam);
+    const h=rc.intersectObject(hit,false).length>0;hint.hov=h;hovT=performance.now();return h}
+  catch(err){return false}
+}
+
+/* ---------- 凋零小島視窗：曾經凋零的花，心情與文字都在這裡 ---------- */
+const css=document.createElement('style');css.textContent=`
+#wio{z-index:21;background:rgba(95,100,85,.3);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px)}
+.wis{width:min(660px,100%);max-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 20px);max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 20px);display:flex;flex-direction:column;border-radius:26px;padding:12px;background:linear-gradient(#B9A482,#A8926F);box-shadow:0 18px 40px rgba(60,48,28,.38),inset 0 0 0 2px rgba(255,240,210,.3);animation:wiin .5s cubic-bezier(.2,.9,.3,1.1) both}
+.wih{flex:none;display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:4px 10px 10px;color:#FFF6E6;text-shadow:0 1px 3px rgba(60,48,28,.4)}
+.wih h2{font-size:22px;display:flex;align-items:center;gap:6px}.wih span{font-size:13px;opacity:.92}
+.wib{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:16px;padding:16px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;align-content:start;background:radial-gradient(rgba(110,90,60,.16) 1px,transparent 1.6px) 0 0/9px 9px,#E5D9BF;box-shadow:inset 0 3px 10px rgba(80,62,34,.32)}
+.win{position:relative;display:flex;flex-direction:column;gap:7px;padding:14px 14px 12px;background:#FBF4E4;color:#5B4A4A;border-radius:6px 16px 6px 16px;box-shadow:0 6px 12px rgba(70,55,30,.2);border:2px dashed #DCCBA6;animation:wid .5s cubic-bezier(.2,.9,.3,1.15) backwards;animation-delay:calc(var(--i)*40ms)}
+.wii{display:flex;align-items:center;gap:8px}.wii svg{filter:grayscale(.75) sepia(.25);opacity:.85}.wii small{display:block;font-size:12px;opacity:.72;line-height:1.4}.wii b{font-size:15px}
+.wiq{font-style:italic;font-size:14.5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;word-break:break-word;-webkit-user-select:text;user-select:text}
+.wiq.open{display:block}.wiq.no{opacity:.6;cursor:default;font-style:normal;font-size:13.5px}
+.wit{display:flex;gap:4px;flex-wrap:wrap}.wit i{font-style:normal;font-size:11.5px;background:rgba(160,138,82,.2);border-radius:99px;padding:1px 8px}
+.wid2{font-size:11.5px;opacity:.65;line-height:1.5;margin-top:auto;border-top:1px dashed #DCCBA6;padding-top:6px}
+.wie{grid-column:1/-1;text-align:center;padding:26px 14px;color:#6B5A44}.wie h3{font:600 18px Fredoka,Nunito,sans-serif;margin-bottom:6px}.wie p{font-size:14px;line-height:1.6;opacity:.85}
+.wif{flex:none;display:flex;justify-content:flex-end;gap:8px;padding:10px 6px 2px}
+@keyframes wiin{from{opacity:0;transform:translateY(24px) scale(.94)}}@keyframes wid{from{opacity:0;transform:translateY(-12px) scale(.94)}}
+@media(max-width:520px){.wib{grid-template-columns:1fr}.wis{padding:10px;border-radius:22px}}
+@media(prefers-reduced-motion:reduce){.wis,.win{animation:none}}body.rm .wis,body.rm .win{animation:none}
+`;document.head.appendChild(css);
+document.body.insertAdjacentHTML('beforeend',`<div class="scrim" id="wio" hidden><div class="wis" id="wid" role="dialog" aria-modal="true"><div class="wih"><h2 id="wih"></h2><span id="win"></span></div><div class="wib" id="wib"></div><div class="wif"><button class="btn p" id="wix"></button></div></div></div>`);
+const $o=document.getElementById('wio'),$b=document.getElementById('wib'),$x=document.getElementById('wix');
+const dfmt=ms=>new Date(ms).toLocaleDateString(LC(),{year:'numeric',month:'short',day:'numeric'});
+function noteHTML(d,i){
+  const e=S.e[d];if(!e)return'';const mo=M[e.mood]||M.happy,tx=e.text&&e.text.trim();
+  const tags=(e.tags||[]).map(g=>'<i>'+esc((tr('tg')||[])[TAGS.indexOf(g)]||g)+'</i>').join('');
+  return `<article class="win" style="--i:${Math.min(i,12)}"><div class="wii">${flo(e.mood,38)}<span><b>${esc(mo.f)}</b><small>${esc(mo.n)} · ${esc(fmt(d))}</small></span></div>
+${tx?`<p class="wiq" role="button" tabindex="0" aria-expanded="false">“${esc(tx)}”</p>`:`<p class="wiq no">${esc(tr('noNote'))}</p>`}
+${tags?`<div class="wit">${tags}</div>`:''}
+<div class="wid2">${esc(tr('wiPlant'))}　${esc(e.pt?dfmt(e.pt):fmt(d))}<br>${esc(tr('wiWither'))}　${esc(dfmt(witherAt(d,e)))}<br>${esc(tr('wiShov'))}　${esc(dfmt(e.sh))}</div></article>`}
+function render(){
+  const ls=gone();
+  document.getElementById('wid').setAttribute('aria-label',tr('wiT'));
+  document.getElementById('wih').innerHTML=ic('yard')+' '+esc(tr('wiT'));
+  document.getElementById('win').textContent=tr('wiSub',ls.length);
+  $x.innerHTML=ic('close')+' '+esc(tr('close'));
+  $b.innerHTML=ls.length?ls.map(noteHTML).join(''):`<div class="wie"><h3>${esc(tr('wiE0'))}</h3><p>${esc(tr('wiE1'))}</p></div>`;
+  $b.scrollTop=0}
+$b.addEventListener('click',e=>{const q=e.target.closest('.wiq:not(.no)');if(q){const o=q.classList.toggle('open');q.setAttribute('aria-expanded',o)}});
+$b.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.wiq:not(.no)')){e.preventDefault();e.target.click()}});
+function open(){
+  const lf=document.getElementById('rvm'),mb=document.getElementById('mbo');if(!$o.hidden||(lf&&!lf.hidden)||(mb&&!mb.hidden))return;
+  render();$o.hidden=false;$('card').hidden=true;
+  tgG.set(WIX,.4,WIZ+.2);radG=Math.min(radG,14);
+  try{sfx('flower','click')}catch(e){}
+  setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
+function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')home()}
+$x.onclick=()=>close(true);
+$o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});
+addEventListener('keydown',e=>{if(!$o.hidden&&e.key==='Escape')close(true)});
+window.WI={pick,open,close,refresh:()=>{try{sig=sigOf();rebuild();if(!$o.hidden)render()}catch(e){}}};
+try{sig=sigOf();rebuild()}catch(e){}
 })();
 </script><script>
 if ('serviceWorker' in navigator) {
