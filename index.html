@@ -555,7 +555,7 @@ const minsLeftW=e=>Math.max(1,Math.ceil((e.wt+WATER_MS-Date.now())/6e4));       
    ★ 想測試凋零，只要改下面這個數字（單位：小時）。預設 2400 小時 = 100 天。
      例：WITHER_HOURS=0.05 ≈ 3 分鐘。也可以不改檔案，直接在網址後面加 ?wither=0.05 臨時覆蓋。
    凋零時間從「種下的那一刻」(e.pt) 開始算；鏟除只是把花搬到凋零小島（e.sh），心情與文字都會留著。 */
-const WITHER_HOURS=139;
+const WITHER_HOURS=2400;
 const WITHER_MS=(()=>{let q=NaN;try{q=parseFloat(new URLSearchParams(location.search).get('wither'))}catch(e){}return(q>0?q:WITHER_HOURS)*3600*1000})();
 const witherAt=(d,e)=>(e.pt||new Date(d+'T12:00').getTime())+WITHER_MS;           // 沒有種植時間的舊花，用日期當作種下的時間
 const withered=(d,e)=>!!e&&Date.now()>=witherAt(d,e);                              // 已進入凋零期（不論有沒有鏟除）
