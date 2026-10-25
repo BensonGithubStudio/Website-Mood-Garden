@@ -1939,7 +1939,7 @@ R.compile(scene,cam);
 /* --- 每幀同步：濕度、風、日夜對倒影的影響 --- */
 let lh=false;function lp(t){if(SLP.on){lh=true;return}requestAnimationFrame(lp);try{const w=WX.wet||0,d=window.dfv==null?1:window.dfv;U.uWet.value=w;U.uRip.value=S.rm?0:w;U.uT.value=S.rm?0:t/1000;U.uW.value=S.rm?0:.5+WX.wind*1.1;PW.forEach(m=>m.envMapIntensity=.12+1.5*d);GLm.forEach(m=>m.envMapIntensity=.1+.9*d);tm.color.setScalar(1-.16*w)}catch(e){}}
 SLP.cbs.push(()=>{if(lh){lh=false;requestAnimationFrame(lp)}});lp(0);
-window.SKIN={V,SM,TB,TS,TSo,TR,wood,skinGround,TRUNK,CAN,RKG,tg,tm,DECK};
+window.SKIN={V,SM,TB,TS,TSo,TR,wood,skinGround,TRUNK,CAN,RKG,tg,tm,DECK,boxUV,TWv,TWh,ENV};
 }catch(e){console.warn('skin layer skipped',e)}
 })();
 </script>
@@ -2717,13 +2717,21 @@ const hash=s=>{let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=M
 const rng=s=>()=>(s=(Math.imul(s,1664525)+1013904223)>>>0)/4294967296;
 
 /* ---------- 位置與形狀 ---------- */
-const RW=3.7,WIX=.5,WIZ=-16.2,MAXP=24;                                   // 島的半徑、位置；島上最多同時擺幾朵（更多的在視窗裡看得到）
+const RW=3.7,WIX=.5,WIZ=-14.3,MAXP=24;                                   // 島的半徑、位置；島上最多同時擺幾朵（更多的在視窗裡看得到）
 const rho=a=>RW*(1+.1*Math.sin(2*a+.4)+.08*Math.sin(3*a+1.7)+.05*Math.sin(5*a+.9));
 const hh=(x,z)=>.05*Math.sin(x*1.3+.4)*Math.cos(z*1.1);                 // 島上微微的起伏（相對於島的高度）
 const isl=new T.Group();isl.position.set(WIX,.1,WIZ);scene.add(isl);
 const K=window.SKIN||null;
 const sway=[];
 const rock=m=>{if(K){m.geometry=K.RKG;m.material=K.SM(m.material,'rk',K.V(K.TS,'s',2,2),{roughness:.92,bumpScale:3})}return m};
+/* 樹皮：沿用花園的樹幹形狀與樹皮貼圖 */
+const bark=m=>{if(K){m.geometry=K.TRUNK;m.material=K.SM(m.material,'bk',K.V(K.TB,'b',1,1),{roughness:.95,bumpScale:1.5})}return m};
+/* 低多邊形的真葉片（沿用花園樹葉的做法：不貼圖、平面著色、雙面） */
+const LEAF=(()=>{const V3=[[-1,0,0],[0,1,0],[1,.1,0],[-.15,-.5,-1],[-.15,-.5,1]],L=[.8,1,.9,.74,.74],T3=[[0,3,1],[0,1,4],[1,3,2],[1,4,2]],P=[],C=[];
+  T3.forEach(t=>t.forEach(i=>{P.push(...V3[i]);C.push(L[i],L[i],L[i])}));
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(P,3));g.setAttribute('color',new T.Float32BufferAttribute(C,3));g.computeVertexNormals();return g})();
+const leafMat=o=>new T.MeshStandardMaterial(Object.assign({roughness:.85,flatShading:true,side:2},o||{}));
+const leaf=m=>{if(K){m.geometry=LEAF;m.material=K.SM(m.material,'lf',null,{roughness:.85,flatShading:true,side:2})}return m};
 
 /* 草地（整片都是乾裂的土地，沿用花園的地面材質） */
 {const KR=22,SG=72,c1=new T.Color('#8F7352'),c2=new T.Color('#B09470'),cc=new T.Color(),pos=[0,hh(0,0),0],col=[],idx=[];
@@ -2750,8 +2758,12 @@ const rock=m=>{if(K){m.geometry=K.RKG;m.material=K.SM(m.material,'rk',K.V(K.TS,'
   const cum=[0];for(let i=1;i<=M2;i++)cum.push(cum[i-1]+Math.hypot(poly[i][0]-poly[i-1][0],poly[i][1]-poly[i-1][1]));
   const tot=cum[M2],n=Math.round(tot/.654),step=tot/n,P=[];let kq=1;
   for(let j=0;j<n;j++){const dd=j*step;while(kq<M2&&cum[kq]<dd)kq++;const t=(dd-cum[kq-1])/Math.max(1e-6,cum[kq]-cum[kq-1]);P.push([poly[kq-1][0]+(poly[kq][0]-poly[kq-1][0])*t,poly[kq-1][1]+(poly[kq][1]-poly[kq-1][1])*t])}
-  const bx=new T.BoxGeometry(1,1,1),pm=new T.MeshStandardMaterial({roughness:.9,emissive:new T.Color('#CDBB9A'),emissiveIntensity:.1}),
-    posts=new T.InstancedMesh(bx,pm,n),caps=new T.InstancedMesh(SPH,new T.MeshStandardMaterial({roughness:.8}),n),rails=new T.InstancedMesh(bx,pm,n*2),
+  /* 木紋貼圖沿用花園柵欄：柱子用直紋、欄杆用橫紋，tiling 一樣不要太密；柱頭小球跟花園一樣帶一點光澤 */
+  const bx=new T.BoxGeometry(1,1,1),em=new T.Color('#CDBB9A'),KW=!!(K&&K.TWv&&K.TWh&&K.boxUV),
+    txP=KW?K.V(K.TWv,'wv',1,1):null,txR=KW?K.V(K.TWh,'wh',1,1):null,
+    wm=tx=>new T.MeshStandardMaterial(Object.assign({roughness:.9,emissive:em,emissiveIntensity:.1},tx?{roughness:.8,map:tx,bumpMap:tx,bumpScale:1.2}:{})),
+    pg=KW?K.boxUV(bx,[.12,.66,.12],2.4):bx,rg=KW?K.boxUV(bx,[.67,.065,.045],2.4):bx,
+    posts=new T.InstancedMesh(pg,wm(txP),n),caps=new T.InstancedMesh(SPH,new T.MeshStandardMaterial(KW?{roughness:.34,envMap:K.ENV||null,envMapIntensity:.35}:{roughness:.8}),n),rails=new T.InstancedMesh(rg,wm(txR),n*2),
     o=new T.Object3D(),c=new T.Color(),cap=['#D9B79A','#CDBF8F','#C9A9A5'];let ri=0;
   for(let i=0;i<n;i++){const x=P[i][0],z=P[i][1],y=hh(x,z)-.05;
     o.position.set(x,y+.33,z);o.rotation.set(0,0,0);o.scale.set(.12,.66,.12);o.updateMatrix();posts.setMatrixAt(i,o.matrix);posts.setColorAt(i,c.set('#CDBB9A').offsetHSL(0,0,(Math.random()-.5)*.06));
@@ -2763,10 +2775,10 @@ const rock=m=>{if(K){m.geometry=K.RKG;m.material=K.SM(m.material,'rk',K.V(K.TS,'
 /* 一棵光禿禿的老樹（只剩幾片橘褐色的葉子）*/
 const TREE=[-1.55,-1.35],CAIRN=[1.5,-.25];
 {const t=new T.Group(),bk='#8E7357',lc=['#C98B4A','#B5703A','#D6A25A'];let li=0;
-  t.add(mk(CYL,bk,[0,.12,0],[.26,.25,.26]),mk(CYL,bk,[0,.85,0],[.17,1.7,.17]));
-  const br=(par,y,ay,tilt,len,r,dep)=>{const pv=new T.Group();pv.position.y=y;pv.rotation.set(0,ay,-tilt);par.add(pv);pv.add(mk(CYL,bk,[0,len/2,0],[r,len,r]));
+  t.add(bark(mk(CYL,bk,[0,.12,0],[.26,.25,.26])),bark(mk(CYL,bk,[0,.85,0],[.17,1.7,.17])));
+  const br=(par,y,ay,tilt,len,r,dep)=>{const pv=new T.Group();pv.position.y=y;pv.rotation.set(0,ay,-tilt);par.add(pv);pv.add(bark(mk(CYL,bk,[0,len/2,0],[r,len,r])));
     if(dep>0){br(pv,len*.95,ay+1.2,.7,len*.62,r*.7,dep-1);br(pv,len*.6,ay-1.5,.8,len*.55,r*.7,dep-1)}
-    else{pv.add(mk(SPH,lc[li++%3],[.04,len,0],[.14,.03,.08],[0,0,.5]));if(li%2)pv.add(mk(SPH,lc[li%3],[-.05,len*.7,.03],[.11,.025,.07],[0,0,-.6]))}};
+    else{pv.add(leaf(mk(SPH,lc[li++%3],[.04,len,0],[.14,.03,.08],[0,0,.5])));if(li%2)pv.add(leaf(mk(SPH,lc[li%3],[-.05,len*.7,.03],[.11,.025,.07],[0,0,-.6])))}};
   br(t,1.1,.3,.55,.95,.055,1);br(t,1.35,2.5,.7,.9,.05,1);br(t,1.55,4.4,.5,.8,.045,1);br(t,1.7,1.4,.2,.55,.04,0);
   t.position.set(TREE[0],hh(...TREE)-.05,TREE[1]);t.scale.setScalar(1.05);isl.add(t);sway.push({o:t,p:1.1,k:.012,ax:'z'})}
 /* 小石堆：三顆疊起來的石頭 */
@@ -2775,11 +2787,11 @@ const TREE=[-1.55,-1.35],CAIRN=[1.5,-.25];
   g.position.set(CAIRN[0],hh(...CAIRN),CAIRN[1]);isl.add(g)}
 /* 地上的小石頭、枯草、落葉 */
 {[[-.6,1.9,.22],[2.2,1.1,.17],[-2.3,.7,.2]].forEach(([x,z,s])=>isl.add(rock(mk(new T.IcosahedronGeometry(1,0),'#D4CEC8',[x,hh(x,z)+s*.35,z],[s,s*.7,s*.85],[.3,.6,0]))));
-  const r=rng(77),n=26,tf=new T.InstancedMesh(SPH,new T.MeshStandardMaterial({roughness:.9}),n),o=new T.Object3D(),lc=['#C98B4A','#B5703A','#D6A25A','#A8642F'];
-  for(let i=0;i<n;i++){const a=r()*6.283,d=Math.sqrt(r())*.86*rho(a),x=Math.cos(a)*d,z=Math.sin(a)*d;o.position.set(x,hh(x,z)+.03,z);o.rotation.set(0,r()*6.28,0);o.scale.set(.09+r()*.04,.014,.055);o.updateMatrix();tf.setMatrixAt(i,o.matrix);tf.setColorAt(i,new T.Color(lc[i%4]))}
+  const r=rng(77),n=26,tf=new T.InstancedMesh(LEAF,leafMat({roughness:.9}),n),o=new T.Object3D(),lc=['#C98B4A','#B5703A','#D6A25A','#A8642F'];
+  for(let i=0;i<n;i++){const a=r()*6.283,d=Math.sqrt(r())*.86*rho(a),x=Math.cos(a)*d,z=Math.sin(a)*d;o.position.set(x,hh(x,z)+.03,z);o.rotation.set(0,r()*6.28,0);o.scale.set(.09+r()*.04,.03,.055);o.updateMatrix();tf.setMatrixAt(i,o.matrix);tf.setColorAt(i,new T.Color(lc[i%4]))}
   tf.receiveShadow=true;isl.add(tf)}
 /* 飄落的葉子（動畫）*/
-const FL=[];{const lc=['#C98B4A','#B5703A','#D6A25A','#A8642F'],r=rng(5);for(let i=0;i<9;i++){const m=mk(SPH,lc[i%4],[0,0,0],[.075,.014,.05]);m.castShadow=false;isl.add(m);FL.push({m,a:r()*6.28,d:r()*2.4,y:r()*2.4,sp:.18+r()*.14,ph:r()*6.28})}}
+const FL=[];{const lc=['#C98B4A','#B5703A','#D6A25A','#A8642F'],r=rng(5);for(let i=0;i<9;i++){const m=leaf(mk(SPH,lc[i%4],[0,0,0],[.075,.025,.05]));m.castShadow=false;isl.add(m);FL.push({m,a:r()*6.28,d:r()*2.4,y:r()*2.4,sp:.18+r()*.14,ph:r()*6.28})}}
 
 /* ---------- 島上的花：被鏟除的凋零花，最新的最多 MAXP 朵 ---------- */
 const pile=new T.Group();isl.add(pile);
