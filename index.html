@@ -555,7 +555,7 @@ const minsLeftW=e=>Math.max(1,Math.ceil((e.wt+WATER_MS-Date.now())/6e4));       
    ★ 想測試凋零，只要改下面這個數字（單位：小時）。預設 2400 小時 = 100 天。
      例：WITHER_HOURS=0.05 ≈ 3 分鐘。也可以不改檔案，直接在網址後面加 ?wither=0.05 臨時覆蓋。
    凋零時間從「種下的那一刻」(e.pt) 開始算；鏟除只是把花搬到凋零小島（e.sh），心情與文字都會留著。 */
-const WITHER_HOURS=144;
+const WITHER_HOURS=139;
 const WITHER_MS=(()=>{let q=NaN;try{q=parseFloat(new URLSearchParams(location.search).get('wither'))}catch(e){}return(q>0?q:WITHER_HOURS)*3600*1000})();
 const witherAt=(d,e)=>(e.pt||new Date(d+'T12:00').getTime())+WITHER_MS;           // 沒有種植時間的舊花，用日期當作種下的時間
 const withered=(d,e)=>!!e&&Date.now()>=witherAt(d,e);                              // 已進入凋零期（不論有沒有鏟除）
@@ -1663,7 +1663,7 @@ function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d]
   /* 同一行：成長提示（澆水／小花苗）＋凋零提示，放得下就並排，放不下才換行 */
   const rows=[];
   if(!sv&&!wd&&!matureOf(e))rows.push(e.wt?'💧 '+tr('wetNote',minsLeftW(e)):thirstyOf(e)?'💧 '+tr('thirsty'):'🌱 '+tr('sprout',hrsLeft(e)));
-  rows.push('🥀 '+(sv?tr('wMoved'):wd?tr('wNow'):witherLeftTxt(d,e)));
+  if(sv||wd||matureOf(e))rows.push('🥀 '+(sv?tr('wMoved'):wd?tr('wNow'):witherLeftTxt(d,e)));   // 還沒長大（還沒澆水／成長中）時先不顯示凋零倒數
   const dim=(sv||wd)?'filter:grayscale(.75) sepia(.25);opacity:.85;':'';
   const SHOVEL='<svg viewBox="0 0 24 24" width="1.25em" height="1.25em" fill="currentColor" aria-hidden="true" style="vertical-align:-.25em;flex:none"><g transform="rotate(35 12 12)"><rect x="10.9" y="1.8" width="2.2" height="11" rx="1.1"/><rect x="8.2" y="1.8" width="7.6" height="2.3" rx="1.15"/><path d="M7.2 12.4h9.6v3.4c0 3.1-2.1 5.7-4.8 6.9-2.7-1.2-4.8-3.8-4.8-6.9z"/></g></svg>';
   const rot=`<button class="btn" id="cr" data-sfx="off" aria-label="${tr('gRotB')}" title="${tr('gRotB')}">${ic('rotate_right')}</button>`,
