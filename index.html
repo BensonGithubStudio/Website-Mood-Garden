@@ -2975,9 +2975,9 @@ const rho=a=>RW*(1+.09*Math.sin(2*a+1.1)+.07*Math.sin(3*a+.3)+.05*Math.sin(5*a+2
 const hh=(x,z)=>.05*Math.sin(x*1.2+.9)*Math.cos(z*1.05);                // 島上微微的起伏（相對於島）
 const gy=(wx,wz)=>ISY+hh(wx-SX,wz-SZ);                                  // 世界座標的地面高度
 const OBS=[[-1.35,-1.55,.65],[1.45,-1.5,.45]];                           // 許願石、星星燈柱（不能種花）
-const stageOf=e=>{const n=Date.now();return n>=e.tt?2:(e.wt&&n-e.wt>=GROW2_MS)?1:0};
-const thirstyOf=e=>!e.wt&&Date.now()-e.pt>=WAIT_MS&&Date.now()<e.tt;
-const waitLeft=e=>Math.max(0,e.pt+WAIT_MS-Date.now()),growLeft=e=>Math.max(0,e.wt+GROW2_MS-Date.now());
+const stageOf=e=>{const n=Date.now();if(!e.wt)return 0;return n>=e.tt?2:(n-e.wt>=GROW2_MS)?1:0};   // 沒澆水就一直是幼苗；澆水後，到了實現時間（或已過）才盛開
+const thirstyOf=e=>!e.wt&&Date.now()-e.pt>=WAIT_MS;
+const waitLeft=e=>Math.max(0,e.pt+WAIT_MS-Date.now()),growLeft=e=>Math.max(0,Math.min(e.wt+GROW2_MS,Math.max(e.tt,e.wt))-Date.now());   // 澆水後：10 分鐘，或距離實現時間更近就等到那時
 const wids=()=>Object.keys(S.w).filter(i=>S.w[i]&&!S.w[i].sh);
 const wid=()=>'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const fmtDT=ms=>new Date(ms).toLocaleString(LC(),{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -3151,7 +3151,7 @@ function plantFx(id){const f=wf[id];if(!f)return;
 /* ---------- 澆水、提問 ---------- */
 function water(id){const e=S.w[id];if(!e||e.sh||!thirstyOf(e)){sfx('deny');return false}
   e.wt=Date.now();save();const f=wf[id];if(f){setThirst(f,false);f.userData.th=false;waterFx(f)}
-  sfx('water','plant');toast(tr('waterT'));setTimeout(()=>askProgress(id),1500);return true}
+  sfx('water','plant');if(Date.now()<e.tt)toast(tr('swWet',Math.max(1,Math.ceil(growLeft(e)/6e4))));try{tick()}catch(x){}if(Date.now()<e.tt)setTimeout(()=>askProgress(id),1500);return true}   // 已過實現時間：澆水後直接盛開，改問「願望實現了嗎」
 /* 簡單的選擇視窗：回傳被選中的選項編號，關掉或選「稍後」則回傳 -1 */
 let qRes=null;
 function choose(o){return new Promise(res=>{if(qRes)qClose(-1);qRes=res;
