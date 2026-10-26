@@ -871,6 +871,8 @@ addEventListener('resize',resize);resize();
 /* 預設視角：橫向螢幕沿著兩座花園的連線看；偏方形或直向螢幕改成從 G1 往 G2 看過去，這樣兩座花園都在畫面裡 */
 const homeCalc=()=>{const t=Math.tan(cam.fov*Math.PI/360),as=innerWidth/innerHeight,dh=19.2*.93/(t*as),dr=Math.max(10.8/(t*as),19.3*.54/t);return{h:dh<=dr,d:Math.min(60,Math.max(18,Math.min(dh,dr)))}};
 const homeRad=()=>homeCalc().d,home=()=>{tgG.set(MX,.4,0);radG=homeRad()};
+/* 關閉小島介面：不回 home 視角，鏡頭維持在目前看的位置，只小幅拉遠（最多拉到 home 的距離，已經比較遠就不動） */
+const homeSoft=()=>{radG=Math.max(radG,Math.min(radG*1.5,homeRad()))};
 if(ok){const hc=homeCalc();th=thG=hc.h?.4:-1.15;phG=ph;tg.set(MX,.4,0);tgG.copy(tg);rad=radG=hc.d}
 function beeStep(b,dt,t){const u=b.userData,p=b.position;
  if(!u.tg){u.tg=new THREE.Vector3();u.v=new THREE.Vector3();u.hold=0;u.pick=1;p.set((Math.random()-.5)*10,1.2,(Math.random()-.5)*10)}
@@ -930,7 +932,7 @@ function slideStep(dt){for(let i=slides.length-1;i>=0;i--){const q=slides[i],f=q
   q.t+=dt/.55;const u=Math.min(1,q.t),e=u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;f.position.lerpVectors(q.fr,q.to,e);f.position.y+=Math.sin(u*Math.PI)*.35;
   if(u>=1){f.position.copy(q.to);slides.splice(i,1)}}}
 function setArrange(on){arrange=on;document.body.classList.toggle('arr',on);$('card').hidden=true;if(on){toast(tr('hintArr'))}else{selRing.visible=false;drag=null}refresh()}
-$('arr').onclick=()=>setArrange(!arrange);
+$('arr').onclick=()=>{const wasOn=arrange;setArrange(!arrange);if(wasOn)homeSoft()};   /* 按「完成」離開佈置模式時，鏡頭也拉遠 1.5 倍 */
 const DROPM=new THREE.MeshStandardMaterial({color:'#E6F4FF',roughness:.05,metalness:.2,transparent:true,opacity:.85,emissive:new THREE.Color('#9CC8EE'),emissiveIntensity:.25});
 const WT={none:{cover:0,rain:0,flt:0,fx:.3,fy:.3,wind:.25,rb:0,sun:0,wet:0,dark:0,pink:0}};
 Object.assign(WT,{happy:{flt:.35,fx:1.4,fy:.2,wind:1,fc:'calm'},excited:{cover:.2,rb:1,wind:.3},calm:{cover:.15,flt:.35,fx:1.4,fy:.2,wind:1,fc:'calm'},loved:{cover:.15,flt:.8,fx:.3,fy:.5,wind:.35,pink:1,fc:'loved'},sad:{cover:.9,rain:.8,wet:1,wind:.2},anxious:{cover:1,dark:1,flt:.5,fx:2,fy:.15,wind:1.5,fc:'anx'}});
@@ -1505,12 +1507,12 @@ function groundAt(e,d){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*
   return{x,z,sky}}
 function dragDown(did){const d=DEC.find(o=>o.id===did);if(!d)return;slideDrop('dec:'+did);hover=null;dd={id:did,ok:true,dm:0,o:{x:d.x,z:d.z}};selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(d.g.position.x,d.g.position.y+.05,d.g.position.z)}
 function slideBackD(d){const T=new THREE.Vector3(d.x,gh(d.x,d.z),d.z);slideDrop('dec:'+d.id);if(S.rm){d.g.position.copy(T);return}slides.push({d:'dec:'+d.id,o:d.g,fr:d.g.position.clone(),to:T,t:0})}
-function dragMove(e){const d=DEC.find(o=>o.id===dd.id);if(!d)return;const q=groundAt(e,d);
+function dragMove(e,quiet){const d=DEC.find(o=>o.id===dd.id);if(!d)return;const q=groundAt(e,d);
   dd.ok=!q.sky&&decorSpotOK(q.x,q.z,dd.id,d.r);dd.cx=q.x;dd.cz=q.z;
-  d.g.position.set(q.x,gh(q.x,q.z)+(dd.ok?0:.3),q.z);dd.dm++;selRing.position.set(q.x,gh(q.x,q.z)+.05,q.z);selRing.material.color.set(dd.ok?'#F29BB5':'#E8685F')}
+  d.g.position.set(q.x,gh(q.x,q.z)+(dd.ok?0:.3),q.z);if(!quiet)dd.dm++;selRing.position.set(q.x,gh(q.x,q.z)+.05,q.z);selRing.material.color.set(dd.ok?'#F29BB5':'#E8685F')}
 function dragUp(){const x=dd;dd=null;selRing.visible=false;const d=DEC.find(o=>o.id===x.id),s=G().decor.find(o=>o.id===x.id);if(!d||!s)return;
   if(x.dm>2&&x.ok){d.x=x.cx;d.z=x.cz;d.g.position.set(d.x,gh(d.x,d.z),d.z);s.x=d.x;s.z=d.z;s.u=Date.now();gsave();sfx('move');toast(tr('moved'))}
-  else{slideBackD(d);if(x.dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
+  else{slideBackD(d);camBack();if(x.dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
 function dragCancel(){const x=dd;dd=null;selRing.visible=false;if(!x)return;const d=DEC.find(o=>o.id===x.id);if(d)slideBackD(d)}
 
 /* ---- 送禮物：每天抽 0–2 份，有小動物才送，由其中一隻「送來」 ---- */
@@ -1598,12 +1600,45 @@ return{step,refresh:gbRefresh,pickGift,openGift,pickDecor,decorCard,down:dragDow
 })();
 
 let fh=false;SLP.cbs.push(()=>{if(fh){fh=false;clock.getDelta();frame()}});
+function flowerMove(e,quiet){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;
+    let x=f.position.x,z=f.position.z,sky=true;
+    if(dr.y<-.01){const k=-o.y/dr.y;x=o.x+dr.x*k;z=o.z+dr.z*k;const k2=(gh(x,z)-o.y)/dr.y;x=o.x+dr.x*k2;z=o.z+dr.z*k2;sky=false;const l=Math.hypot(x-MX,z);if(l>40){x=MX+(x-MX)*40/l;z*=40/l;sky=true}}
+    dragOK=!sky&&legalSpot(x,z,drag);                      /* 空中、橋上、柵欄外、障礙物、別朵花上都不行 */
+    f.position.set(x,gh(x,z)+(dragOK?0:.3),z);if(!quiet)dm++;selRing.position.set(x,gh(x,z)+.05,z);selRing.material.color.set(dragOK?'#F29BB5':'#E8685F')}}
+
+/* ---- 佈置時拖到畫面邊緣：視野跟著往那個方向移動（花朵、裝飾品、星願島的花都適用）----
+   靠邊越近越快；要先停在邊緣一小段時間才會開始，避免誤觸；視野移動時被拖的東西會一直黏在手指／游標下。 */
+let lp=null,lp0=null,edgeT=0,camSig=0,edgeOn=false,tgG0=null;
+function camBack(){if(edgeOn&&tgG0){tgG.copy(tgG0);panV.x=panV.z=0}edgeOn=false}
+const isDragging=()=>!!drag||GF.active()||!!(window.SI&&SI.dragging());
+function edgeStep(dt){
+  if(!lp||!isDragging()){edgeT=0;return}
+  if(Math.hypot(lp.clientX-lp0.clientX,lp.clientY-lp0.clientY)<10){edgeT=0;return}   /* 還沒真的拖動就不捲 */
+  const W=innerWidth,H=innerHeight,Z=Math.min(110,Math.max(48,Math.min(W,H)*.12));
+  let bot=H;const nv=document.querySelector('nav');if(nv){const r=nv.getBoundingClientRect();if(r.height>0&&r.top>H*.5)bot=r.top}
+  const ax=(v,lo,hi)=>{const a=v<lo?-(1-v/lo):v>hi?(v-hi)/(W-hi):0;const m=Math.min(1,Math.abs(a));return Math.sign(a)*m*m*(3-2*m)};
+  const sx=ax(lp.clientX,Z,W-Z);
+  const sy=(()=>{const top=Z,b=bot-Z;const a=lp.clientY<top?-(1-lp.clientY/top):lp.clientY>b?Math.min(1,(lp.clientY-b)/Z):0;const m=Math.min(1,Math.abs(a));return Math.sign(a)*m*m*(3-2*m)})();
+  if(!sx&&!sy){edgeT=0;return}
+  edgeT+=dt;const g=Math.min(1,edgeT/.3);
+  const SP=560*g,kk=2*Math.tan(cam.fov*Math.PI/360)*Math.max(radG,10)/H,s=Math.sin(th),c=Math.cos(th),
+    px=sx*SP*dt,py=sy*SP*dt;
+  edgeOn=true;
+  tgG.x=Math.min(PANX,Math.max(-9,tgG.x+px*kk*c+py*kk*1.2*s));
+  tgG.z=Math.min(15,Math.max(-19,tgG.z-px*kk*s+py*kk*1.2*c));
+  panV.x=panV.z=0}
+function edgeFollow(){
+  if(!lp||!isDragging()||!edgeOn)return;
+  const sig=cam.position.x*1.3+cam.position.y*1.7+cam.position.z*2.1;
+  if(Math.abs(sig-camSig)<1e-6)return;camSig=sig;cam.updateMatrixWorld(true);
+  if(drag)flowerMove(lp,true);else if(GF.active())GF.move(lp,true);else if(window.SI&&SI.dragging())SI.move(lp,true)}
+
 function frame(){if(SLP.on){fh=true;return}requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime,rm=S.rm,k=rm?1:1-Math.pow(.003,dt);
   /* 放開手指後的慣性滑行 */
   if(!panning&&(Math.abs(panV.x)>.1||Math.abs(panV.z)>.1)){
     if(S.rm)panV.x=panV.z=0;
     else{tgG.x=Math.min(PANX,Math.max(-9,tgG.x+panV.x*dt));tgG.z=Math.min(15,Math.max(-19,tgG.z+panV.z*dt));const d=Math.pow(.015,dt);panV.x*=d;panV.z*=d}}
-  tg.lerp(tgG,k);rad+=(radG-rad)*k;th+=(thG-th)*k;ph+=(phG-ph)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);
+  edgeStep(dt);tg.lerp(tgG,k);rad+=(radG-rad)*k;th+=(thG-th)*k;ph+=(phG-ph)*k;cam.position.set(tg.x+rad*Math.sin(ph)*Math.sin(th),tg.y+rad*Math.cos(ph),tg.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(tg);edgeFollow();
   for(const d in flowers){const f=flowers[d],u=f.userData;if(u.ryT!=null){const df=u.ryT-f.rotation.y;if(rm||Math.abs(df)<.002)f.rotation.y=u.ryT;else f.rotation.y+=df*Math.min(1,dt*12)}faceUpdate(f,t,dt);if(u.dr)u.dr.visible=WX.wet>.25&&u.st===1;if(u.dry)u.dry.visible=WX.wet>.25&&u.st===0;if(!rm){const w=.5+WX.wind*1.1;f.rotation.z=Math.sin(t*(1+w*.5)+u.ph)*.03*w;u.h.rotation.z=u.hy.rotation.z=Math.sin(t*(1.4+w*.6)+u.ph)*.045*w}
     if(!P||P.d!==d){const s=u.base*(hover===d?1.12:1);f.scale.x+=(s-f.scale.x)*.15;f.scale.y+=(s-f.scale.y)*.15;f.scale.z=f.scale.x}}
   if(!rm){if(window.mts)mts.forEach((p,j)=>{p.rotation.y+=dt*(.03+j*.02);p.position.y=Math.sin(t*.5+j*2)*.15;p.material.opacity=window.glowF*(.55+Math.sin(t*1.7+j*2.4)*.35)});cr.forEach(c=>crStep(c,dt,t));cl.forEach(c=>{c.position.x+=dt*c.userData.s;if(c.position.x>50)c.position.x=-32});
@@ -1624,20 +1659,20 @@ cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
   if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg||GF.pickGift(e)||GF.pickDecor(e)||(window.RV&&RV.pick(e))||(window.MB&&MB.pick(e))||(window.WI&&WI.pick(e))||(window.SI&&SI.pick(e))||(window.HOMEI&&HOMEI.pick(e)))?'pointer':'grab';return}
   if(GF.active()){GF.move(e);pts.set(e.pointerId,e);return}
   if(window.SI&&SI.dragging()){SI.move(e);pts.set(e.pointerId,e);return}
-  if(drag){const f=flowers[drag];if(f){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const o=ray.ray.origin,dr=ray.ray.direction;
-    let x=f.position.x,z=f.position.z,sky=true;
-    if(dr.y<-.01){const k=-o.y/dr.y;x=o.x+dr.x*k;z=o.z+dr.z*k;const k2=(gh(x,z)-o.y)/dr.y;x=o.x+dr.x*k2;z=o.z+dr.z*k2;sky=false;const l=Math.hypot(x-MX,z);if(l>40){x=MX+(x-MX)*40/l;z*=40/l;sky=true}}
-    dragOK=!sky&&legalSpot(x,z,drag);                      /* 空中、橋上、柵欄外、障礙物、別朵花上都不行 */
-    f.position.set(x,gh(x,z)+(dragOK?0:.3),z);dm++;selRing.position.set(x,gh(x,z)+.05,z);selRing.material.color.set(dragOK?'#F29BB5':'#E8685F')}
-  pts.set(e.pointerId,e);return}
+  if(drag){flowerMove(e);  pts.set(e.pointerId,e);return}
   if(pts.size==2){const[a,b]=[...pts.values()],ox=(a.clientX+b.clientX)/2,oy=(a.clientY+b.clientY)/2,od=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);pts.set(e.pointerId,e);const[c,d]=[...pts.values()],nd=Math.hypot(c.clientX-d.clientX,c.clientY-d.clientY);thG-=((c.clientX+d.clientX)/2-ox)*.006;phG=Math.min(1.4,Math.max(.35,phG-((c.clientY+d.clientY)/2-oy)*.005));if(nd>8&&od>8)radG=Math.min(64,Math.max(4.5,radG*od/nd));moved=99;panV.x=panV.z=0;return}
   const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(e.pointerType=='mouse'&&e.buttons&2){thG-=dx*.006;phG=Math.min(1.4,Math.max(.35,phG-dy*.005))}else pan(dx,dy,e.pointerType=='mouse');pts.set(e.pointerId,e)});
 cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;if(performance.now()-panT>90||moved<6||drag)panV.x=panV.z=0}if(GF.active()){panV.x=panV.z=0;GF.up();return}if(window.SI&&SI.dragging()){panV.x=panV.z=0;SI.up();return}if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
     if(f&&en){if(dm>2&&dragOK){en.x=f.position.x;en.z=f.position.z;f.position.y=gh(en.x,en.z);save();sfx('move');toast(tr('moved'))}
-      else{slideBack(d,dragO);if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
+      else{slideBack(d,dragO);camBack();if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
     return}if(moved<6&&!pts.size&&(e.pointerType!='mouse'||e.button==0)){const gf=GF.pickGift(e);if(gf){GF.openGift(gf);return}const dc=GF.pickDecor(e);if(dc){GF.decorCard(dc);return}const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else if(window.SI&&SI.click(e)){}else if(window.RV&&RV.pick(e)){RV.open()}else if(window.MB&&MB.pick(e)){MB.open()}else if(window.WI&&WI.pick(e)){WI.open()}else if(window.HOMEI&&HOMEI.pick(e)){HOMEI.open()}else $('card').hidden=true}});
-cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;panV.x=panV.z=0}if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO)}if(GF.active())GF.cancel();if(window.SI&&SI.dragging())SI.cancel();});
+cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;panV.x=panV.z=0}if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO);camBack()}if(GF.active()){GF.cancel();camBack()}if(window.SI&&SI.dragging()){SI.cancel();camBack()}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
+const lpSet=e=>({clientX:e.clientX,clientY:e.clientY,pointerId:e.pointerId,pointerType:e.pointerType});
+cv.addEventListener('pointerdown',e=>{if(isDragging()){lp=lpSet(e);lp0=lp;edgeT=0;edgeOn=false;tgG0=tgG.clone()}});
+cv.addEventListener('pointermove',e=>{if(lp&&isDragging())lp=lpSet(e)});
+const lpEnd=()=>{lp=lp0=null;edgeT=0;edgeOn=false};
+cv.addEventListener('pointerup',lpEnd);cv.addEventListener('pointercancel',lpEnd);
 cv.addEventListener('mousedown',e=>{if(e.button==1)e.preventDefault()});
 /* 平移：手指移動量乘上增益；滑得越快放大越多；拉近時也不會變得太慢（距離下限 12） */
 function pan(dx,dy,mouse){
@@ -2406,7 +2441,7 @@ function openRest(){
   paintTexts();$t.value='';$w.classList.remove('go');$m.hidden=false;$('card').hidden=true;
   tgG.set(IX+.5,0,IZ-.6);radG=Math.min(radG,13);                // 鏡頭靠近小島
   setTimeout(()=>{try{$t.focus({preventScroll:true})}catch(e){}},600)}
-function closeRest(goHome){$m.hidden=true;if(goHome&&typeof home==='function')home()}
+function closeRest(goHome){$m.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 function release(){
   if(busy)return;const txt=$t.value.trim();
   if(!txt){toast(tr('rvEmpty'));$t.focus();return}
@@ -2743,7 +2778,7 @@ function open(){
   tgG.set(IX,.4,IZ+.2);radG=Math.min(radG,14);
   try{sfx('island')}catch(e){}
   setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
-function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')home()}
+function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 function visit(d){if(!S.e[d])return;close(false);try{detail(d)}catch(e){}}
 $x.onclick=()=>close(true);
 $sh.onclick=()=>{shuf++;render()};
@@ -2944,7 +2979,7 @@ function open(){
   tgG.set(WIX,.4,WIZ+.2);radG=Math.min(radG,14);
   try{sfx('island')}catch(e){}
   setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
-function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')home()}
+function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 $x.onclick=()=>close(true);
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});
 addEventListener('keydown',e=>{if(!$o.hidden&&e.key==='Escape')close(true)});
@@ -3224,14 +3259,14 @@ function back(id,o){const f=wf[id];if(!f||!o)return;slideDrop('wish:'+id);const 
 function down(e){if(!arrange)return false;const id=pickId(e),f=id&&wf[id],en=id&&S.w[id];if(!f||!en)return false;
   slideDrop('wish:'+id);hovId=null;sd={id,dm:0,ok:true,o:{x:en.x,z:en.z}};
   selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f.position.x,f.position.y+.05,f.position.z);return true}
-function move(e){if(!sd)return;const f=wf[sd.id];if(!f)return;const q=ground(e);let x=f.position.x-SX,z=f.position.z-SZ,sky=true;
+function move(e,quiet){if(!sd)return;const f=wf[sd.id];if(!f)return;const q=ground(e);let x=f.position.x-SX,z=f.position.z-SZ,sky=true;
   if(q){x=q.x-SX;z=q.z-SZ;sky=false}
   sd.ok=!sky&&legal(x,z,sd.id,.6);                         /* 島外、石頭或燈柱上、別朵花上都不行 */
-  const y=gy(SX+x,SZ+z);f.position.set(SX+x,y+(sd.ok?0:.3),SZ+z);sd.dm++;sd.x=x;sd.z=z;
+  const y=gy(SX+x,SZ+z);f.position.set(SX+x,y+(sd.ok?0:.3),SZ+z);if(!quiet)sd.dm++;sd.x=x;sd.z=z;
   selRing.position.set(SX+x,y+.05,SZ+z);selRing.material.color.set(sd.ok?'#F29BB5':'#E8685F')}
 function up(){const x=sd;sd=null;selRing.visible=false;if(!x)return;const f=wf[x.id],e=S.w[x.id];if(!f||!e)return;
   if(x.dm>2&&x.ok){e.x=x.x;e.z=x.z;f.position.y=gy(SX+e.x,SZ+e.z);save();sfx('move');toast(tr('moved'))}
-  else{back(x.id,x.o);if(x.dm>2){sfx('deny');toast(tr('badSpot'))}}}
+  else{back(x.id,x.o);camBack();if(x.dm>2){sfx('deny');toast(tr('badSpot'))}}}
 function cancel(){const x=sd;sd=null;selRing.visible=false;if(x)back(x.id,x.o)}
 
 /* ---------- 寫願望的視窗 ---------- */
@@ -3339,7 +3374,7 @@ function openPanel(editId){if(anyOverlay()&&$o.hidden)return;mode=editId||null;p
   renderPanel(true);$o.hidden=false;$('card').hidden=true;
   tgG.set(SX,.4,SZ+.2);radG=Math.min(radG,14);try{sfx('island')}catch(e){}
   setTimeout(()=>{try{($('swt')||$x).focus({preventScroll:true})}catch(e){}},350)}
-function closePanel(goHome){$o.hidden=true;if(goHome&&typeof home==='function')home()}
+function closePanel(goHome){$o.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 $x.onclick=()=>closePanel(true);
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)closePanel(true)});
 addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('swq').hidden)qClose(-1);else if(!$o.hidden)closePanel(true)});
@@ -3764,7 +3799,7 @@ function open(){
   tgG.set(SX,.4,SZ+.2);radG=Math.min(radG,14);
   try{sfx('island')}catch(e){}
   loadWx(false);setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
-function close(goHome){$o.hidden=true;wtok++;if(goHome&&typeof home==='function')home()}
+function close(goHome){$o.hidden=true;wtok++;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 $x.onclick=()=>close(true);
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});
 addEventListener('keydown',e=>{if(!$o.hidden&&e.key==='Escape')close(true)});
