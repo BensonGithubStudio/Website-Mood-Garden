@@ -34,6 +34,14 @@ nav button{padding:9px 16px;border-radius:99px;font-size:14px}
 nav button{position:relative;z-index:1}
 #pill{position:absolute;z-index:0;top:6px;bottom:6px;left:0;width:0;border-radius:99px;background:var(--pink);box-shadow:0 3px 10px #f29bb544;transition:transform .45s cubic-bezier(.34,1.4,.5,1),width .35s}
 @media(prefers-reduced-motion:reduce){#pill{transition:none}}
+/* 選單 bar 點擊彈跳：nav 靠 translateX(-50%) 置中，所以關鍵影格必須把 translateX(-50%) 一起寫進 transform，
+   縮放才會以 bar 的正中央為中心（若改用獨立的 scale 屬性，縮放會疊在位移之後，中心點會偏到右邊）。
+   動畫在「一次完整點擊」後由 JS 觸發，跑完固定時長（--nav-pop-dur）才收尾，與按住多久無關 */
+nav{--nav-pop-dur:680ms}
+@keyframes navpop{0%{transform:translateX(-50%) scale(1)}38%{transform:translateX(-50%) scale(1.075)}68%{transform:translateX(-50%) scale(.985)}100%{transform:translateX(-50%) scale(1)}}
+nav.pop{transform-origin:50% 50%;animation:navpop var(--nav-pop-dur) cubic-bezier(.3,.7,.4,1) both}
+body.rm nav.pop{animation:none}
+@media(prefers-reduced-motion:reduce){nav.pop{animation:none}}
 @media(min-width:1000px){nav{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}.fab{bottom:28px}}
 @media(max-width:759px){.hello{right:16px;max-width:none}.hello p{display:none}.fab{right:16px}}
 @media(max-width:480px){.logo{font-size:17px;padding:6px 12px}#date{font-size:12px;padding:6px 11px}}
@@ -129,7 +137,9 @@ nav{max-width:calc(100% - 16px)}
 #p-set h2{padding:0 8px 6px;flex:none}
 .sbody{flex:1;min-height:0;overflow:auto;padding:0 2px 16px;-webkit-overflow-scrolling:touch}
 #p-set .sbody{scrollbar-width:none;-ms-overflow-style:none}#p-set .sbody::-webkit-scrollbar{display:none;width:0;height:0}
-.gqd{display:block;margin:8px 2px 0;font-size:12.5px;line-height:1.4;opacity:.65}
+.gqd{display:block;margin:8px 2px 0;font-size:12.5px;line-height:1.4}
+.gqd .gqt{opacity:.65}
+.gqd .gqn{display:block;margin-top:4px;color:#D64545;font-weight:700;opacity:1}
 .sg{font-size:12px;letter-spacing:.06em;opacity:.65;margin:14px 10px 6px}
 .sc{background:#ffffffb8;border-radius:22px;overflow:hidden}
 .si{display:flex;align-items:center;gap:12px;padding:12px 14px}.si+.si{border-top:1px solid #0000000d}
@@ -1784,6 +1794,15 @@ function sleepOff(){if(!SLP.on)return;SLP.on=false;document.body.classList.remov
 $('slw').onclick=sleepOff;
 function show(v){if(v!='garden'&&arrange)setArrange(false);document.body.classList.toggle('rm',!!S.rm);document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>setPanel($('p-'+x),x==v,x));$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+/* 選單 bar 彈跳動畫：只在使用者真正點選（按下並在同一顆按鈕上放開，觸發 click；鍵盤 Enter/Space 也算）後才播放，固定播完整段 */
+(function(){const nv=document.querySelector('nav');if(!nv)return;
+  /* 用 Web Animations API：每次點擊疊加一段新的動畫，既有動畫不會被取消或重置；
+     省略 0% 關鍵影格，新動畫會從「當下的縮放值」開始，快速連點也不會跳回原點 */
+  const T='translateX(-50%) ',mq=window.matchMedia?matchMedia('(prefers-reduced-motion:reduce)'):null;
+  function pop(){if(S.rm||(mq&&mq.matches)||!nv.animate)return;
+    nv.animate([{transform:T+'scale(1.075)',offset:.38},{transform:T+'scale(.985)',offset:.68},{transform:T+'scale(1)',offset:1}],
+      {duration:1100,easing:'cubic-bezier(.3,.7,.4,1)'})}
+  nv.addEventListener('click',e=>{if(e.target.closest('button'))pop()})})();
 function refresh(){const n=new Date(),mk=dk(n).slice(0,7),en=ents(),mo=en.filter(([d])=>d.startsWith(mk)),c={};mo.forEach(([,e])=>c[e.mood]=(c[e.mood]||0)+1);
   $('date').textContent=n.toLocaleDateString(LC(),{weekday:'short',month:'short',day:'numeric'});
   $('hi').innerHTML=ic('local_florist')+(S.e[today()]?tr('hi1'):tr('hi0'));
@@ -1857,7 +1876,7 @@ function renderSet(){
   $('p-set').innerHTML=`<h2>${tr('setT')}</h2><div class="sbody">
 <div class="sg">${tr('lang')}</div><div class="sc"><div class="si col">${seg('lg','data-l',[['en','English'],['zh','繁體中文'],['ja','日本語'],['ko','한국어']],S.lang)}</div></div>
 <div class="sg">${tr('secLook')}</div><div class="sc"><div class="si col"><span class="sx"><b>${tr('tmT')}</b><small>${tr('tmD')}</small></span>${seg('tm','data-m',[['auto',tr('tmA')],['day',tr('tmDay')],['night',tr('tmN')]],S.tm||'auto')}</div>${row('partly_cloudy_day','wx',!S.wxo)}${row('motion_photos_off','rm',!!S.rm)}</div>
-${ok?`<div class="sg">${tr('secGfx')}</div><div class="sc"><div class="si col"><span class="sx"><b>${tr('gqT')}</b><small>${tr('gqD')}</small></span>${seg('gq','data-g',[['low',tr('gqL')],['mid',tr('gqM')],['high',tr('gqH')]],gqNow())}<span class="gqd">${tr('gq_'+gqNow())}${(gqNow()==='high')!==window.GQaa0?' '+tr('gqN'):''}</span></div></div>`:''}
+${ok?`<div class="sg">${tr('secGfx')}</div><div class="sc"><div class="si col"><span class="sx"><b>${tr('gqT')}</b><small>${tr('gqD')}</small></span>${seg('gq','data-g',[['low',tr('gqL')],['mid',tr('gqM')],['high',tr('gqH')]],gqNow())}<span class="gqd"><span class="gqt">${tr('gq_'+gqNow())}</span>${(gqNow()==='high')!==window.GQaa0?`<span class="gqn">${tr('gqN')}</span>`:''}</span></div></div>`:''}
 <div class="sg">${tr('secSnd')}</div><div class="sc">${row('touch_app','sfx',S.snd!==false)}${vol('sfx',S.snd!==false)}${row('music_note','amb',S.amb!==false)}${vol('amb',S.amb!==false)}<div class="si"><span class="sic ms">bedtime</span><span class="sx"><b>${tr('slT')}</b><small>${tr('slD')}</small></span><button class="btn w" id="slb" data-sfx="off">${tr('slB')}</button></div></div>
 <div class="sg">${tr('secAcc')}</div><div class="sc" id="acc"></div>
 <div class="sg">${tr('secData')}</div><div class="sc"><div class="si"><span class="sic ms" style="background:#fbe0e0;color:#b5484f">delete_sweep</span><span class="sx"><b>${tr('rsT')}</b><small>${tr('rsD')}${window.cloud&&cloud.user?' '+tr('cRs'):''}</small></span><button class="btn r" id="rs">${tr('rsB')}</button></div></div>
