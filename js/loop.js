@@ -34,7 +34,14 @@ function edgeStep(dt){
   let bot=H;const nv=document.querySelector('nav');if(nv){const r=nv.getBoundingClientRect();if(r.height>0&&r.top>H*.5)bot=r.top}
   const ax=(v,lo,hi)=>{const a=v<lo?-(1-v/lo):v>hi?(v-hi)/(W-hi):0;const m=Math.min(1,Math.abs(a));return Math.sign(a)*m*m*(3-2*m)};
   const sx=ax(lp.clientX,Z,W-Z);
-  const sy=(()=>{const top=Z,b=bot-Z;const a=lp.clientY<top?-(1-lp.clientY/top):lp.clientY>b?Math.min(1,(lp.clientY-b)/Z):0;const m=Math.min(1,Math.abs(a));return Math.sign(a)*m*m*(3-2*m)})();
+  /* 上方的觸發線＝上方 UI（logo、日期、「今天感覺如何」面板；電腦版還有頂端選單列）的下緣再往下一點點：
+     使用者會直覺地把 UI 的下緣當成畫面上緣，所以手指／游標碰到那條線就開始捲動，越往上越快。 */
+  let uiTop=0;document.querySelectorAll('.logo,#date,nav,.hello').forEach(el=>{const r=el.getBoundingClientRect();
+    if(r.height<=0||r.top>=H*.5)return;
+    if(el.classList.contains('hello')&&(lp.clientX<r.left-16||lp.clientX>r.right+16))return;   /* 「今天感覺如何」面板在電腦版只佔左邊，手指不在它旁邊就不算 */
+    uiTop=Math.max(uiTop,r.bottom)});
+  const tTop=Math.min(H*.3,Math.max(Z,uiTop+10)),tz=Math.max(24,Z*.6);
+  const sy=(()=>{const b=bot-Z;const a=lp.clientY<tTop?-Math.min(1,(tTop-lp.clientY)/tz):lp.clientY>b?Math.min(1,(lp.clientY-b)/Z):0;const m=Math.min(1,Math.abs(a));return Math.sign(a)*m*m*(3-2*m)})();
   if(!sx&&!sy){edgeT=0;return}
   edgeT+=dt;const g=Math.min(1,edgeT/.3);
   const SP=560*g,kk=2*Math.tan(cam.fov*Math.PI/360)*Math.max(radG,10)/H,s=Math.sin(th),c=Math.cos(th),
