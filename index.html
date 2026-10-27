@@ -313,6 +313,10 @@ body[data-gq=low] .wis{background:#E6D8BC!important}body[data-gq=low] .sws{backg
 <div class="chips" id="obc"></div><button class="btn p big" id="go" data-t="go" style="font-size:18px;padding:12px 30px"></button><button id="skip" data-t="skip" style="font-size:13px"></button></div></div>
 
 <script>
+/* 統一錯誤記錄：原本許多 catch(e){logErr(e)} 會把錯誤吞掉。現在改記到 console（同一則訊息只印一次，最多 40 則，避免每幀重複洗版）。
+   可在 console 輸入 __errs 查看累積的錯誤。 */
+const __errs=[];
+function logErr(e){try{const m=String(e&&e.stack||e).split('\n').slice(0,2).join(' @ ');if(__errs.includes(m)||__errs.length>=40)return;__errs.push(m);console.warn('[mg]',m)}catch(_){logErr(_)}}
 /* 停用整頁縮放（花園本身的縮放不受影響） */
 (function(){
   const stop=e=>e.preventDefault();
@@ -324,7 +328,7 @@ body[data-gq=low] .wis{background:#E6D8BC!important}body[data-gq=low] .sws{backg
   document.addEventListener('focusout',()=>setTimeout(()=>{if(!/^(TEXTAREA|INPUT)$/.test((document.activeElement||{}).tagName))scrollTo(0,0)},60));
 })();
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="vendor/three.r128.min.js"></script>
 <script>
 /* ===== 音效系統 =====
    進站時先預載全部音檔（見載入畫面）。檔案不存在或無法解碼時不播放、不報錯，
@@ -347,7 +351,7 @@ const SLP={on:false,cbs:[]};   /* 睡眠模式旗標；cbs＝喚醒時要重新�
 let AC=null,sndUnlocked=false,ambKey=null,ambCur=null,ambTok=0;
 const sfxOn=()=>{try{return S.snd!==false}catch(e){return true}};
 const ambOn=()=>{try{return S.amb!==false}catch(e){return true}};
-function sndVolSync(){try{SND.vol.sfx=(S.vs==null?70:S.vs)/100;SND.vol.amb=(S.va==null?35:S.va)/100}catch(e){}}   /* 把設定裡的音量滑桿值（0–100）同步到播放用的音量 */
+function sndVolSync(){try{SND.vol.sfx=(S.vs==null?70:S.vs)/100;SND.vol.amb=(S.va==null?35:S.va)/100}catch(e){logErr(e)}}   /* 把設定裡的音量滑桿值（0–100）同步到播放用的音量 */
 function acx(){
   try{
     if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}
@@ -362,7 +366,7 @@ function sndPreload(onTick){
   for(const k in SND.weather)items.push(['w',k,SND.weather[k]]);
   let done=0;
   return Promise.all(items.map(([t,k,src])=>{
-    const el=()=>{try{const a=new Audio(),r={a,bad:false};a.preload='auto';a.loop=t==='w';a.addEventListener('error',()=>{r.bad=true});a.src=src;SNDS[t+':'+k]=r}catch(e){}};
+    const el=()=>{try{const a=new Audio(),r={a,bad:false};a.preload='auto';a.loop=t==='w';a.addEventListener('error',()=>{r.bad=true});a.src=src;SNDS[t+':'+k]=r}catch(e){logErr(e)}};
     return fetch(src)
       .then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()})
       .then(buf=>{
@@ -384,7 +388,7 @@ function sfx(name,fallback){
     }
     let r=SNDS['s:'+name];if(!r||r.bad)r=fallback&&SNDS['s:'+fallback];if(!r||r.bad)return;
     const n=r.a.cloneNode();n.volume=SND.vol.sfx;const p=n.play();if(p&&p.catch)p.catch(()=>{});
-  }catch(e){}
+  }catch(e){logErr(e)}
 }
 function sndFade(a,to,done){
   clearInterval(a._f);
@@ -407,8 +411,8 @@ function wbStart(k,buf){
   const g=AC.createGain();g.gain.value=0;g.connect(AC.destination);
   const s=AC.createBufferSource();s.buffer=buf;s.loop=true;s.connect(g);s.start();
   g.gain.setTargetAtTime(SND.vol.amb,AC.currentTime,.4);
-  return{key:k,gain(v){try{g.gain.setTargetAtTime(v,AC.currentTime,.05)}catch(e){}},stop(now){
-    try{if(now){s.stop()}else{g.gain.setTargetAtTime(0,AC.currentTime,.4);s.stop(AC.currentTime+2.5)}}catch(e){}
+  return{key:k,gain(v){try{g.gain.setTargetAtTime(v,AC.currentTime,.05)}catch(e){logErr(e)}},stop(now){
+    try{if(now){s.stop()}else{g.gain.setTargetAtTime(0,AC.currentTime,.4);s.stop(AC.currentTime+2.5)}}catch(e){logErr(e)}
   }};
 }
 function elStart(k){
@@ -426,8 +430,8 @@ function ambApply(){
   try{
     sndVolSync();
     if(SLP.on){   /* 睡眠模式：改用 HTMLAudio＋媒體工作階段播放，螢幕關閉後才不會被瀏覽器暫停 */
-      if(ambCur){ambTok++;try{ambCur.stop(true)}catch(e){}ambCur=null}
-      try{if(AC&&AC.state==='running')AC.suspend()}catch(e){}
+      if(ambCur){ambTok++;try{ambCur.stop(true)}catch(e){logErr(e)}ambCur=null}
+      try{if(AC&&AC.state==='running')AC.suspend()}catch(e){logErr(e)}
       if(sndUnlocked)slStart();return}
     const want=(ambOn()&&sndUnlocked&&!document.hidden&&ambKey)?ambKey:null;
     if(ambCur&&ambCur.key===want)return;
@@ -437,7 +441,7 @@ function ambApply(){
     if(acx()){
       wbGet(want).then(buf=>{if(my!==ambTok)return;ambCur=buf?wbStart(want,buf):elStart(want)});
     }else ambCur=elStart(want);
-  }catch(e){}
+  }catch(e){logErr(e)}
 }
 function ambient(k){ambKey=k||null;ambApply()}
 let slA=null,slKey=null;const slUrl={};
@@ -450,11 +454,11 @@ function slStart(){
   const a=new Audio();a.loop=true;a.preload='auto';a.src=src;a.volume=Math.max(0,Math.min(1,SND.vol.amb));
   slA=a;slKey=k;const p=a.play();if(p&&p.catch)p.catch(()=>{});
   try{if('mediaSession' in navigator){const m=navigator.mediaSession;m.metadata=new MediaMetadata({title:document.title,artist:'Mood Garden'});m.playbackState='playing';
-    m.setActionHandler('play',()=>{if(slA)slA.play().catch(()=>{})});m.setActionHandler('pause',()=>{if(slA)slA.pause()})}}catch(e){}}
+    m.setActionHandler('play',()=>{if(slA)slA.play().catch(()=>{})});m.setActionHandler('pause',()=>{if(slA)slA.pause()})}}catch(e){logErr(e)}}
 function slStop(keep){
   const a=slA;slA=null;slKey=null;
-  if(a){try{a.pause();a.removeAttribute('src');a.load()}catch(e){}}
-  if(!keep)try{if('mediaSession' in navigator){const m=navigator.mediaSession;m.playbackState='none';m.metadata=null;m.setActionHandler('play',null);m.setActionHandler('pause',null)}}catch(e){}}
+  if(a){try{a.pause();a.removeAttribute('src');a.load()}catch(e){logErr(e)}}
+  if(!keep)try{if('mediaSession' in navigator){const m=navigator.mediaSession;m.playbackState='none';m.metadata=null;m.setActionHandler('play',null);m.setActionHandler('pause',null)}}catch(e){logErr(e)}}
 (function(){
   const ev=['pointerdown','click','touchend','keydown'];
   const un=()=>{sndUnlocked=true;ev.forEach(t=>removeEventListener(t,un,true));acx();ambApply()};
@@ -471,22 +475,41 @@ function slStop(keep){
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const M={happy:{n:'Happy',e:'😊',c:'#F5D04A',f:'Sunflower',i:'🌻'},excited:{n:'Excited',e:'🤩',c:'#F6A35C',f:'Tulip',i:'🌷'},calm:{n:'Calm',e:'😌',c:'#A9D8A8',f:'Daisy',i:'🌼'},loved:{n:'Loved',e:'🥰',c:'#F29BB5',f:'Rose',i:'🌹'},sad:{n:'Sad',e:'😢',c:'#8DB9E8',f:'Bluebell',i:'🔔'},anxious:{n:'Anxious',e:'😰',c:'#B7A2E0',f:'Lavender',i:'🪻'}};
 const TAGS=['Work','Study','Friends','Family','Travel','Personal'],KEY='moodgarden.v1';
-let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){logErr(e)}
+/* ---------- 存檔版本與遷移 ----------
+ * S.v 是存檔結構版本。日後要改資料結構時：SCHEMA 加 1，並在 MIGRATIONS 加一個「從舊版升上來」的函式（key = 舊版號）。
+ * 沒有 v 的舊存檔視為 v1。升級前會先把原始資料備份到 KEY+'.bak'，出問題時可以還原。
+ * 若讀到比本程式更新的版本（例如開了舊版頁面），不做降級也不改寫 v，只記錄警告。 */
+const SCHEMA=2,MIGRATIONS={
+ 1:s=>{s.e=s.e||{};s.del=s.del||{};s.w=s.w||{};s.wdel=s.wdel||{}}   // v1→v2：補齊各容器（內容語意不變）
+};
+(function migrate(){
+ const cur=S.v||1;
+ if(cur>SCHEMA){console.warn('[mg] 存檔版本 v'+cur+' 比程式新（v'+SCHEMA+'），略過遷移');return}
+ if(cur===SCHEMA)return;
+ try{const raw=localStorage.getItem(KEY);if(raw&&!localStorage.getItem(KEY+'.bak'))localStorage.setItem(KEY+'.bak',raw)}catch(e){logErr(e)}
+ try{for(let v=cur;v<SCHEMA;v++)if(MIGRATIONS[v])MIGRATIONS[v](S);S.v=SCHEMA}catch(e){logErr(e)}
+})();
+/* 墓碑（S.del / S.wdel 的刪除紀錄）永久保留、不清理：這樣不論其他裝置多久沒同步，已刪除的花都不會復活。
+   每筆只有「日期→時間戳」，數量再多也只佔很小的空間。 */
 S.e=S.e||{};if(S.rm===undefined)S.rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* 每朵花記一個更新時間 u（跨裝置同步時以較新的為準）；刪除的花記在 S.del，讓其他裝置也能一起刪 */
 const _sig=e=>{const{u,...r}=e;return JSON.stringify(r)},_bj={};S.del=S.del||{};for(const d in S.e)_bj[d]=_sig(S.e[d]);
 /* 星願島的花：S.w[id]（id→資料），刪除記在 S.wdel；每朵一樣有更新時間 u，同步時以較新的為準 */
 S.w=S.w||{};S.wdel=S.wdel||{};const _wj={};for(const i in S.w)_wj[i]=_sig(S.w[i]);
 const wStamp=n=>{for(const i in S.w){const g=_sig(S.w[i]);if(_wj[i]!==g){S.w[i].u=n;_wj[i]=g;delete S.wdel[i]}}for(const i in _wj)if(!(i in S.w)){S.wdel[i]=n;delete _wj[i]}};
-function wApply(id,o){o=JSON.parse(JSON.stringify(o));const old=S.w[id];S.w[id]=o;_wj[id]=_sig(o);delete S.wdel[id];try{window.SI&&SI.onApply(id,old,o)}catch(e){}}   // 雲端來的新版本
-function wDrop(id,u){delete S.w[id];delete _wj[id];S.wdel[id]=u;try{window.SI&&SI.onDrop(id)}catch(e){}}                                                // 雲端說這朵已刪除
-function wClear(){for(const i in S.w)delete S.w[i];try{window.SI&&SI.clearVisual()}catch(e){}}
+function wApply(id,o){o=JSON.parse(JSON.stringify(o));const old=S.w[id];S.w[id]=o;_wj[id]=_sig(o);delete S.wdel[id];try{window.SI&&SI.onApply(id,old,o)}catch(e){logErr(e)}}   // 雲端來的新版本
+function wDrop(id,u){delete S.w[id];delete _wj[id];S.wdel[id]=u;try{window.SI&&SI.onDrop(id)}catch(e){logErr(e)}}                                                // 雲端說這朵已刪除
+function wClear(){for(const i in S.w)delete S.w[i];try{window.SI&&SI.clearVisual()}catch(e){logErr(e)}}
+/* 寫入本機存檔；失敗（容量滿、隱私模式）時只提醒一次，避免使用者以為已存好 */
+let _saveBad=0;
+function persistState(){try{localStorage.setItem(KEY,JSON.stringify(S));_saveBad=0}catch(e){logErr(e);if(!_saveBad){_saveBad=1;try{toast(tr('saveFail'))}catch(x){logErr(x)}}}}
 const save=()=>{const n=Date.now();
   for(const d in S.e){const g=_sig(S.e[d]);if(_bj[d]!==g){S.e[d].u=n;_bj[d]=g;delete S.del[d]}}
   for(const d in _bj)if(!(d in S.e)){S.del[d]=n;delete _bj[d]}
   wStamp(n);
-  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-  try{window.cloud&&cloud.dirty()}catch(e){}};
+  persistState()
+  try{window.cloud&&cloud.dirty()}catch(e){logErr(e)}};
 const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>dk(new Date()),fmt=k=>new Date(k+'T12:00').toLocaleDateString(LC(),{weekday:'short',month:'short',day:'numeric',year:'numeric'});
 const ents=()=>Object.entries(S.e).sort((a,b)=>a[0]<b[0]?-1:1);
@@ -552,10 +575,10 @@ I18N.add('ko',{slT:'수면 모드',slD:'모든 움직임을 멈추고 어두운 
 I18N.add('en',{wDay:n=>`Withers in ${n} ${n==1?'day':'days'}`,wHr:n=>`Withers in about ${n}h`,wMin:n=>`Withers in about ${n} min`,wNow:'This flower has withered',wMoved:'Moved to the Withered Isle',wShovel:'Dig it up',shovelQ:'Dig up this withered flower? It will move to the Withered Isle, and its mood and note are kept.',shovelB:'Dig up',shoveled:'Moved to the Withered Isle',withToast:n=>n==1?'A flower has withered…':`${n} flowers have withered…`,wiT:'Withered Isle',wiSub:n=>`${n} ${n==1?'flower rests':'flowers rest'} here`,wiE0:'It’s quiet here',wiE1:'Flowers you dig up after they wither will rest here. Their moods and notes are always kept.',wiPlant:'Planted',wiWither:'Withered',wiShov:'Moved here'});
 I18N.add('zh',{wDay:n=>`${n} 天後凋零`,wHr:n=>`約 ${n} 小時後凋零`,wMin:n=>`約 ${n} 分鐘後凋零`,wNow:'這朵花已經凋零了',wMoved:'已搬到凋零小島',wShovel:'鏟除',shovelQ:'要鏟除這朵凋零的花嗎？它會搬到凋零小島，心情與內容都會保留。',shovelB:'鏟除',shoveled:'已搬到凋零小島',withToast:n=>`有 ${n} 朵花凋零了…`,wiT:'凋零小島',wiSub:n=>`${n} 朵花在這裡休息`,wiE0:'這裡還很安靜',wiE1:'凋零的花被鏟除後，會搬到這座小島。你記錄的心情與文字，都會好好留著。',wiPlant:'種下於',wiWither:'凋零於',wiShov:'搬來於'});
 I18N.add('ja',{wDay:n=>`あと${n}日で枯れます`,wHr:n=>`あと約${n}時間で枯れます`,wMin:n=>`あと約${n}分で枯れます`,wNow:'このお花は枯れました',wMoved:'枯れ花の島に移りました',wShovel:'掘り起こす',shovelQ:'枯れたお花を掘り起こしますか？「枯れ花の島」に移り、気分とメモは残ります。',shovelB:'掘り起こす',shoveled:'枯れ花の島に移しました',withToast:n=>`${n}輪のお花が枯れました…`,wiT:'枯れ花の島',wiSub:n=>`${n}輪のお花が休んでいます`,wiE0:'ここはとても静かです',wiE1:'枯れて掘り起こしたお花は、この島で休みます。気分とメモはずっと残ります。',wiPlant:'植えた日',wiWither:'枯れた日',wiShov:'島に来た日'});
-I18N.add('en',{gdFullT:'The gardens are full',gdFull:'There is no room left in either garden. Delete or dig up a flower, or collect some decorations, to make space for a new one.'});
-I18N.add('zh',{gdFullT:'花園已經滿了',gdFull:'兩座花園都沒有空位可以種花了。請先刪除或鏟除一些花朵，或把裝飾品收藏起來，再來種新的花。'});
-I18N.add('ja',{gdFullT:'庭がいっぱいです',gdFull:'ふたつの庭に、もう花を植える場所がありません。お花を削除・掘り起こすか、飾りをしまってから新しい花を植えてね。'});
-I18N.add('ko',{gdFullT:'정원이 가득 찼어요',gdFull:'두 정원 모두 꽃을 심을 자리가 없어요. 꽃을 삭제하거나 파내거나, 장식을 보관해서 자리를 만들어 주세요.'});
+I18N.add('en',{saveFail:"Couldn't save to this device (storage may be full or blocked). Recent changes may be lost.",gdFullT:'The gardens are full',gdFull:'There is no room left in either garden. Delete or dig up a flower, or collect some decorations, to make space for a new one.'});
+I18N.add('zh',{saveFail:'無法儲存到這個裝置（儲存空間可能已滿或被封鎖），最近的變更可能會遺失。',gdFullT:'花園已經滿了',gdFull:'兩座花園都沒有空位可以種花了。請先刪除或鏟除一些花朵，或把裝飾品收藏起來，再來種新的花。'});
+I18N.add('ja',{saveFail:'この端末に保存できませんでした（容量不足またはブロックの可能性）。最近の変更が失われるかもしれません。',gdFullT:'庭がいっぱいです',gdFull:'ふたつの庭に、もう花を植える場所がありません。お花を削除・掘り起こすか、飾りをしまってから新しい花を植えてね。'});
+I18N.add('ko',{saveFail:'이 기기에 저장하지 못했어요(저장 공간이 가득 찼거나 차단되었을 수 있어요). 최근 변경 내용이 사라질 수 있어요.',gdFullT:'정원이 가득 찼어요',gdFull:'두 정원 모두 꽃을 심을 자리가 없어요. 꽃을 삭제하거나 파내거나, 장식을 보관해서 자리를 만들어 주세요.'});
 I18N.add('ko',{wDay:n=>`${n}일 뒤에 시들어요`,wHr:n=>`약 ${n}시간 뒤에 시들어요`,wMin:n=>`약 ${n}분 뒤에 시들어요`,wNow:'이 꽃은 시들었어요',wMoved:'시든 꽃의 섬으로 옮겼어요',wShovel:'파내기',shovelQ:'시든 꽃을 파낼까요? 「시든 꽃의 섬」으로 옮겨지고, 기분과 메모는 그대로 남아요.',shovelB:'파내기',shoveled:'시든 꽃의 섬으로 옮겼어요',withToast:n=>`꽃 ${n}송이가 시들었어요…`,wiT:'시든 꽃의 섬',wiSub:n=>`꽃 ${n}송이가 쉬고 있어요`,wiE0:'이곳은 아주 고요해요',wiE1:'시들어서 파낸 꽃은 이 섬에서 쉬어요. 기분과 메모는 언제나 남아 있어요.',wiPlant:'심은 날',wiWither:'시든 날',wiShov:'섬에 온 날'});
 function tr(k,...a){return I18N.tr(k,...a)}
 function LC(){return I18N.info(S.lang).locale}
@@ -621,6 +644,9 @@ function planRoute(u,p){const a=zoneAt(p.x,p.z),b=zoneAt(u.tg.x,u.tg.z);u.wp=nul
 function shade(g,lo=.72){const p=g.attributes.position,n=g.attributes.normal,a=new Float32Array(p.count*3);for(let i=0;i<p.count;i++){const v=lo+(1-lo)*(n.getY(i)*.5+.5);a[i*3]=a[i*3+1]=a[i*3+2]=v}g.setAttribute('color',new THREE.BufferAttribute(a,3));return g}
 const SPH=shade(new THREE.SphereGeometry(1,28,18)),CYL=shade(new THREE.CylinderGeometry(1,1,1,14),.8),mc={};
 const mat=(c,vc)=>{const k=c+(vc?1:0);return mc[k]||(mc[k]=new THREE.MeshStandardMaterial({color:c,roughness:.88,vertexColors:!!vc,emissive:new THREE.Color(c).multiplyScalar(.13)}))};
+/* 釋放顯存：只處理用 own() 標記的「這個物件專屬」的幾何/材質；共用的（快取材質 mat()、共用幾何）不會被動到 */
+const own=x=>{x.userData=x.userData||{};x.userData.own=true;return x};
+function freeObj(o){if(!o)return;try{o.traverse(n=>{const g=n.geometry;if(g&&g.userData&&g.userData.own)g.dispose();const m=n.material;(Array.isArray(m)?m:[m]).forEach(x=>{if(x&&x.userData&&x.userData.own)x.dispose()})})}catch(e){logErr(e)}}
 function mk(g,c,p,s,r,m){const o=new THREE.Mesh(g,m||mat(c,!!g.attributes.color));o.position.set(...p);o.scale.set(...s);if(r)o.rotation.set(...r);o.castShadow=true;return o}
 function ring(h,n,r,y,s,tilt,c){for(let i=0;i<n;i++){const a=i/n*6.283,pv=new THREE.Group();pv.rotation.y=a;pv.position.y=y;pv.add(mk(SPH,c,[r,0,0],s,[0,0,tilt]));h.add(pv)}}
 const bellG=shade(new THREE.LatheGeometry([[.02,0],[.09,-.05],[.14,-.14],[.2,-.26],[.17,-.28]].map(p=>new THREE.Vector2(...p)),22));
@@ -654,7 +680,7 @@ function flowerAdult(k){
   if(k=='excited'){ring(h,6,.1,.15,[.09,.22,.06],-.28,'#F6A35C');ring(h,3,.05,.12,[.08,.2,.05],-.1,'#F9BE86')}
   if(k=='calm'){h.rotation.x=.4;ring(h,13,.2,0,[.16,.025,.045],0,'#FFFFFF');h.add(mk(SPH,'#F5D04A',[0,.02,0],[.1,.07,.1]))}
   if(k=='loved'){ring(h,6,.2,.08,[.1,.14,.04],-.6,'#F29BB5');ring(h,5,.13,.14,[.09,.13,.04],-.5,'#F5ABC2');ring(h,4,.06,.18,[.07,.12,.04],-.3,'#F7C0D0');h.add(mk(SPH,'#E97C9C',[0,.15,0],[.07,.1,.07]))}
-  if(k=='sad'){g.children[0].rotation.z=.12;for(let i=0;i<3;i++){const b=mk(bellG,'#8DB9E8',[Math.cos(i*2.1)*.2,-.02-i*.15,Math.sin(i*2.1)*.2],[1,1,1],null,new THREE.MeshStandardMaterial({color:i?'#8DB9E8':'#A3C8F0',side:2,roughness:.85,vertexColors:true,emissive:new THREE.Color('#8DB9E8').multiplyScalar(.13)}));h.add(b)}}
+  if(k=='sad'){g.children[0].rotation.z=.12;for(let i=0;i<3;i++){const b=mk(bellG,'#8DB9E8',[Math.cos(i*2.1)*.2,-.02-i*.15,Math.sin(i*2.1)*.2],[1,1,1],null,own(new THREE.MeshStandardMaterial({color:i?'#8DB9E8':'#A3C8F0',side:2,roughness:.85,vertexColors:true,emissive:new THREE.Color('#8DB9E8').multiplyScalar(.13)})));h.add(b)}}
   if(k=='anxious'){for(let i=0;i<10;i++)h.add(mk(SPH,i%2?'#B7A2E0':'#9C86D4',[Math.cos(i*2)*.06,-.5+i*.09,Math.sin(i*2)*.06],[.075-i*.003,.09,.075-i*.003]))}
   const dr=new THREE.Group();dr.visible=false;const DP={happy:[.15,.15,.05,0],excited:[.09,.05,.12,.1],calm:[.08,.14,.03,0],loved:[.08,.1,.1,.08],sad:[.14,.04,-.08,-.25],anxious:[.07,.02,-.4,.6]}[k];for(let i=0;i<4;i++){const a=i*1.7+Math.random(),r=DP[0]+Math.random()*DP[1],d=mk(SPH,'#E6F4FF',[Math.cos(a)*r,DP[2]+Math.random()*DP[3],Math.sin(a)*r],[.028,.034,.028],null,DROPM);d.castShadow=false;dr.add(d)}h.add(dr);g.userData.dr=dr;
  g.userData.h=h;g.userData.ph=Math.random()*6;g.userData.mood=k;return g}
@@ -672,7 +698,7 @@ const minsLeftW=e=>Math.max(1,Math.ceil((e.wt+WATER_MS-Date.now())/6e4));       
      例：WITHER_HOURS=0.05 ≈ 3 分鐘。也可以不改檔案，直接在網址後面加 ?wither=0.05 臨時覆蓋。
    凋零時間從「種下的那一刻」(e.pt) 開始算；鏟除只是把花搬到凋零小島（e.sh），心情與文字都會留著。 */
 const WITHER_HOURS=2400;
-const WITHER_MS=(()=>{let q=NaN;try{q=parseFloat(new URLSearchParams(location.search).get('wither'))}catch(e){}return(q>0?q:WITHER_HOURS)*3600*1000})();
+const WITHER_MS=(()=>{let q=NaN;try{q=parseFloat(new URLSearchParams(location.search).get('wither'))}catch(e){logErr(e)}return(q>0?q:WITHER_HOURS)*3600*1000})();
 const witherAt=(d,e)=>(e.pt||new Date(d+'T12:00').getTime())+WITHER_MS;           // 沒有種植時間的舊花，用日期當作種下的時間
 const withered=(d,e)=>!!e&&Date.now()>=witherAt(d,e);                              // 已進入凋零期（不論有沒有鏟除）
 const shoveled=e=>!!(e&&e.sh);                                                       // 已鏟除（搬到凋零小島）
@@ -692,7 +718,7 @@ function flowerBaby(k){
   /* 焦慮：像剛冒出的小草芽，四片細葉往外散開，葉尖點著小小的紫色圓點（成熟後才會長成一串花穗） */
   if(k=='anxious'){for(let i=0;i<4;i++){const a=i*1.57+.4,c=Math.cos(a),n=Math.sin(a);h.add(mk(SPH,'#9CCB8A',[c*.05,.08,n*.05],[.025,.15,.025],[n*.45,0,-c*.45]),mk(SPH,i%2?'#B7A2E0':'#9C86D4',[c*.115,.2,n*.115],[.03,.03,.03]))}h.add(mk(SPH,'#9C86D4',[0,.1,0],[.04,.06,.04]))}
   const dr=new THREE.Group();dr.visible=false;for(let i=0;i<3;i++){const a=i*2.1,d=mk(SPH,'#E6F4FF',[Math.cos(a)*.1,Math.random()*.1,Math.sin(a)*.1],[.022,.028,.022],null,DROPM);d.castShadow=false;dr.add(d)}h.add(dr);
-  const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.y=H*.55;hb.scale.set(.32,H*.55+.1,.32);g.add(hb);   // 小花苗比較小，加一個隱形觸控範圍方便點選
+  const hb=new THREE.Mesh(own(new THREE.SphereGeometry(1,8,6)),own(new THREE.MeshBasicMaterial({visible:false})));hb.position.y=H*.55;hb.scale.set(.32,H*.55+.1,.32);g.add(hb);   // 小花苗比較小，加一個隱形觸控範圍方便點選
   g.userData.h=h;g.userData.dr=dr;return g}
 /* ---------- 凋零的樣子：6 種花各有自己的枯萎方式 ----------
    共通：莖乾枯變褐、頂端垂下去，葉子捲曲下垂，花瓣掉了一地。
@@ -715,7 +741,7 @@ function flowerWither(k,lite){
   const fall=(c,n,r,s)=>{n=lite?Math.ceil(n/3):n;for(let i=0;i<n;i++){const a=rn(0,6.28),d=rn(.15,r);g.add(mk(SPH,c,[Math.cos(a)*d+bd*.3,.025,Math.sin(a)*d],[s[0],s[1],s[2]],[0,rn(0,3),rn(-.15,.15)]))}};
   /* 頭部：+y 軸對準莖尖方向，所以整朵花是低垂的 */
   const T=[P3[0]-P2[0],P3[1]-P2[1]],hd=new THREE.Group();hd.position.set(P3[0],P3[1],0);hd.rotation.z=-Math.atan2(T[0],T[1]);g.add(hd);
-  const bellM=c=>new THREE.MeshStandardMaterial({color:c,side:2,roughness:.9,vertexColors:true,emissive:new THREE.Color(c).multiplyScalar(.13)});
+  const bellM=c=>own(new THREE.MeshStandardMaterial({color:c,side:2,roughness:.9,vertexColors:true,emissive:new THREE.Color(c).multiplyScalar(.13)}));
   if(k=='happy'){            /* 向日葵：花瓣稀疏、往內捲，深褐色花盤低著頭 */
     hd.add(mk(SPH,'#4E3A2A',[0,0,0],[.2,.07,.2]));hd.add(mk(SPH,'#3B2B20',[0,.04,0],[.11,.04,.11]));
     ring(hd,9,.28,-.02,[.17,.03,.065],.9,'#B59A45');ring(hd,lite?3:5,.22,.0,[.14,.03,.06],1.15,'#9C8238');
@@ -740,7 +766,7 @@ function flowerWither(k,lite){
     for(let i=0;i<9;i++){if(i%4==3)continue;g.add(mk(SPH,i%2?'#8E7F8F':'#7A6C7D',[P3[0]+Math.sin(i*1.7)*.045,P3[1]-.03-i*.085,Math.cos(i*1.7)*.045],[.062-i*.003,.08,.062-i*.003]))}
     fall('#8E7F8F',7,.8,[.045,.045,.045])}
   /* 隱形的觸控範圍（跟小花苗一樣），方便點選 */
-  const hb=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({visible:false}));hb.position.set(bd*.5,H*.5,0);hb.scale.set(Math.max(.4,bd*.75),H*.55+.1,.4);g.add(hb);
+  const hb=new THREE.Mesh(own(new THREE.SphereGeometry(1,8,6)),own(new THREE.MeshBasicMaterial({visible:false})));hb.position.set(bd*.5,H*.5,0);hb.scale.set(Math.max(.4,bd*.75),H*.55+.1,.4);g.add(hb);
   if(lite)g.traverse(o=>{if(o.isMesh)o.castShadow=false});
   g.userData.wk=k;return g}
 function flower(k){const W=new THREE.Group(),A=flowerAdult(k),Y=flowerBaby(k);W.add(A,Y);
@@ -773,7 +799,7 @@ function stageStep(t,dt){witherStep(t,dt);
 
 /* ---------- 澆水：口渴的小花苗頭上會浮出水滴，點花（或水滴）→ 詳情卡 → 按澆水鈕 ---------- */
 function setThirst(f,on){const u=f.userData;
-  if(on&&!u.dp&&WDROP){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:WDROP,transparent:true,depthWrite:false}));s.scale.set(.4,.4,1);s.position.set(0,1.25,0);f.add(s);u.dp=s}
+  if(on&&!u.dp&&WDROP){const s=new THREE.Sprite(own(new THREE.SpriteMaterial({map:WDROP,transparent:true,depthWrite:false})));s.scale.set(.4,.4,1);s.position.set(0,1.25,0);f.add(s);u.dp=s}
   if(!on&&u.dp){f.remove(u.dp);u.dp.material.dispose();u.dp=null}}
 function waterFx(f){const u=f.userData,p={x:f.position.x,y:f.position.y+1.3*u.base,z:f.position.z};
   if(!PMS||!PMS.drop)return;
@@ -807,12 +833,12 @@ function witherStep(t,dt){
   /* 被鏟除的花：往土裡縮下去 */
   for(let i=SHV.length-1;i>=0;i--){const q=SHV[i],f=q.f;q.t+=S.rm?dt*8:dt/.55;const x=Math.min(1,q.t);
     f.position.y=q.y0-.55*ez(x);f.scale.setScalar(Math.max(.001,q.s0*(1-ez(x))));
-    if(x>=1){scene.remove(f);SHV.splice(i,1)}}}
+    if(x>=1){scene.remove(f);freeObj(f);SHV.splice(i,1)}}}
 /* 鏟除：只是把花從花園搬走（e.sh＝搬走的時間）。心情、文字、標籤、種下的時間全部保留，所以月曆、統計、回憶都還在。 */
 function shovelFlower(d){const e=S.e[d];if(!e||e.sh)return;const f=flowers[d];
   e.sh=Date.now();save();
   if(f){const p=f.position;delete flowers[d];
-    if(S.rm)scene.remove(f);
+    if(S.rm){scene.remove(f);freeObj(f)}
     else{SHV.push({f,t:0,y0:p.y,s0:f.scale.x});debris(p.x,p.y+.05,p.z,['#8A6A47','#6F5238','#9B7B55'],12,{s:.045,v:.7,up:2.2,g:7,life:1.4})}}
   sfx('delete','move');syncCr();$('card').hidden=true;home();refresh();toast(tr('shoveled'));if(window.WI)WI.refresh()}
 function pickPos(d){let s=0;for(const c of d)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,ex=Object.values(S.e).filter(e=>e.x!==undefined&&!e.sh);
@@ -1519,14 +1545,14 @@ const DEC=window.DEC=[],GIFTS=window.GIFTP=[];
 const MIG={pond:'scarecrow',picnic:'beehive'};   // 舊版的平面裝飾品（小池塘、野餐墊）改成站得住的新裝飾品
 const G=()=>{const g=S.g||(S.g={});g.pend=g.pend||[];g.decor=g.decor||[];g.rec=g.rec||[];g.gone=g.gone||{};
   g.decor.forEach(o=>{if(MIG[o.k]){o.k=MIG[o.k];o.u=Date.now()}});g.pend.forEach(p=>{if(p.k==='d'&&MIG[p.i]){p.i=MIG[p.i];p.u=Date.now()}});return g};
-const gsave=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}try{window.cloud&&cloud.dirty()}catch(e){}};   // 存本機，同時通知雲端同步
+const gsave=()=>{persistState();try{window.cloud&&cloud.dirty()}catch(e){logErr(e)}};   // 存本機，同時通知雲端同步
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const nameOf=k=>{const d=DBY[k];return d?I18N.pick(d.n):k};
 
 function spawnDecor(o,anim){removeDecorObj(o.id);const g=buildDecor(o.k);g.position.set(o.x,gh(o.x,o.z),o.z);g.rotation.y=o.ry||0;g.userData.did=o.id;
   if(anim&&!S.rm){g.userData.pop=0;g.scale.setScalar(.001)}scene.add(g);DEC.push({id:o.id,k:o.k,x:o.x,z:o.z,r:DR[o.k],g})}
-function removeDecorObj(id){slideDrop('dec:'+id);const i=DEC.findIndex(d=>d.id===id);if(i>=0){scene.remove(DEC[i].g);DEC.splice(i,1)}}
-function removeGiftObj(id){const j=GIFTS.findIndex(o=>o.id===id);if(j>=0){scene.remove(GIFTS[j].g);GIFTS.splice(j,1)}}
+function removeDecorObj(id){slideDrop('dec:'+id);const i=DEC.findIndex(d=>d.id===id);if(i>=0){scene.remove(DEC[i].g);freeObj(DEC[i].g);DEC.splice(i,1)}}
+function removeGiftObj(id){const j=GIFTS.findIndex(o=>o.id===id);if(j>=0){scene.remove(GIFTS[j].g);freeObj(GIFTS[j].g);GIFTS.splice(j,1)}}
 
 /* 裝飾品能不能放在這裡：花園柵欄內、不擋橋頭通道與障礙物、不壓到花、別的裝飾品和還沒拆的禮物 */
 function decorSpotOK(x,z,self,r){
@@ -1696,7 +1722,7 @@ function syncG(R){R=R||{};const g=G(),Li=localItems(),Ri=R.i||{},out={};let touc
   if(d&&(!b||JSON.stringify(d)!==JSON.stringify(b)))dirty=true;
   if(touched)gsave2();
   return{g:(d||Object.keys(out).length)?{d:d||undefined,i:out}:undefined,touched,dirty}}
-const gsave2=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};   // 同步途中只存本機（不再觸發一次同步）
+const gsave2=()=>{persistState()};   // 同步途中只存本機（不再觸發一次同步）
 function wipe(){while(DEC.length)removeDecorObj(DEC[0].id);while(GIFTS.length)removeGiftObj(GIFTS[0].id);S.g=null;G()}
 
 /* 手動測試：在瀏覽器主控台輸入 giveGift() / giveGift('note') / giveGift('decor')；或在網址後面加 ?gift=1 */
@@ -1758,7 +1784,7 @@ function frame(){if(SLP.on){fh=true;return}requestAnimationFrame(frame);
     P.seed.visible=P.t<1.1;P.seed.position.y=Math.max(.05,2-P.t*2.2)+f.position.y;
     if(sparkle){const a=sparkle.geometry.attributes.position;for(let i=0;i<a.count;i++)a.setY(i,a.getY(i)+dt*.4);a.needsUpdate=true;sparkle.material.opacity=Math.max(0,Math.min(1,(P.t-.9)*2,(5-P.t)))}
     if(P.t>3.9&&!P.toast){P.toast=1;sfx('bloom');toast(tr('bloomed'))}
-    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;radG=Math.min(64,radG*1.75)}}
+    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);freeObj(sparkle);sparkle=null;setGrow(f,1);P=null;radG=Math.min(64,radG*1.75)}}
   if(ok)R.render(scene,cam)}
 if(ok)frame();
 
@@ -1817,10 +1843,10 @@ function setPanel(p,on,v){clearTimeout(p._t);
 /* ---------- 睡眠模式 ---------- */
 function sleepOn(){if(SLP.on)return;SLP.on=true;$('card').hidden=true;document.body.classList.add('sleeping');$('sl').hidden=false;sndUnlocked=true;ambApply();$('slw').focus({preventScroll:true})}
 function sleepOff(){if(!SLP.on)return;SLP.on=false;document.body.classList.remove('sleeping');$('sl').hidden=true;slStop();
-  try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){}
-  ambApply();SLP.cbs.forEach(f=>{try{f()}catch(e){}});
+  try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){logErr(e)}
+  ambApply();SLP.cbs.forEach(f=>{try{f()}catch(e){logErr(e)}});
   if(window.applyTime)applyTime();resize();movePill(false);refresh();
-  try{cloud.wake()}catch(e){}}
+  try{cloud.wake()}catch(e){logErr(e)}}
 $('slw').onclick=sleepOff;
 function show(v){if(v!='garden'&&arrange)setArrange(false);document.body.classList.toggle('rm',!!S.rm);document.body.dataset.v=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==v));movePill(window.pillReady);['cal','ins','set'].forEach(x=>setPanel($('p-'+x),x==v,x));$('card').hidden=true;if(v=='cal')renderCal();if(v=='ins')renderIns();if(v=='set')renderSet();if(v=='garden')refresh()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
@@ -1857,7 +1883,7 @@ function detail(d){const e=S.e[d];if(!e)return;show('garden');const f=flowers[d]
   if($('ce'))$('ce').onclick=()=>openModal(d);if($('cr'))$('cr').onclick=()=>rotateFlower(d);if($('cw'))$('cw').onclick=()=>{if(water(d))detail(d)};$('cx').onclick=()=>{c.hidden=true};
   if($('cs'))$('cs').onclick=async()=>{if(await ask(tr('shovelQ'),tr('shovelB')))shovelFlower(d)};
   if($('cv'))$('cv').onclick=()=>{c.hidden=true;if(window.WI)WI.open()};
-  if($('cd'))$('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
+  if($('cd'))$('cd').onclick=async()=>{if(await ask(tr('delQ'),tr('delete'))){sfx('delete');if(flowers[d]){scene.remove(flowers[d]);freeObj(flowers[d]);delete flowers[d]}delete S.e[d];syncCr();save();c.hidden=true;home();refresh();toast(tr('removed'))}}}
 /* 旋轉花朵：每按一次轉 45 度（帶緩動）；角度存在 S.e[d].r，save() 會偵測到變更並更新時間，因此會隨花朵一起同步到 Google 雲端 */
 function rotateFlower(d){const e=S.e[d];if(!e)return;const f=flowers[d],TP=Math.PI*2,u=f&&f.userData;
   const cur=u?(u.ryT!=null?u.ryT:f.rotation.y):(e.r||0),nx=cur+Math.PI/4;
@@ -1878,9 +1904,9 @@ $('ms').onclick=()=>{if(!sel){toast(tr('pick'));return}
   const e=S.e[ed],isNew=!e;S.e[ed]={...(e||{}),mood:sel,text:$('txt').value.trim(),tags:tg2,pt:isNew?Date.now():(e&&e.pt)};S.wx=sel;S.wxd=today();save();setWeather(sel);$('modal').hidden=true;$('card').hidden=true;show('garden');
   if(isNew){if(!ok){toast(tr('saved'));return}addFlower(ed,0);const f=flowers[ed],hole=mk(CYL,'#7A5A3A',[f.position.x,f.position.y+.01,f.position.z],[.3,.02,.3]),seed=mk(SPH,'#5B4A3A',[f.position.x,3,f.position.z],[.07,.09,.07]);scene.add(hole,seed);
     const n=30,ar=new Float32Array(n*3);for(let i=0;i<n;i++){ar[i*3]=f.position.x+(Math.random()-.5)*1.4;ar[i*3+1]=f.position.y+Math.random()*1.8;ar[i*3+2]=f.position.z+(Math.random()-.5)*1.4}
-    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(ar,3));sparkle=new THREE.Points(g,new THREE.PointsMaterial({color:'#FFE9A0',size:.4,map:window.GLOW,blending:THREE.AdditiveBlending,transparent:true,opacity:0,depthWrite:false}));scene.add(sparkle);
+    const g=own(new THREE.BufferGeometry());g.setAttribute('position',new THREE.BufferAttribute(ar,3));sparkle=new THREE.Points(g,own(new THREE.PointsMaterial({color:'#FFE9A0',size:.4,map:window.GLOW,blending:THREE.AdditiveBlending,transparent:true,opacity:0,depthWrite:false})));scene.add(sparkle);
     P={d:ed,t:0,seed,hole};tgG.set(f.position.x,f.position.y+.6,f.position.z);radG=6;
-  }else{const o=flowers[ed];if(o){scene.remove(o);delete flowers[ed]}addFlower(ed,1);toast(tr('updated'))}
+  }else{const o=flowers[ed];if(o){scene.remove(o);freeObj(o);delete flowers[ed]}addFlower(ed,1);toast(tr('updated'))}
   refresh()};
 let cm=new Date();cm.setDate(1);
 function renderCal(){const y=cm.getFullYear(),m=cm.getMonth(),first=cm.getDay(),n=new Date(y,m+1,0).getDate(),t=today();
@@ -1929,7 +1955,7 @@ ${ok?`<div class="sg">${tr('secGfx')}</div><div class="sc"><div class="si col"><
     b.setAttribute('aria-checked',String({wx:!S.wxo,rm:!!S.rm,sfx:S.snd!==false,amb:S.amb!==false}[k]));
     $('p-set').querySelectorAll('.vr').forEach(r=>r.disabled=r.dataset.v=='sfx'?S.snd===false:S.amb===false);
   });
-  $('rs').onclick=async()=>{if(await ask(tr('rs1'),tr('rs1y'))&&await ask(tr('rs2'),tr('rs2y'))){sfx('delete');for(const d in flowers)scene.remove(flowers[d]);for(const d in flowers)delete flowers[d];S.e={};wClear();syncCr();S.wx=null;setWeather(null);save();show('garden');toast(tr('resetDone'))}}}
+  $('rs').onclick=async()=>{if(await ask(tr('rs1'),tr('rs1y'))&&await ask(tr('rs2'),tr('rs2y'))){sfx('delete');for(const d in flowers){scene.remove(flowers[d]);freeObj(flowers[d])};for(const d in flowers)delete flowers[d];S.e={};wClear();syncCr();S.wx=null;setWeather(null);save();show('garden');toast(tr('resetDone'))}}}
 /* ---------- boot ---------- */
 if(ok)ents().forEach(([d])=>addFlower(d,1));
 $('obc').innerHTML=['happy','calm','loved','sad'].map(k=>`<span>${face(k,22)} ${M[k].n}</span>`).join('');
@@ -2122,7 +2148,7 @@ const gl=R.getContext(),chk=m=>{try{const p=R.properties.get(m).currentProgram;r
 R.compile(scene,cam);
 [...GR2,tm].forEach(m=>{if(!chk(m)){console.warn('texture shader fallback');m.onBeforeCompile=()=>{};m.customProgramCacheKey=()=>'x0';m.needsUpdate=true}});
 /* --- 每幀同步：濕度、風、日夜對倒影的影響 --- */
-let lh=false;function lp(t){if(SLP.on){lh=true;return}requestAnimationFrame(lp);try{const w=WX.wet||0,d=window.dfv==null?1:window.dfv;U.uWet.value=w;U.uRip.value=(S.rm||!window.GQrip)?0:w;U.uT.value=S.rm?0:t/1000;U.uW.value=S.rm?0:.5+WX.wind*1.1;PW.forEach(m=>m.envMapIntensity=.12+1.5*d);GLm.forEach(m=>m.envMapIntensity=.1+.9*d);tm.color.setScalar(1-.16*w)}catch(e){}}
+let lh=false;function lp(t){if(SLP.on){lh=true;return}requestAnimationFrame(lp);try{const w=WX.wet||0,d=window.dfv==null?1:window.dfv;U.uWet.value=w;U.uRip.value=(S.rm||!window.GQrip)?0:w;U.uT.value=S.rm?0:t/1000;U.uW.value=S.rm?0:.5+WX.wind*1.1;PW.forEach(m=>m.envMapIntensity=.12+1.5*d);GLm.forEach(m=>m.envMapIntensity=.1+.9*d);tm.color.setScalar(1-.16*w)}catch(e){logErr(e)}}
 SLP.cbs.push(()=>{if(lh){lh=false;requestAnimationFrame(lp)}});lp(0);
 window.SKIN={V,SM,TB,TS,TSo,TR,wood,skinGround,TRUNK,CAN,RKG,tg,tm,DECK,boxUV,TWv,TWh,ENV};
 }catch(e){console.warn('skin layer skipped',e)}
@@ -2143,11 +2169,11 @@ window.cloud=(()=>{
   let user=null,tok=null,client=null,st='off',busy=false,again=false,timer=0,lastOk=0,lastVer=null,localDirty=false,manual=false,armed=false;
   const api={user:null,state:'off'};
   const tokOK=()=>!!(tok&&Date.now()<tok.exp-60000);
-  try{const g=JSON.parse(localStorage.getItem(TK));if(g&&g.sub){user={sub:g.sub,email:g.email,name:g.name};tok=g.t?{t:g.t,exp:g.exp}:null}}catch(e){}
+  try{const g=JSON.parse(localStorage.getItem(TK));if(g&&g.sub){user={sub:g.sub,email:g.email,name:g.name};tok=g.t?{t:g.t,exp:g.exp}:null}}catch(e){logErr(e)}
   api.user=user;st=!cfgOK?'off':user?(tokOK()?'syncing':'reauth'):'out';api.state=st;
-  const persist=()=>{try{user?localStorage.setItem(TK,JSON.stringify({...user,t:tok&&tok.t,exp:tok&&tok.exp})):localStorage.removeItem(TK)}catch(e){}};
+  const persist=()=>{try{user?localStorage.setItem(TK,JSON.stringify({...user,t:tok&&tok.t,exp:tok&&tok.exp})):localStorage.removeItem(TK)}catch(e){logErr(e)}};
   const askX=(m,y,n)=>{const p=ask(m,y);$('dn').textContent=n;return p.then(v=>{$('dn').textContent=tr('keep');return v})};
-  const rmFlower=d=>{if(flowers[d]){scene.remove(flowers[d]);delete flowers[d]}};
+  const rmFlower=d=>{if(flowers[d]){scene.remove(flowers[d]);freeObj(flowers[d]);delete flowers[d]}};
   const setSt=s=>{st=s;api.state=s;api.paint()};
   const ts=e=>e?(e.u||e.pt||0):0;
 
@@ -2180,7 +2206,7 @@ window.cloud=(()=>{
   function reauth(){if(!client)return;client.requestAccessToken({prompt:'',hint:user&&user.email})}
   function arm(){if(armed||!user)return;armed=true;addEventListener('click',()=>{armed=false;if(user&&!tokOK()&&!SLP.on)reauth()},{once:true,capture:true})}
   function signOut(){tok=null;user=null;api.user=null;persist();setSt('out');toast(tr('cOut'))}
-  function wipeLocal(){try{GF.wipe()}catch(e){}for(const d in flowers)rmFlower(d);S.e={};S.del={};wClear();S.wdel={};for(const i in _wj)delete _wj[i];for(const d in _bj)delete _bj[d];S.wx=null;S.wxd=null;S.out=null;try{window.HOMEI&&HOMEI.refresh()}catch(e){}setWeather(null);try{syncCr()}catch(e){}}
+  function wipeLocal(){try{GF.wipe()}catch(e){logErr(e)}for(const d in flowers)rmFlower(d);S.e={};S.del={};wClear();S.wdel={};for(const i in _wj)delete _wj[i];for(const d in _bj)delete _bj[d];S.wx=null;S.wxd=null;S.out=null;try{window.HOMEI&&HOMEI.refresh()}catch(e){logErr(e)}setWeather(null);try{syncCr()}catch(e){logErr(e)}}
   async function onTok(r){
     if(r.error){if(manual)toast(esc(tr('cFail')+' ('+r.error+')'));manual=false;return}
     if(!google.accounts.oauth2.hasGrantedAllScopes(r,DRIVE_SCOPE)){manual=false;toast(tr('cScope'));return}
@@ -2239,9 +2265,9 @@ window.cloud=(()=>{
     catch(e){if(e.status===401){tok=null;persist();setSt('reauth');arm()}else setSt(navigator.onLine?'err':'offline')}
     busy=false;if(again){again=false;sync()}}
   function afterApply(){
-    try{if(ok)syncCr()}catch(e){}
-    try{window.SI&&SI.refresh()}catch(e){}
-    try{window.HOMEI&&HOMEI.refresh()}catch(e){}
+    try{if(ok)syncCr()}catch(e){logErr(e)}
+    try{window.SI&&SI.refresh()}catch(e){logErr(e)}
+    try{window.HOMEI&&HOMEI.refresh()}catch(e){logErr(e)}
     const t=S.e[today()];if(t&&(S.wxd!==today()||S.wx!==t.mood)){S.wx=t.mood;S.wxd=today();setWeather(t.mood)}else if(!t&&!window.wxm&&!S.wxo){const w=curWx();if(w)setWeather(w)}
     if(Object.keys(S.e).length&&!$('ob').hidden)closeOb();
     save();refresh();
@@ -2280,7 +2306,7 @@ I18N.add('en',{rvT:'River rest',rvPh:'Write down what you want to let go of…',
 I18N.add('zh',{rvT:'河邊小憩',rvPh:'把想放下的心事，寫在葉子上…',rvGo:'放入河中',rvNote:'這片葉子不會被儲存，只有河水知道',rvEmpty:'先在葉子上寫幾個字吧',rvDone:'河水正溫柔地帶走它',rvLeaf:['翠綠','金黃','粉紅','淡紫']});
 I18N.add('ja',{rvT:'川辺のひと休み',rvPh:'手放したい気持ちを葉っぱに書いてみよう…',rvGo:'川に流す',rvNote:'この葉っぱはどこにも保存されません。知っているのは川だけ。',rvEmpty:'まず葉っぱに少し書いてみてね',rvDone:'川がやさしく運んでいくよ',rvLeaf:['みどり','きいろ','ピンク','ラベンダー']});
 I18N.add('ko',{rvT:'강가의 쉼터',rvPh:'놓아주고 싶은 마음을 잎에 적어 보세요…',rvGo:'강에 띄우기',rvNote:'이 잎은 어디에도 저장되지 않아요. 아는 건 강물뿐이에요.',rvEmpty:'먼저 잎에 몇 글자 적어 주세요',rvDone:'강물이 살며시 데려가고 있어요',rvLeaf:['초록','노랑','분홍','라벤더']});
-}catch(e){}
+}catch(e){logErr(e)}
 
 /* ---------- 河的形狀 ---------- */
 const WY=-.55,RZ0=-200,RZ1=130,LZ=-70;                                  // 水面高度、河的起訖（z）
@@ -2436,7 +2462,7 @@ try{
       const mt=m.material.clone();mt.emissive=new T.Color('#FFC77A');mt.emissiveIntensity=0;m.material=mt;
       const gl=new T.Sprite(new T.SpriteMaterial({map:GLOW,color:'#FFD9A0',blending:T.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));
       gl.scale.set(.9,.9,1);gl.position.copy(m.localToWorld(new T.Vector3(0,0,3)));scene.add(gl);WINS.push({mt,gl,c0:mt.color.clone()})})});
-}catch(e){}
+}catch(e){logErr(e)}
 
 /* ---------- 漂流的葉子 ---------- */
 const LEAF_C=['#9CD08F','#F0CF7A','#F4B3C9','#C6B4EA'],leaves=[];
@@ -2459,7 +2485,7 @@ function step(now){
   if(SLP.on){sh=true;return}
   requestAnimationFrame(step);
   const dt=Math.min(.05,(now-T0)/1000);T0=now;if(dt<=0)return;
-  let rm=false,day=1,wind=.3,wet=0;try{rm=!!S.rm;day=window.dfv==null?1:window.dfv;wind=WX.wind||0;wet=WX.wet||0}catch(e){}
+  let rm=false,day=1,wind=.3,wet=0;try{rm=!!S.rm;day=window.dfv==null?1:window.dfv;wind=WX.wind||0;wet=WX.wet||0}catch(e){logErr(e)}
   const t=now/1000,night=1-day;
   U.uT.value+=rm?0:dt;U.uDay.value=day;U.uNight.value=night;
   for(const r of rips)if(r.w>0){r.z+=dt;if(r.z>3.5)r.w=0}
@@ -2475,14 +2501,14 @@ function step(now){
   WINS.forEach(w=>{w.mt.color.copy(w.c0).lerp(lm.color,night);w.mt.emissiveIntensity=1.5*night;w.mt.envMapIntensity=.1+.9*day;w.gl.material.opacity=.61*night;w.gl.visible=night>.02})
   ffm.opacity=night*.9;fireflies.visible=night>.05;
   if(fireflies.visible){const a=ffg.attributes.position;ffs.forEach((f,i)=>{const q=rm?0:t*f.s+f.a;a.setXYZ(i,IX+Math.cos(q)*f.r,f.y+Math.sin(t*.8+f.p)*.15,IZ+Math.sin(q*1.3)*f.r*.8)});a.needsUpdate=true}
-  try{mists.forEach(o=>{o.m.material.color.copy(scene.fog.color).lerp(WHITE,.35);o.m.material.opacity=.14+.1*day;if(!rm)o.m.position.x=o.x+Math.sin(t*.12+o.p)*.8})}catch(e){}
+  try{mists.forEach(o=>{o.m.material.color.copy(scene.fog.color).lerp(WHITE,.35);o.m.material.opacity=.14+.1*day;if(!rm)o.m.position.x=o.x+Math.sin(t*.12+o.p)*.8})}catch(e){logErr(e)}
   /* 葉子 */
   for(let i=leaves.length-1;i>=0;i--){
     const l=leaves[i];l.age+=dt;
     if(!l.landed){                                           // 先從手上輕輕落到水面
       const k=clamp(l.age/.7,0,1);l.mesh.scale.setScalar((.01+.99*sstep(0,.6,k))*1.3);
       l.mesh.position.set(l.x0,WY+.04+(1-k)*(1-k)*.55,l.z);l.mesh.rotation.set(.2*(1-k),1.2,.3*(1-k));
-      if(k>=1){l.landed=true;addRip(l.mesh.position.x,l.mesh.position.z,1);try{sfx('leaf_float','water')}catch(e){}}
+      if(k>=1){l.landed=true;addRip(l.mesh.position.x,l.mesh.position.z,1);try{sfx('leaf_float','water')}catch(e){logErr(e)}}
       continue}
     l.t+=dt;const sp=(.34+.6*sstep(0,28,l.t))*(rm?1.6:1);l.z-=sp*dt;
     const z=l.z,lat=Math.sin(l.t*.55+l.ph)*.3,tx=cx(z)+lat+l.off0*(1-sstep(0,7,l.t));  // 一開始在碼頭旁，慢慢匯入主流
@@ -2559,15 +2585,15 @@ function paintTexts(){
   $sw.querySelectorAll('button').forEach((b,k)=>b.onclick=()=>setPal(k));setPal(ci)}
 function openRest(){
   if(busy||!$m.hidden)return;
-  try{sfx('island')}catch(e){}
+  try{sfx('island')}catch(e){logErr(e)}
   paintTexts();$t.value='';$w.classList.remove('go');$m.hidden=false;$('card').hidden=true;
   tgG.set(IX+.5,0,IZ-.6);radG=Math.min(radG,13);                // 鏡頭靠近小島
-  setTimeout(()=>{try{$t.focus({preventScroll:true})}catch(e){}},600)}
+  setTimeout(()=>{try{$t.focus({preventScroll:true})}catch(e){logErr(e)}},600)}
 function closeRest(goHome){$m.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 function release(){
   if(busy)return;const txt=$t.value.trim();
   if(!txt){toast(tr('rvEmpty'));$t.focus();return}
-  busy=true;let rm=false;try{rm=!!S.rm}catch(e){}
+  busy=true;let rm=false;try{rm=!!S.rm}catch(e){logErr(e)}
   $w.classList.add('go');
   setTimeout(()=>{
     $m.hidden=true;busy=false;$t.value='';                       // 文字到此為止：不存檔、不同步
@@ -2642,7 +2668,7 @@ I18N.add('ko',{
   mt_y:'일 년 전 오늘…',mt_ya:'대략 일 년 전…',mt_y2:'이 년 전 오늘…',mt_y2a:'대략 이 년 전…',
   mf_h:'기뻤던 기억…',mf_l:'행복했던 기억…',mf_c:'평온했던 순간…',mf_e:'설렜던 그날…',
   mf_s:'슬펐던 적이 있었죠…',mf_a:'불안했던 적이 있었죠…',mf_f:'처음 심은 꽃…'});
-}catch(e){}
+}catch(e){logErr(e)}
 
 /* ---------- 回憶怎麼挑 ----------
    時光回顧：一週／一個月／三個月／半年／一年／兩年前的今天（那天沒記的話，往前後找幾天，標成「大約…」）。
@@ -2805,12 +2831,12 @@ function step(now){
   if(SLP.on){sh=true;return}
   requestAnimationFrame(step);
   const dt=Math.min(.05,(now-T0)/1000);T0=now;if(dt<=0)return;
-  let rm=false,day=1,wind=.3;try{rm=!!S.rm;day=window.dfv==null?1:window.dfv;wind=WX.wind||0}catch(e){}
+  let rm=false,day=1,wind=.3;try{rm=!!S.rm;day=window.dfv==null?1:window.dfv;wind=WX.wind||0}catch(e){logErr(e)}
   const t=now/1000,night=1-day;
-  sigT-=dt;if(sigT<=0){sigT=1;try{const g=sigOf();if(g!==sig){sig=g;repaint()}}catch(e){}}
+  sigT-=dt;if(sigT<=0){sigT=1;try{const g=sigOf();if(g!==sig){sig=g;repaint()}}catch(e){logErr(e)}}
   if(!rm){const w=.5+wind*1.1;sway.forEach(s=>{const v=Math.sin(t*(1+w*.5)+s.p)*s.k*w;if(s.ax==='z')s.o.rotation.z=v;else s.o.rotation.x=v});
     hint.sp.position.y=hint.y+Math.sin(t*1.5+.8)*.06;hint.sp.material.rotation=Math.sin(t*.9)*.12;
-    ripT-=dt;if(ripT<=0){ripT=3.2+Math.random()*2.5;try{const a=Math.PI*(.6+Math.random()*.8);RV.addRip(IX+Math.cos(a)*IR*1.3,IZ+Math.sin(a)*IR*1.3,.3)}catch(e){}}}
+    ripT-=dt;if(ripT<=0){ripT=3.2+Math.random()*2.5;try{const a=Math.PI*(.6+Math.random()*.8);RV.addRip(IX+Math.cos(a)*IR*1.3,IZ+Math.sin(a)*IR*1.3,.3)}catch(e){logErr(e)}}}
   if(hint.hov&&now-hovT>400)hint.hov=false;
   const hv=hint.hov?1.18:1;hint.sp.scale.x+=(.8*hv-hint.sp.scale.x)*.15;hint.sp.scale.y=hint.sp.scale.x;
   hint.gl.material.opacity=.06+(hasTime?.03:0)+(rm?0:(hasTime?.03:.02)*Math.sin(t*1.6))+(hint.hov?.05:0);hint.gl.position.y=hint.sp.position.y;
@@ -2890,7 +2916,7 @@ function render(){
     $b.innerHTML=`<article class="mbn" style="--r:-1.5deg;--pc:#FFF8E4;--pin:#F29BB5;--i:0"><h3>${esc(tr('mbE0'))}</h3><p class="mbq no">${esc(tr('mbE1'))}</p>${dd>0?`<p class="mbq no">${esc(tr('mbSoon',dd))}</p>`:''}</article>`}
   $b.scrollTop=0}
 $b.addEventListener('click',e=>{
-  const v=e.target.closest('.mbv');if(v){if(v.dataset.w){close(false);try{SI.visit(v.dataset.w)}catch(x){}}else visit(v.dataset.v);return}
+  const v=e.target.closest('.mbv');if(v){if(v.dataset.w){close(false);try{SI.visit(v.dataset.w)}catch(x){logErr(x)}}else visit(v.dataset.v);return}
   const a=e.target.closest('.mbk button');if(a){const c=a.closest('.mbc'),p=c.querySelector('.mbr');p.textContent=tr(a.dataset.a==='b'?'mbBetterR':'mbSlowR');p.hidden=false;c.querySelector('.mbk').hidden=true;return}
   const q=e.target.closest('.mbq:not(.no)');if(q){const o=q.classList.toggle('open');q.setAttribute('aria-expanded',o)}});
 $b.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.mbq:not(.no)')){e.preventDefault();e.target.click()}});
@@ -2898,10 +2924,10 @@ function open(){
   const lf=document.getElementById('rvm');if(!$o.hidden||(lf&&!lf.hidden))return;
   shuf=0;render();$o.hidden=false;$('card').hidden=true;
   tgG.set(IX,.4,IZ+.2);radG=Math.min(radG,14);
-  try{sfx('island')}catch(e){}
-  setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
+  try{sfx('island')}catch(e){logErr(e)}
+  setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){logErr(e)}},350)}
 function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
-function visit(d){if(!S.e[d])return;close(false);try{detail(d)}catch(e){}}
+function visit(d){if(!S.e[d])return;close(false);try{detail(d)}catch(e){logErr(e)}}
 $x.onclick=()=>close(true);
 $sh.onclick=()=>{shuf++;render()};
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});
@@ -3032,9 +3058,9 @@ function step(now){
   if(SLP.on){sh=true;return}
   requestAnimationFrame(step);
   const dt=Math.min(.05,(now-T0)/1000);T0=now;if(dt<=0)return;
-  let rm=false,wind=.3;try{rm=!!S.rm;wind=WX.wind||0}catch(e){}
+  let rm=false,wind=.3;try{rm=!!S.rm;wind=WX.wind||0}catch(e){logErr(e)}
   const t=now/1000;
-  sigT-=dt;if(sigT<=0){sigT=1;try{const g=sigOf();if(g!==sig){sig=g;rebuild();if(!$o.hidden)render()}}catch(e){}}
+  sigT-=dt;if(sigT<=0){sigT=1;try{const g=sigOf();if(g!==sig){sig=g;rebuild();if(!$o.hidden)render()}}catch(e){logErr(e)}}
   if(!rm){const w=.5+wind*1.1;sway.forEach(s=>{const v=Math.sin(t*(1+w*.5)+s.p)*s.k*w;if(s.ax==='z')s.o.rotation.z=v;else s.o.rotation.x=v});
     hint.sp.position.y=hint.y+Math.sin(t*1.5+.4)*.06;hint.sp.material.rotation=Math.sin(t*.9)*.1;
     FL.forEach(l=>{l.y-=dt*l.sp;if(l.y<.05){l.y=2.4+Math.random()*.3;l.a=Math.random()*6.28;l.d=Math.random()*2.4}
@@ -3115,14 +3141,14 @@ function open(){
   const lf=document.getElementById('rvm'),mb=document.getElementById('mbo');if(!$o.hidden||(lf&&!lf.hidden)||(mb&&!mb.hidden))return;
   render();$o.hidden=false;$('card').hidden=true;
   tgG.set(WIX,.4,WIZ+.2);radG=Math.min(radG,14);
-  try{sfx('island')}catch(e){}
-  setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
+  try{sfx('island')}catch(e){logErr(e)}
+  setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){logErr(e)}},350)}
 function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 $x.onclick=()=>close(true);
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});
 addEventListener('keydown',e=>{if(!$o.hidden&&e.key==='Escape')close(true)});
-window.WI={pick,open,close,refresh:()=>{try{sig=sigOf();rebuild();if(!$o.hidden)render()}catch(e){}}};
-try{sig=sigOf();rebuild()}catch(e){}
+window.WI={pick,open,close,refresh:()=>{try{sig=sigOf();rebuild();if(!$o.hidden)render()}catch(e){logErr(e)}}};
+try{sig=sigOf();rebuild()}catch(e){logErr(e)}
 })();
 </script><script>
 /* ===== 星願島 =====
@@ -3311,7 +3337,7 @@ function wStage(f,st,anim){const u=f.userData,was=u.st;u.st=st;hitFor(f,st);
   if(anim&&was!==st){u.mo={from:was,t:0};u.G[st].visible=true;u.G[st].scale.setScalar(.001);u.G[was].visible=true;
     const p={x:f.position.x,y:f.position.y+.6*u.base,z:f.position.z};burst('spark',p,6);burst('star',p,st===2?5:2);sfx('bloom');return}
   u.mo=null;u.G.forEach((g,i)=>{g.visible=i===st;g.scale.setScalar(i===st?1:.001)})}
-function removeNow(id){const f=wf[id];if(!f)return;slideDrop('wish:'+id);scene.remove(f);delete wf[id];if(cardId===id&&!$('card').hidden)$('card').hidden=true}
+function removeNow(id){const f=wf[id];if(!f)return;slideDrop('wish:'+id);scene.remove(f);freeObj(f);delete wf[id];if(cardId===id&&!$('card').hidden)$('card').hidden=true}
 function addFlower(id,grow){const e=S.w[id];if(!e||e.sh)return;
   if(e.x===undefined){const p=freeSpot()||{x:0,z:.4};e.x=p.x;e.z=p.z;save()}
   if(wf[id])removeNow(id);
@@ -3331,14 +3357,14 @@ function plantFx(id){const f=wf[id];if(!f)return;
 /* ---------- 澆水、提問 ---------- */
 function water(id){const e=S.w[id];if(!e||e.sh||!thirstyOf(e)){sfx('deny');return false}
   e.wt=Date.now();save();const f=wf[id];if(f){setThirst(f,false);f.userData.th=false;waterFx(f)}
-  sfx('water','plant');if(Date.now()<e.tt)toast(tr('swWet',Math.max(1,Math.ceil(growLeft(e)/6e4))));try{tick()}catch(x){}if(Date.now()<e.tt)setTimeout(()=>askProgress(id),1500);return true}   // 已過實現時間：澆水後直接盛開，改問「願望實現了嗎」
+  sfx('water','plant');if(Date.now()<e.tt)toast(tr('swWet',Math.max(1,Math.ceil(growLeft(e)/6e4))));try{tick()}catch(x){logErr(x)}if(Date.now()<e.tt)setTimeout(()=>askProgress(id),1500);return true}   // 已過實現時間：澆水後直接盛開，改問「願望實現了嗎」
 /* 簡單的選擇視窗：回傳被選中的選項編號，關掉或選「稍後」則回傳 -1 */
 let qRes=null;
 function choose(o){return new Promise(res=>{if(qRes)qClose(-1);qRes=res;
   $('swqi').innerHTML=o.ic;$('swqt').textContent=o.t;$('swqd').textContent=o.d||'';
   $('swqo').innerHTML=o.opts.map((x,i)=>`<button class="swqb" data-i="${i}">${esc(x)}</button>`).join('');
   $('swql').textContent=o.later;$('swq').hidden=false;$('card').hidden=true;
-  setTimeout(()=>{try{$('swqo').firstChild.focus({preventScroll:true})}catch(e){}},250)})}
+  setTimeout(()=>{try{$('swqo').firstChild.focus({preventScroll:true})}catch(e){logErr(e)}},250)})}
 function qClose(v){if($('swq').hidden&&!qRes)return;$('swq').hidden=true;const r=qRes;qRes=null;if(r)r(v)}
 async function askProgress(id){const e=S.w[id];if(!e||e.sh)return;
   const i=await choose({ic:wfIcon(56,0),t:tr('swQ1T'),d:'“'+clip(e.tx,80)+'”',opts:[tr('swQ1a'),tr('swQ1b'),tr('swQ1c')],later:tr('swLater')});
@@ -3381,8 +3407,8 @@ function del(id){sfx('delete');removeNow(id);delete S.w[id];save();$('card').hid
 /* 鏟除：跟其他凋零的花一樣，只是把花搬到凋零小島，願望都還在 */
 function shovel(id){const e=S.w[id];if(!e||e.sh)return;const f=wf[id];e.sh=Date.now();save();
   if(f){const p=f.position;delete wf[id];slideDrop('wish:'+id);
-    if(S.rm)scene.remove(f);else{SHV.push({f,t:0,y0:p.y,s0:f.scale.x});debris(p.x,p.y+.05,p.z,['#8A6A47','#6F5238','#9B7B55'],12,{s:.045,v:.7,up:2.2,g:7,life:1.4})}}
-  sfx('delete','move');$('card').hidden=true;home();toast(tr('swShoveled'));try{window.WI&&WI.refresh()}catch(x){}}
+    if(S.rm){scene.remove(f);freeObj(f)}else{SHV.push({f,t:0,y0:p.y,s0:f.scale.x});debris(p.x,p.y+.05,p.z,['#8A6A47','#6F5238','#9B7B55'],12,{s:.045,v:.7,up:2.2,g:7,life:1.4})}}
+  sfx('delete','move');$('card').hidden=true;home();toast(tr('swShoveled'));try{window.WI&&WI.refresh()}catch(x){logErr(x)}}
 
 /* ---------- 移動（佈置花園模式）：只能在這座島上 ---------- */
 const rc=new T.Raycaster(),mv2=new T.Vector2();
@@ -3514,7 +3540,7 @@ $b.addEventListener('click',e=>{
   const pp=e.target.closest('.swp');if(pp){const o=pp.classList.toggle('open');pp.setAttribute('aria-expanded',o);return}
   const b=e.target.closest('.swi');if(b)visit(b.dataset.id)});
 $b.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.swp')){e.preventDefault();e.target.click()}});
-function visit(id){const e=S.w[id];if(!e)return;closePanel(false);if(e.sh){try{WI.open()}catch(x){}}else card(id)}
+function visit(id){const e=S.w[id];if(!e)return;closePanel(false);if(e.sh){try{WI.open()}catch(x){logErr(x)}}else card(id)}
 function submit(){
   const edit=mode&&S.w[mode]&&!S.w[mode].sh?S.w[mode]:null,t=$('swt'),d=$('swdt');if(!t||!d)return;
   const tx=t.value.trim();if(!tx){toast(tr('swNeedTx'));sfx('deny');return}
@@ -3530,8 +3556,8 @@ $p.onclick=submit;
 const anyOverlay=()=>['rvm','mbo','wio','swo','swq','modal','dlg','gmod','hmo'].some(k=>{const el=document.getElementById(k);return el&&!el.hidden});
 function openPanel(editId){if(anyOverlay()&&$o.hidden)return;mode=editId||null;presetK=null;tab='now';
   renderPanel(true);$o.hidden=false;$('card').hidden=true;
-  tgG.set(SX,.4,SZ+.2);radG=Math.min(radG,14);try{sfx('island')}catch(e){}
-  setTimeout(()=>{try{($('swt')||$x).focus({preventScroll:true})}catch(e){}},350)}
+  tgG.set(SX,.4,SZ+.2);radG=Math.min(radG,14);try{sfx('island')}catch(e){logErr(e)}
+  setTimeout(()=>{try{($('swt')||$x).focus({preventScroll:true})}catch(e){logErr(e)}},350)}
 function closePanel(goHome){$o.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 $x.onclick=()=>closePanel(true);
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)closePanel(true)});
@@ -3545,7 +3571,7 @@ function pick(e){try{
 function click(e){try{
   const id=pickId(e);if(id){sfx('flower');card(id);return true}
   if(typeof arrange!=='undefined'&&arrange)return false;
-  ray(e);if(rc.intersectObject(hit,false).length){openPanel();return true}}catch(err){}return false}
+  ray(e);if(rc.intersectObject(hit,false).length){openPanel();return true}}catch(err){logErr(err)}return false}
 const cv0=$('c');
 cv0.addEventListener('pointermove',e=>{if(e.buttons||sd)return;try{hovId=pickId(e)}catch(x){hovId=null}});
 cv0.addEventListener('pointerleave',()=>{hovId=null});
@@ -3554,7 +3580,7 @@ cv0.addEventListener('pointerleave',()=>{hovId=null});
 let T0=performance.now(),sh=false,hovT=0,tickT=0,promptT=6,asked=new Set();
 SLP.cbs.push(()=>{if(sh){sh=false;T0=performance.now();requestAnimationFrame(step)}});
 /* 沒有其他視窗開著、也沒有在拖東西的時候，才會主動跳出問題 */
-const idle=()=>{try{if(typeof giftReady==='function'&&!giftReady())return false}catch(e){}return !anyOverlay()&&$('card').hidden&&!sd};
+const idle=()=>{try{if(typeof giftReady==='function'&&!giftReady())return false}catch(e){logErr(e)}return !anyOverlay()&&$('card').hidden&&!sd};
 function tick(){
   let nt=0;
   for(const id in wf){const f=wf[id],u=f.userData,e=S.w[id];if(!e||e.sh)continue;const st=stageOf(e);
@@ -3567,10 +3593,10 @@ function step(now){
   if(SLP.on){sh=true;return}
   requestAnimationFrame(step);
   const dt=Math.min(.05,(now-T0)/1000);T0=now;if(dt<=0)return;
-  let rm=false,wind=.3;try{rm=!!S.rm;wind=WX.wind||0}catch(e){}
+  let rm=false,wind=.3;try{rm=!!S.rm;wind=WX.wind||0}catch(e){logErr(e)}
   const t=now/1000,w=.5+wind*1.1,night=1-(window.dfv==null?1:window.dfv);
-  tickT-=dt;if(tickT<=0){tickT=2.5;try{tick()}catch(e){}}
-  promptT-=dt;if(promptT<=0){promptT=3;try{promptTick()}catch(e){}}
+  tickT-=dt;if(tickT<=0){tickT=2.5;try{tick()}catch(e){logErr(e)}}
+  promptT-=dt;if(promptT<=0){promptT=3;try{promptTick()}catch(e){logErr(e)}}
   /* 星星燈柱、發光的小東西 */
   CORE.emissiveIntensity=.7+.2*Math.sin(t*2.1)+.25*night;GOLD.emissiveIntensity=.28+.25*night;LAV.emissiveIntensity=.2+.2*night;STARM.emissiveIntensity=.6+.35*night+(rm?0:.12*Math.sin(t*2.4));
   lamp.gl.material.opacity=.2+.3*night+(rm?0:.05*Math.sin(t*2.4));
@@ -3613,15 +3639,15 @@ window.SI={pick,click,down,move,up,cancel,dragging:()=>!!sd,visit,icon:wfIcon,df
   sig(){return pastIds().map(i=>'|w'+i+(S.w[i].sh||0)+(S.w[i].ach||0)+(S.w[i].pg==null?'':S.w[i].pg)).join('')},
   /* 同步：雲端傳來一朵花的新狀態 */
   onApply(id,old,o){
-    if(o.sh){removeNow(id);try{WI.refresh()}catch(e){}return}
-    if(old&&old.sh){addFlower(id,1);try{WI.refresh()}catch(e){}return}
+    if(o.sh){removeNow(id);try{WI.refresh()}catch(e){logErr(e)}return}
+    if(old&&old.sh){addFlower(id,1);try{WI.refresh()}catch(e){logErr(e)}return}
     const f=wf[id];
     if(f&&old){const ks=new Set([...Object.keys(old),...Object.keys(o)]);ks.delete('r');ks.delete('u');let same=true;for(const k of ks)if(JSON.stringify(old[k])!==JSON.stringify(o[k])){same=false;break}
       if(same){const u=f.userData,TP=Math.PI*2,cur=u.ryT!=null?u.ryT:f.rotation.y;let df=((((o.r||0)-cur)%TP)+TP)%TP;if(df>Math.PI)df-=TP;u.ryT=cur+df;if(S.rm)f.rotation.y=u.ryT;return}}
     addFlower(id,1)},
   onDrop(id){removeNow(id)},
-  refresh(){try{syncFlowers();if(!$o.hidden)renderPanel()}catch(e){}},
-  clearVisual(){for(const id in wf)removeNow(id);try{WI.refresh()}catch(e){}if(!$o.hidden)renderPanel()},
+  refresh(){try{syncFlowers();if(!$o.hidden)renderPanel()}catch(e){logErr(e)}},
+  clearVisual(){for(const id in wf)removeNow(id);try{WI.refresh()}catch(e){logErr(e)}if(!$o.hidden)renderPanel()},
   /* 凋零小島上的星願花 */
   witherModel:()=>wishWither(),
   noteHTML(id,i){const e=S.w[id];if(!e)return'';
@@ -3630,8 +3656,8 @@ window.SI={pick,click,down,move,up,cancel,dragging:()=>!!sd,visit,icon:wfIcon,df
 <p class="wiq" role="button" tabindex="0" aria-expanded="false">“${esc(e.tx)}”</p>${chips?`<div class="wit">${chips.replace(/<span>/g,'<i>').replace(/<\/span>/g,'</i>')}</div>`:''}
 <div class="wid2">${esc(tr('wiPlant'))}　${esc(dfmt(e.pt))}<br>${esc(tr('swTargetL'))}　${esc(dfmt(e.tt))}<br>${esc(tr('wiShov'))}　${esc(dfmt(e.sh))}</div></article>`}};
 /* 開機：把資料裡的星願花擺到島上，再請凋零小島重新整理（裡面可能有被鏟除的星願花） */
-try{syncFlowers()}catch(e){}
-try{window.WI&&WI.refresh()}catch(e){}
+try{syncFlowers()}catch(e){logErr(e)}
+try{window.WI&&WI.refresh()}catch(e){logErr(e)}
 })();
 </script><script>
 /* ===== 小動物之家（第五座小島）=====
@@ -3896,7 +3922,7 @@ const ovl=()=>['rvm','mbo','wio','swo','swq','modal','dlg','gmod','hmo'].some(k=
 const LK='moodgarden.loc';
 let WC=null,wst='idle',wtok=0;                       // WC＝{pos,w,t}（記憶體快取）；wst＝畫面狀態
 const lget=()=>{try{const j=JSON.parse(localStorage.getItem(LK));return j&&typeof j.lat==='number'?j:null}catch(e){return null}};
-const lput=o=>{try{localStorage.setItem(LK,JSON.stringify(o))}catch(e){}return o};
+const lput=o=>{try{localStorage.setItem(LK,JSON.stringify(o))}catch(e){logErr(e)}return o};
 function getPos(){return new Promise((res,rej)=>{
   const c=lget();if(c&&Date.now()-c.t<3*36e5)return res(c);
   const ip=()=>fetch('https://ipwho.is/').then(r=>r.json()).then(j=>{if(!j||j.success===false||typeof j.latitude!=='number')throw 0;res(lput({lat:j.latitude,lon:j.longitude,t:Date.now(),ip:1,name:j.city||''}))}).catch(()=>c?res(c):rej());
@@ -3959,11 +3985,11 @@ function render(){
 $b.addEventListener('click',e=>{const q=e.target.closest('.hmq');if(q){choose(q.dataset.k);return}const r=e.target.closest('[data-a=rf]');if(r)loadWx(true)});
 function open(){
   if(!$o.hidden||ovl())return;
-  try{if(typeof arrange!=='undefined'&&arrange)return}catch(e){}
+  try{if(typeof arrange!=='undefined'&&arrange)return}catch(e){logErr(e)}
   stop(true);render();$o.hidden=false;$('card').hidden=true;
   tgG.set(SX,.4,SZ+.2);radG=Math.min(radG,14);
-  try{sfx('island')}catch(e){}
-  loadWx(false);setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){}},350)}
+  try{sfx('island')}catch(e){logErr(e)}
+  loadWx(false);setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){logErr(e)}},350)}
 function close(goHome){$o.hidden=true;wtok++;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
 $x.onclick=()=>close(true);
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});
@@ -4008,8 +4034,8 @@ function say(round){
   const gap=clamp(Math.min(innerWidth,innerHeight)*.17,84,140),pk=[],M=40;
   cand.forEach(c=>{if(c.f){pk.push({...c,x:-999,y:-999});return}if(pk.length>=5||!c.o.visible&&c.o!==chick&&round!==1)return;const s=scr(c.o,c.dy);if(!s.v||s.x<M||s.x>innerWidth-M||s.y<M+60||s.y>innerHeight-M)return;if(pk.some(q=>Math.hypot(q.x-s.x,q.y-s.y)<gap))return;pk.push({...c,x:s.x,y:s.y})});
   pk.forEach((c,i)=>{const el=document.createElement('div');el.className='hmbw';el.innerHTML=`<div class="hmbub" style="animation-delay:${i*130}ms">${esc(round===1?(i===0?main:pool[(i-1)%pool.length]):pool[i%pool.length])}</div>`;$bs.appendChild(el);so.bub.push({el,o:c.o,dy:c.dy});
-    if(!so.rm&&typeof burst==='function'&&c.o!==chick){try{burst('heart',c.o.getWorldPosition(new T.Vector3()),2)}catch(e){}}});
-  if(round===1){try{sfx('sendoff','island')}catch(e){}try{toast(esc(main))}catch(e){}}
+    if(!so.rm&&typeof burst==='function'&&c.o!==chick){try{burst('heart',c.o.getWorldPosition(new T.Vector3()),2)}catch(e){logErr(e)}}});
+  if(round===1){try{sfx('sendoff','island')}catch(e){logErr(e)}try{toast(esc(main))}catch(e){logErr(e)}}
   /* 每隻動物各自做牠們被點到時的招牌動作（蜜蜂轉圈、蝴蝶盤旋、小雞轉身、瓢蟲翻滾…）當作揮手 */
   if(round!==1&&!so.rm)cr.forEach(c=>{const u=c.userData;if(u.go)u.go.actAt=so.t+Math.random()*.9})}
 function release(){cr.forEach(c=>{const u=c.userData;if(!u.go)return;u.go=null;u.v.set(0,0,0);u.wp=null;u.fl=0;u.pick=1;u.hold=.3+Math.random()*.6;if(CT[u.type].fly)u.tg.copy(c.position)})}
@@ -4057,7 +4083,7 @@ function step(now){
   if(SLP.on){sh=true;return}
   requestAnimationFrame(step);
   const dt=Math.min(.05,(now-T0)/1000);T0=now;if(dt<=0)return;
-  let rm=false;try{rm=!!S.rm}catch(e){}
+  let rm=false;try{rm=!!S.rm}catch(e){logErr(e)}
   const t=now/1000,night=1-(window.dfv==null?1:window.dfv);
   sigT-=dt;if(sigT<=0){sigT=1;const o=curOut(),g=(o?o.st+o.u:'')+S.lang;if(g!==sig){sig=g;paintChip();if(!$o.hidden){render();if(WC||wst!=='idle')paintWx()}}}
   ev+=(((so&&!so.out)?1:0)-ev)*Math.min(1,dt*(rm?20:2.2));if(ev<.002)ev=0;
@@ -4079,7 +4105,7 @@ function pick(e){try{
 
 /* ---------- 對外的小介面 ---------- */
 window.HOMEI={pick,open,close,play,stop:()=>stop(true),step:moveStep,
-  refresh(){try{sig='';paintChip();if(!$o.hidden)render()}catch(e){}}};
+  refresh(){try{sig='';paintChip();if(!$o.hidden)render()}catch(e){logErr(e)}}};
 paintChip();
 })();
 
@@ -4097,5 +4123,5 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-<script>window.addEventListener('load',()=>{try{I18N.audit()}catch(e){}});</script>
+<script>window.addEventListener('load',()=>{try{I18N.audit()}catch(e){logErr(e)}});</script>
 </body></html>
