@@ -1,0 +1,246 @@
+/* ============================================================================
+ * css/hud.css — 首頁介面：毛玻璃底、頂部列、問候卡、按鈕與底部選單
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・.glass 毛玻璃元件、頂部 logo 與日期、問候卡（.hello）、浮動按鈕
+ *     （.fab）、底部選單 nav（含滑動粉色圓塊 #pill 與點擊彈跳動畫）。
+ *   ・包含寬螢幕（選單移到頂部）與窄螢幕的響應式調整，以及切換到其他分頁時首
+ *     頁元件（.g）的淡出效果。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：index.html、js/views.js、
+ *   js/locales/en.js、js/garden-scene.js
+ * 覆蓋前面檔案已定義過的選擇器（共 2 個，例如 .logo、.fab）：同權重時以後面的
+ *   為準。
+ * 載入順序：第 2 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html 決
+ *   定，請勿隨意調換。
+ * ============================================================================ */
+
+.glass {
+  background: var(--gl);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 28px;
+  box-shadow: var(--sh);
+  border: 1px solid #fff9
+}
+
+.top {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none
+}
+
+.logo {
+  font-size: 22px;
+  white-space: nowrap;
+  background: var(--gl);
+  padding: 8px 16px;
+  border-radius: 99px;
+  box-shadow: var(--sh)
+}
+
+#date {
+  white-space: nowrap;
+  background: var(--gl);
+  padding: 8px 14px;
+  border-radius: 99px;
+  font-size: 13px
+}
+
+.hello {
+  position: fixed;
+  left: 16px;
+  top: calc(env(safe-area-inset-top, 0px) + 72px);
+  padding: 16px 20px;
+  max-width: 310px
+}
+
+.hello h1 {
+  font-size: 19px;
+  line-height: 1.2
+}
+
+.hello p {
+  margin: 4px 0 10px;
+  font-size: 14px
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap
+}
+
+.chips span {
+  background: #fff;
+  border-radius: 99px;
+  padding: 3px 11px;
+  font-size: 12.5px
+}
+
+.fab {
+  position: fixed;
+  right: 20px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
+  background: #F29BB5;
+  color: #fff;
+  padding: 15px 24px;
+  border-radius: 99px;
+  font-size: 17px;
+  box-shadow: 0 10px 24px #f29bb577;
+  transition: transform .2s
+}
+
+.fab:hover {
+  transform: scale(1.05) rotate(-1deg)
+}
+
+nav {
+  position: fixed;
+  z-index: 5;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 99px;
+  background: var(--gl);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--sh)
+}
+
+nav button {
+  padding: 9px 16px;
+  border-radius: 99px;
+  font-size: 14px
+}
+
+nav button {
+  position: relative;
+  z-index: 1
+}
+
+#pill {
+  position: absolute;
+  z-index: 0;
+  top: 6px;
+  bottom: 6px;
+  left: 0;
+  width: 0;
+  border-radius: 99px;
+  background: var(--pink);
+  box-shadow: 0 3px 10px #f29bb544;
+  transition: transform .45s cubic-bezier(.34, 1.4, .5, 1), width .35s
+}
+
+@media(prefers-reduced-motion:reduce) {
+  #pill {
+    transition: none
+  }
+}
+
+/* 選單 bar 點擊彈跳：nav 靠 translateX(-50%) 置中，所以關鍵影格必須把 translateX(-50%) 一起寫進 transform，
+   縮放才會以 bar 的正中央為中心（若改用獨立的 scale 屬性，縮放會疊在位移之後，中心點會偏到右邊）。
+   動畫在「一次完整點擊」後由 JS 觸發，跑完固定時長（--nav-pop-dur）才收尾，與按住多久無關 */
+nav {
+  --nav-pop-dur: 680ms
+}
+
+@keyframes navpop {
+  0% {
+    transform: translateX(-50%) scale(1)
+  }
+
+  38% {
+    transform: translateX(-50%) scale(1.075)
+  }
+
+  68% {
+    transform: translateX(-50%) scale(.985)
+  }
+
+  100% {
+    transform: translateX(-50%) scale(1)
+  }
+}
+
+nav.pop {
+  transform-origin: 50% 50%;
+  animation: navpop var(--nav-pop-dur) cubic-bezier(.3, .7, .4, 1) both
+}
+
+body.rm nav.pop {
+  animation: none
+}
+
+@media(prefers-reduced-motion:reduce) {
+  nav.pop {
+    animation: none
+  }
+}
+
+@media(min-width:1000px) {
+  nav {
+    bottom: auto;
+    top: calc(env(safe-area-inset-top, 0px) + 14px)
+  }
+
+  .fab {
+    bottom: 28px
+  }
+}
+
+@media(max-width:759px) {
+  .hello {
+    right: 16px;
+    max-width: none
+  }
+
+  .hello p {
+    display: none
+  }
+
+  .fab {
+    right: 16px
+  }
+}
+
+@media(max-width:480px) {
+  .logo {
+    font-size: 17px;
+    padding: 6px 12px
+  }
+
+  #date {
+    font-size: 12px;
+    padding: 6px 11px
+  }
+}
+
+/* 花園介面（標題、問候、按鈕）：切換分頁時淡入淡出＋輕微位移，而不是直接消失 */
+.g {
+  transition: opacity .4s ease .1s, translate .45s cubic-bezier(.2, .9, .3, 1) .1s, visibility 0s
+}
+
+.fab.g {
+  transition: transform .2s, opacity .4s ease .1s, translate .45s cubic-bezier(.2, .9, .3, 1) .1s, visibility 0s
+}
+
+body:not([data-v=garden]) .g {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  translate: 0 10px;
+  transition: opacity .22s ease, translate .3s ease, visibility 0s .22s
+}
+
+body:not([data-v=garden]) .top.g,
+body:not([data-v=garden]) .hello.g {
+  translate: 0 -10px
+}

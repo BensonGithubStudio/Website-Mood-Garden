@@ -1,0 +1,84 @@
+/* ============================================================================
+ * css/panel.css — 分頁面板：月曆／統計／設定共用的浮出面板
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・.panel 的位置、尺寸與進出場動畫（從被點的選單按鈕「長出來」），以及減少
+ *     動態效果、手機版面板高度的處理。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：index.html
+ * 覆蓋前面檔案已定義過的選擇器（共 2 個，例如 .g、.fab.g）：同權重時以後面的
+ *   為準。
+ * 載入順序：第 3 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html 決
+ *   定，請勿隨意調換。
+ * ============================================================================ */
+
+.panel {
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -48%);
+  width: min(520px, calc(100% - 28px));
+  max-height: calc(100% - 170px);
+  overflow: auto;
+  padding: 22px
+}
+
+@media(min-width:1000px) {
+  .panel {
+    top: calc(50% + 28px)
+  }
+}
+
+/* 面板進出場：離場快速淡出，進場帶一點彈性浮起（用獨立的 translate / scale 屬性，不影響原本的置中 transform） */
+.panel {
+  opacity: 0;
+  scale: .12;
+  transform-origin: var(--ox, 50%) var(--oy, 100%);
+  pointer-events: none;
+  transition: opacity .18s ease, scale .24s cubic-bezier(.5, 0, .75, 0)
+}
+
+.panel.in {
+  opacity: 1;
+  scale: 1;
+  pointer-events: auto;
+  transition: opacity .28s ease .04s, scale .46s cubic-bezier(.2, .9, .3, 1.12) .04s
+}
+
+body.rm .panel,
+body.rm .panel.in,
+body.rm .g,
+body.rm .fab.g {
+  translate: none !important;
+  scale: none !important;
+  transition: opacity .15s ease !important
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+  .panel,
+  .panel.in,
+  .g,
+  .fab.g {
+    translate: none !important;
+    scale: none !important;
+    transition: opacity .15s ease !important
+  }
+}
+
+/* 手機／窄螢幕：選單在底部，面板改成置中於「頂部標題列」與「底部選單」之間，高度也扣掉兩者，避免和選單重疊 */
+@media(max-width:999px) {
+  .panel {
+    --tb: calc(env(safe-area-inset-top, 0px) + 62px);
+    --bb: calc(env(safe-area-inset-bottom, 0px) + 96px);
+    top: calc(var(--tb) + (100% - var(--tb) - var(--bb))/2);
+    transform: translate(-50%, -50%);
+    max-height: calc(100% - var(--tb) - var(--bb))
+  }
+}
+
+.panel h2 {
+  font-size: 24px;
+  margin-bottom: 12px
+}

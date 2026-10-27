@@ -1,0 +1,60 @@
+/* ============================================================================
+ * css/quality.css — 畫質檔位覆蓋（中／低）
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・依 body[data-gq]（畫質「中」「低」）關閉或減弱毛玻璃模糊、改用實色，以
+ *     省下手機的繪圖效能（iOS 尤其明顯）。必須放最後，才能蓋過 Liquid Glass
+ *     主題。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：js/wish.js、js/withered-island.js、
+ *   js/animal-home.js、js/memory.js
+ * 載入順序：第 16 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html
+ *   決定，請勿隨意調換。
+ * ============================================================================ */
+
+/* ---- 畫質：中＝取消遮罩模糊、縮小面板模糊；低＝全部關閉毛玻璃改用實色（backdrop-filter 疊在 3D 畫面上很吃效能，iOS 尤其明顯）---- */
+body[data-gq=mid] .scrim,
+body[data-gq=mid] #rvm,
+body[data-gq=mid] #mbo,
+body[data-gq=mid] #wio,
+body[data-gq=mid] #swo,
+body[data-gq=mid] #swq,
+body[data-gq=mid] #hmo {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none
+}
+
+body[data-gq=mid] .wis,
+body[data-gq=mid] .sws,
+body[data-gq=mid] .swqs,
+body[data-gq=mid] .hms {
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%)
+}
+
+body[data-gq=low] {
+  --lg-a: rgba(255, 252, 247, .94);
+  --lg-b: rgba(255, 252, 247, .98);
+  --lg-s: rgba(255, 252, 247, .92)
+}
+
+body[data-gq=low] * {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important
+}
+
+body[data-gq=low] .wis {
+  background: #E6D8BC !important
+}
+
+body[data-gq=low] .sws {
+  background: #C9C6EC !important
+}
+
+body[data-gq=low] .swqs {
+  background: #FBF8FF !important
+}
+
+body[data-gq=low] .hms {
+  background: #C9DFB4 !important
+}

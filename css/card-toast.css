@@ -1,0 +1,72 @@
+/* ============================================================================
+ * css/card-toast.css — 花朵詳情卡與提示訊息
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・點花後出現的詳情卡（#card）與頂部的提示訊息（.toast）及其動畫。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：js/creatures.js、js/ui-shell.js、
+ *   js/views.js、index.html
+ * 載入順序：第 6 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html 決
+ *   定，請勿隨意調換。
+ * ============================================================================ */
+
+#card {
+  position: fixed;
+  z-index: 6;
+  right: 16px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 86px);
+  width: min(310px, calc(100% - 32px));
+  background: #FFFBF0;
+  padding: 18px 20px;
+  border-radius: 6px 22px 6px 22px;
+  transform: rotate(1.2deg);
+  box-shadow: var(--sh);
+  border: 2px dashed #e7d9b9
+}
+
+@media(min-width:1000px) {
+  #card {
+    bottom: 90px
+  }
+}
+
+#card h2 {
+  font-size: 21px
+}
+
+#card p {
+  margin: 8px 0;
+  font-style: italic
+}
+
+.toast {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  top: 22%;
+  transform: translateX(-50%);
+  background: #fffc;
+  padding: 12px 22px;
+  border-radius: 99px;
+  box-shadow: var(--sh);
+  font-family: Fredoka;
+  font-size: 19px;
+  animation: tw 3.6s forwards
+}
+
+@keyframes tw {
+  0% {
+    opacity: 0;
+    top: 26%
+  }
+
+  12%,
+  80% {
+    opacity: 1;
+    top: 22%
+  }
+
+  100% {
+    opacity: 0
+  }
+}

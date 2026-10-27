@@ -1,0 +1,108 @@
+/* ============================================================================
+ * css/sync-gifts.css — 帳號與雲端同步按鈕、禮物紙條視窗
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・登入／同步按鈕（.ab）、小禮物入口（#gb）與徽章、禮物視窗內的圖示與紙條
+ *     （.gi、.paper）。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：js/gifts.js、index.html
+ * 覆蓋前面檔案已定義過的選擇器（共 1 個，例如 .fab.sec）：同權重時以後面的為
+ *   準。
+ * 載入順序：第 11 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html
+ *   決定，請勿隨意調換。
+ * ============================================================================ */
+
+/* ---- account / sync ---- */
+.ab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 14px;
+  margin-top: 8px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 15px;
+  background: #fff;
+  border: 1.5px solid #eadfcd;
+  transition: transform .2s
+}
+
+.ab:first-of-type {
+  margin-top: 0
+}
+
+.ab:hover:not(:disabled) {
+  transform: translateY(-1px)
+}
+
+.ab:disabled {
+  opacity: .45;
+  cursor: default
+}
+
+.fab.sec {
+  overflow: visible
+}
+
+#gb {
+  left: 78px
+}
+
+.fab.sec .gbd {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: #F29BB5;
+  color: #fff;
+  font: 600 12px/20px Fredoka, Nunito, sans-serif;
+  text-align: center;
+  box-shadow: 0 2px 6px #0003
+}
+
+.gi {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #E5DBF7;
+  display: grid;
+  place-items: center
+}
+
+.paper {
+  background: #FFFBF0;
+  border: 2px dashed #e7d9b9;
+  border-radius: 6px 22px 6px 22px;
+  padding: 18px 20px;
+  transform: rotate(-1deg)
+}
+
+.paper .gt {
+  font-size: 18px;
+  line-height: 1.55;
+  margin: 10px 0 2px;
+  font-style: italic
+}
+
+.gsh-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px
+}
+
+#gsh .sc {
+  margin-top: 10px
+}
+
+.gpop {
+  display: grid;
+  place-items: center;
+  margin: 6px 0 8px
+}

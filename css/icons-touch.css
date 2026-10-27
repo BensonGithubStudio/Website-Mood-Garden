@@ -1,0 +1,190 @@
+/* ============================================================================
+ * css/icons-touch.css — 圖示字型、觸控與選取行為、緊湊選單
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・Material Symbols 圖示字型（.ms）及各處圖示對齊、全站觸控與文字選取規則
+ *     （禁止縮放與長按選取）、小型浮動按鈕（.fab.sec）、選單改為純圖示的緊湊
+ *     樣式。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：index.html、js/views.js、
+ *   js/wish.js、js/creatures.js
+ * 覆蓋前面檔案已定義過的選擇器（共 15 個，例如 nav button、.logo、.chips
+ *   span、.hello h1）：同權重時以後面的為準。
+ * 載入順序：第 8 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html 決
+ *   定，請勿隨意調換。
+ * ============================================================================ */
+
+.ms {
+  font-family: 'Material Symbols Rounded';
+  font-weight: 500;
+  font-style: normal;
+  font-size: 1.3em;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: -.25em;
+  white-space: nowrap;
+  font-variation-settings: 'FILL' 1
+}
+
+nav button {
+  display: flex;
+  align-items: center;
+  gap: 5px
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 6px
+}
+
+.logo .ms {
+  color: #F29BB5
+}
+
+.chips span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px
+}
+
+.hello h1 {
+  display: flex;
+  align-items: center;
+  gap: 6px
+}
+
+.hello h1 .ms,
+.toast .ms {
+  color: #F29BB5
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 8px
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px
+}
+
+.mh button {
+  display: grid;
+  place-items: center
+}
+
+.mc b svg {
+  display: block;
+  margin: 0 auto
+}
+
+.mc small svg {
+  vertical-align: -3px
+}
+
+.d i svg,
+.wk i svg {
+  display: block
+}
+
+.bar b {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 100px
+}
+
+html,
+body,
+* {
+  touch-action: pan-x pan-y
+}
+
+canvas {
+  touch-action: none
+}
+
+input[type=range] {
+  touch-action: pan-y
+}
+
+html,
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent
+}
+
+textarea,
+#card p {
+  -webkit-user-select: text;
+  user-select: text
+}
+
+.fab.sec {
+  right: auto;
+  left: 16px;
+  background: var(--gl);
+  color: var(--ink);
+  box-shadow: var(--sh);
+  font-size: 0;
+  padding: 0;
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(14px)
+}
+
+.fab.sec .ms {
+  font-size: 26px;
+  vertical-align: 0
+}
+
+body.arr #fab {
+  display: none !important
+}
+
+#wxc:empty {
+  display: none
+}
+
+nav button {
+  font-size: 0;
+  padding: 10px 16px;
+  gap: 0
+}
+
+nav .ms {
+  font-size: 24px
+}
+
+nav {
+  max-width: calc(100% - 16px)
+}
+
+#card>div:last-child {
+  flex-wrap: wrap
+}
+
+#card .btn {
+  padding: 8px 12px;
+  font-size: 14px
+}
+
+@media(max-width:480px) {
+  nav button {
+    font-size: 0;
+    padding: 10px 15px;
+    gap: 0
+  }
+
+  nav .ms {
+    font-size: 24px
+  }
+}

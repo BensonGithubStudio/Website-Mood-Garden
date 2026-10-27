@@ -1,0 +1,71 @@
+/* ============================================================================
+ * css/sleep.css — 睡眠模式畫面與手機問候卡微調
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・#sl 睡眠模式的深色靜態畫面（並隱藏其餘所有元素以省電），以及手機版問候
+ *     卡的間距。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：index.html、js/animal-home.js、
+ *   js/cloud.js、js/gifts.js
+ * 覆蓋前面檔案已定義過的選擇器（共 2 個，例如 .hello、.hello h1）：同權重時以
+ *   後面的為準。
+ * 載入順序：第 14 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html
+ *   決定，請勿隨意調換。
+ * ============================================================================ */
+
+/* ---- 睡眠模式：隱藏其餘所有畫面（不再排版與合成），只留一個靜態的深色畫面 ---- */
+#sl {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #0B1020;
+  color: #C9D3F0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 30px;
+  text-align: center
+}
+
+#sl .ms {
+  font-size: 64px;
+  color: #F5DEA0
+}
+
+#sl h1 {
+  font-size: 26px
+}
+
+#sl p {
+  max-width: 320px;
+  opacity: .75;
+  font-size: 14px
+}
+
+#sl .btn {
+  margin-top: 10px;
+  background: #2A3560;
+  color: #E6ECFF;
+  box-shadow: none
+}
+
+body.sleeping {
+  background: #0B1020 !important
+}
+
+body.sleeping>*:not(#sl):not(script) {
+  display: none !important
+}
+
+/* 手機版問候面板：標題與下方標籤拉開距離（此寬度下說明文字已隱藏） */
+@media(max-width:759px) {
+  .hello {
+    padding: 16px 20px 18px
+  }
+
+  .hello h1 {
+    margin-bottom: 12px
+  }
+}

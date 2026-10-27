@@ -1,0 +1,52 @@
+/* ============================================================================
+ * css/loader.css — 載入畫面
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・#ld 載入畫面：進度條（.ldb）、提示文字（.ldm）與淡出。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：js/boot.js、index.html、
+ *   js/animal-home.js、js/cloud.js
+ * 載入順序：第 9 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html 決
+ *   定，請勿隨意調換。
+ * ============================================================================ */
+
+/* ---- loader ---- */
+#ld {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: linear-gradient(#9FCBEA, #D6ECF4 45%, #BFE0A8 46%, #A6D58F);
+  overflow: hidden;
+  transition: opacity .5s
+}
+
+#ld.out {
+  opacity: 0;
+  pointer-events: none
+}
+
+.ldm {
+  font-size: 17px;
+  min-height: 1.6em
+}
+
+.ldb {
+  width: min(260px, 70%);
+  height: 8px;
+  border-radius: 99px;
+  background: #F5C7D5;
+  overflow: hidden
+}
+
+.ldb i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 99px;
+  background: #F29BB5;
+  transition: width .3s
+}
+
+#ld [hidden] {
+  display: none !important
+}

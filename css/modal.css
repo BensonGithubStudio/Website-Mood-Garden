@@ -1,0 +1,133 @@
+/* ============================================================================
+ * css/modal.css — 對話框：遮罩、記錄心情視窗、心情選擇與標籤
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・.scrim 遮罩與 .sheet 視窗、六種心情按鈕（.moods／.mc）、「花園已滿」提
+ *     示（#gfull）、文字輸入框與標籤（.tags／.tag）。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：index.html、js/views.js、
+ *   js/wish.js、js/memory.js
+ * 載入順序：第 5 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html 決
+ *   定，請勿隨意調換。
+ * ============================================================================ */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #5b5a5555;
+  display: grid;
+  place-items: center;
+  padding: 14px
+}
+
+.scrim[hidden],
+[hidden] {
+  display: none !important
+}
+
+.sheet {
+  background: #FFFCF7;
+  border-radius: 32px;
+  padding: 22px;
+  width: min(520px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  box-shadow: var(--sh)
+}
+
+.moods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 12px 0
+}
+
+.mc {
+  border-radius: 24px;
+  padding: 12px 4px;
+  background: #fff;
+  border: 3px solid transparent;
+  text-align: center;
+  transition: transform .25s cubic-bezier(.3, 1.6, .5, 1)
+}
+
+.mc b {
+  display: block;
+  font-size: 34px;
+  line-height: 1.2
+}
+
+.mc span {
+  font-size: 13px
+}
+
+.mc small {
+  display: block;
+  font-size: 11px;
+  opacity: .7
+}
+
+.mc:hover {
+  transform: translateY(-3px)
+}
+
+.mc[aria-pressed=true] {
+  transform: scale(1.07) rotate(-2deg);
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 22%, #fff)
+}
+
+#gfull {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #FFF4DC;
+  border: 2px dashed #EBCB7A;
+  font-size: 14px;
+  line-height: 1.55
+}
+
+#gfull b {
+  display: block;
+  font: 600 16px Fredoka, Nunito, sans-serif;
+  margin-bottom: 2px
+}
+
+#ms:disabled {
+  opacity: .4;
+  cursor: default
+}
+
+textarea {
+  width: 100%;
+  border: 2px solid #eadfcd;
+  border-radius: 18px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 16px;
+  color: inherit;
+  background: #fff;
+  resize: none;
+  height: 76px
+}
+
+.tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 10px 0 14px
+}
+
+.tag {
+  background: #fff;
+  padding: 5px 13px;
+  border-radius: 99px;
+  border: 2px solid #eadfcd;
+  font-size: 13px
+}
+
+.tag[aria-pressed=true] {
+  background: var(--lav);
+  border-color: #b7a2e0
+}

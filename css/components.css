@@ -1,0 +1,142 @@
+/* ============================================================================
+ * css/components.css — 共用元件：月曆、統計長條、列、按鈕
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・月曆格子（.cal、.d）、月份切換列（.mh）、統計長條（.bar）、一週小圖
+ *     （.wk）、設定列（.row）與按鈕（.btn 及其 p／r／w 變體）。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：js/views.js、index.html、
+ *   js/ui-shell.js、js/boot.js
+ * 載入順序：第 4 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html 決
+ *   定，請勿隨意調換。
+ * ============================================================================ */
+
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center
+}
+
+.cal .w {
+  font-size: 12px;
+  opacity: .6
+}
+
+.d {
+  aspect-ratio: 1;
+  border-radius: 16px;
+  background: #ffffff88;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1
+}
+
+.d i {
+  font-style: normal;
+  font-size: 20px;
+  margin-top: 2px
+}
+
+.d.e i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50% 50% 50% 0;
+  background: #ddd3c4;
+  opacity: .7;
+  margin-top: 5px
+}
+
+.d.t {
+  outline: 3px solid var(--yel)
+}
+
+.mh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px
+}
+
+.mh button {
+  background: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 7px 0;
+  font-size: 13px
+}
+
+.bar b {
+  flex: 0 0 78px;
+  font-weight: 700
+}
+
+.bar div {
+  height: 16px;
+  border-radius: 99px;
+  transition: width .6s
+}
+
+.wk {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+  margin-top: 6px
+}
+
+.wk div {
+  flex: 1;
+  text-align: center;
+  font-size: 11px
+}
+
+.wk i {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-style: normal;
+  font-size: 18px;
+  background: #fff9;
+  margin-bottom: 2px
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px dashed #d9cfbe
+}
+
+.btn {
+  background: #fff;
+  padding: 9px 16px;
+  border-radius: 99px;
+  box-shadow: 0 3px 10px #0001
+}
+
+.btn.p {
+  background: #F29BB5;
+  color: #fff
+}
+
+.btn.r {
+  color: #b5484f
+}
+
+.btn.w {
+  background: #7DB8E6;
+  color: #fff
+}

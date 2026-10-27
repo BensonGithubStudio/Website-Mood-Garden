@@ -1,0 +1,95 @@
+/* ============================================================================
+ * css/bottom-buttons.css — 底部按鈕版位（記錄心情／佈置花園／小禮物）
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   ・依螢幕寬度決定三顆圓形按鈕的位置：很窄時浮在選單上方、一般手機貼在選單
+ *     兩側、橫式與平板橫排、≥1000px 回到畫面底部；另微調選單列間距。
+ *
+ * 相關程式（用到這裡 class／id 的檔案）：index.html、js/views.js、
+ *   js/creatures.js
+ * 覆蓋前面檔案已定義過的選擇器（共 3 個，例如 #gb、nav、nav button）：同權重
+ *   時以後面的為準。
+ * 載入順序：第 13 個（共 16 個）。CSS 是「後面蓋過前面」，順序由 index.html
+ *   決定，請勿隨意調換。
+ * ============================================================================ */
+
+/* ---- 底部按鈕版位（記錄心情／佈置花園／小禮物） ----
+   <400px（很窄）：選單列兩側放不下，按鈕浮在選單列上方；左側兩顆上下排列，小禮物在上、佈置花園在下。
+   400–559px（一般直式手機）：按鈕貼在選單列兩側、與它同一水平線；左側兩顆仍上下排列。
+   ≥560px（橫式手機、平板）：左側兩顆改為橫排，同樣與選單列同一水平線。
+   ≥1000px：選單列在頂部，按鈕回到畫面底部。 */
+#fab,
+#arr,
+#gb {
+  --fb: calc(env(safe-area-inset-bottom, 0px) + 92px);
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  font-size: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  bottom: var(--fb)
+}
+
+#fab[hidden] {
+  display: none
+}
+
+#fab {
+  right: 16px
+}
+
+#fab .ms {
+  font-size: 26px;
+  vertical-align: 0
+}
+
+#arr {
+  left: 16px
+}
+
+#gb {
+  left: 16px;
+  bottom: calc(var(--fb) + 62px)
+}
+
+@media(min-width:400px) {
+
+  #fab,
+  #arr,
+  #gb {
+    --fb: calc(env(safe-area-inset-bottom, 0px) + 16px)
+  }
+}
+
+@media(min-width:560px) {
+  #gb {
+    left: 78px;
+    bottom: var(--fb)
+  }
+}
+
+@media(min-width:760px) {
+  #fab {
+    right: 20px
+  }
+}
+
+@media(min-width:1000px) {
+
+  #fab,
+  #arr,
+  #gb {
+    --fb: 28px
+  }
+}
+
+/* 選單列：按鈕間距與左右內距再緊密一點（滑動的粉色圓塊由 JS 依按鈕實際尺寸計算，會自動跟上） */
+nav {
+  gap: 2px
+}
+
+nav button {
+  padding: 10px 14px
+}
