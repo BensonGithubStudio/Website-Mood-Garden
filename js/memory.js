@@ -27,7 +27,7 @@ const T=THREE,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 /* ---------- 文字（四種語言；缺的語言會自動退回英文） ---------- */
 try{
 I18N.add('en',{
-  mbT:'Memory board',mbSub:n=>n?(n+(n>1?' memories':' memory')+' pinned up'):'',mbMore:'Shuffle',mbVisit:'Visit that flower',
+  mbT:'Memory board',mbSub:n=>n?(n+(n>1?' memories':' memory')+' pinned up'):'',mbMore:'Shuffle',mbVisit:'Visit that flower',mbInWi:'On the Withered Isle',
   mbE0:'The board is still empty',mbE1:'Plant a few flowers. As time goes by, memories will be pinned up here one by one.',
   mbSoon:n=>'In '+n+(n>1?' days':' day')+', your first “one week ago today” will show up here.',
   mbAgo:n=>n<2?'yesterday':n<14?n+' days ago':n<60?Math.round(n/7)+' weeks ago':n<365?Math.round(n/30)+' months ago':(Math.round(n/365)>1?Math.round(n/365)+' years ago':'1 year ago'),
@@ -39,7 +39,7 @@ I18N.add('en',{
   mf_h:'A happy memory…',mf_l:'A memory of feeling loved…',mf_c:'A calm moment…',mf_e:'A day you were excited…',
   mf_s:'You were sad once…',mf_a:'You were anxious once…',mf_f:'The first flower you planted…'});
 I18N.add('zh',{
-  mbT:'回憶佈告欄',mbSub:n=>n?'翻出了 '+n+' 則回憶':'',mbMore:'換一批',mbVisit:'看看那朵花',
+  mbT:'回憶佈告欄',mbSub:n=>n?'翻出了 '+n+' 則回憶':'',mbMore:'換一批',mbVisit:'看看那朵花',mbInWi:'在凋零小島',
   mbE0:'佈告欄還空空的',mbE1:'先種下幾朵花吧。時間過去之後，回憶會一則一則貼到這裡。',
   mbSoon:n=>'再過 '+n+' 天，就會貼上第一則「一週前的今天」。',
   mbAgo:n=>n<2?'昨天':n<14?n+' 天前':n<60?Math.round(n/7)+' 週前':n<365?Math.round(n/30)+' 個月前':Math.round(n/365)+' 年前',
@@ -51,7 +51,7 @@ I18N.add('zh',{
   mf_h:'開心往事…',mf_l:'幸福往事…',mf_c:'平靜的時光…',mf_e:'興奮的那一天…',
   mf_s:'你曾經難過過…',mf_a:'你曾經焦慮過…',mf_f:'你種下的第一朵花…'});
 I18N.add('ja',{
-  mbT:'思い出の掲示板',mbSub:n=>n?n+'件の思い出':'',mbMore:'シャッフル',mbVisit:'その花を見に行く',
+  mbT:'思い出の掲示板',mbSub:n=>n?n+'件の思い出':'',mbMore:'シャッフル',mbVisit:'その花を見に行く',mbInWi:'枯れ花の島にあります',
   mbE0:'掲示板はまだ空っぽです',mbE1:'まずは花を何輪か植えてみましょう。時間がたつと、思い出がひとつずつ貼られていきます。',
   mbSoon:n=>'あと'+n+'日で、最初の「1週間前の今日」が貼られます。',
   mbAgo:n=>n<2?'昨日':n<14?n+'日前':n<60?Math.round(n/7)+'週間前':n<365?Math.round(n/30)+'か月前':Math.round(n/365)+'年前',
@@ -63,7 +63,7 @@ I18N.add('ja',{
   mf_h:'うれしかった思い出…',mf_l:'しあわせな思い出…',mf_c:'おだやかなひととき…',mf_e:'わくわくした日…',
   mf_s:'悲しかったことがあったね…',mf_a:'不安だったことがあったね…',mf_f:'最初に植えた花…'});
 I18N.add('ko',{
-  mbT:'추억 게시판',mbSub:n=>n?'추억 '+n+'개':'',mbMore:'다시 섞기',mbVisit:'그 꽃 보러 가기',
+  mbT:'추억 게시판',mbSub:n=>n?'추억 '+n+'개':'',mbMore:'다시 섞기',mbVisit:'그 꽃 보러 가기',mbInWi:'시든 꽃의 섬에 있어요',
   mbE0:'게시판이 아직 비어 있어요',mbE1:'먼저 꽃을 몇 송이 심어 보세요. 시간이 지나면 추억이 하나씩 붙어요.',
   mbSoon:n=>n+'일 뒤에 첫 번째 “일주일 전 오늘”이 붙어요.',
   mbAgo:n=>n<2?'어제':n<14?n+'일 전':n<60?Math.round(n/7)+'주 전':n<365?Math.round(n/30)+'개월 전':Math.round(n/365)+'년 전',
@@ -283,7 +283,7 @@ const css=document.createElement('style');css.textContent=`
 .mbc{background:rgba(255,255,255,.55);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
 .mbc b{font-size:14px}.mbk{display:flex;gap:6px;flex-wrap:wrap}.mbk button{background:#fff;border-radius:99px;padding:4px 12px;font-size:13px;box-shadow:0 2px 6px #0001}
 .mbr{font-size:13.5px;line-height:1.5}
-.mbv{align-self:flex-start;margin-top:auto;background:rgba(255,255,255,.7);border-radius:99px;padding:5px 12px;font-size:13px;display:inline-flex;align-items:center;gap:4px}.mbv .ms{font-size:18px}
+.mbv{align-self:flex-start;margin-top:auto;background:rgba(255,255,255,.7);border-radius:99px;padding:5px 12px;font-size:13px;display:inline-flex;align-items:center;gap:4px}.mbv .ms{font-size:18px}.mbv.wi{background:rgba(226,214,186,.78);color:#6B5A44}
 .mbf{flex:none;display:flex;justify-content:space-between;gap:8px;padding:10px 6px 2px}.mbh{flex:none}
 @keyframes mbin{from{opacity:0;transform:translateY(24px) scale(.94)}}
 @keyframes mbd{from{opacity:0;transform:translateY(-16px) rotate(calc(var(--r) - 7deg)) scale(.92)}}
@@ -299,7 +299,7 @@ function noteHTML(m,i){
     return `<article class="mbn" style="--r:${rot}deg;--pc:#FFF1BF;--pin:${PINS[i%PINS.length]};--i:${i}"><h3>${esc(tr(m.t))}</h3>
 <div class="mbi">${SI.icon(38,2)}<span><b>${esc(tr('swName'))}</b><small>${esc(tr('swTargetL'))} · ${esc(SI.dfmt(w.tt))}</small><small>${esc(tr('wiPlant'))} ${esc(SI.dfmt(w.pt))}</small></span></div>
 <p class="mbq" role="button" tabindex="0" aria-expanded="false">“${esc(w.tx)}”</p>
-<button class="mbv" data-w="${m.w}">${ic(w.sh?'yard':'local_florist')} ${esc(tr(w.sh?'wiT':'mbVisit'))}</button></article>`}
+<button class="mbv${w.sh?' wi':''}" data-w="${m.w}">${ic(w.sh?'yard':'local_florist')} ${esc(tr(w.sh?'mbInWi':'mbVisit'))}</button></article>`}
   const e=S.e[m.d];if(!e)return'';
   const mo=M[e.mood]||M.happy,ag=ageOf(m.d),rot=((hash(m.d+m.t)%70)-35)/10,tx=e.text&&e.text.trim();
   const tags=(e.tags||[]).map(g=>'<i>'+esc((tr('tg')||[])[TAGS.indexOf(g)]||g)+'</i>').join('');
@@ -308,7 +308,7 @@ function noteHTML(m,i){
 ${tx?`<p class="mbq" role="button" tabindex="0" aria-expanded="false">“${esc(tx)}”</p>`:`<p class="mbq no">${esc(tr('noNote'))}</p>`}
 ${tags?`<div class="mbt">${tags}</div>`:''}
 ${m.care?`<div class="mbc"><b>${esc(tr('mbCare'))}</b><div class="mbk"><button data-a="b">${esc(tr('mbBetter'))}</button><button data-a="s">${esc(tr('mbSlow'))}</button></div><p class="mbr" hidden></p></div>`:''}
-<button class="mbv" data-v="${m.d}">${ic('local_florist')} ${esc(tr('mbVisit'))}</button></article>`}
+<button class="mbv${e.sh?' wi':''}" ${e.sh?'data-wi="1"':`data-v="${m.d}"`}>${ic(e.sh?'yard':'local_florist')} ${esc(tr(e.sh?'mbInWi':'mbVisit'))}</button></article>`}
 function render(){
   const r=build(seedOf(shuf));
   document.getElementById('mbd').setAttribute('aria-label',tr('mbT'));
@@ -322,7 +322,7 @@ function render(){
     $b.innerHTML=`<article class="mbn" style="--r:-1.5deg;--pc:#FFF8E4;--pin:#F29BB5;--i:0"><h3>${esc(tr('mbE0'))}</h3><p class="mbq no">${esc(tr('mbE1'))}</p>${dd>0?`<p class="mbq no">${esc(tr('mbSoon',dd))}</p>`:''}</article>`}
   $b.scrollTop=0}
 $b.addEventListener('click',e=>{
-  const v=e.target.closest('.mbv');if(v){if(v.dataset.w){close(false);try{SI.visit(v.dataset.w)}catch(x){logErr(x)}}else visit(v.dataset.v);return}
+  const v=e.target.closest('.mbv');if(v){if(v.dataset.wi){toWither();return}if(v.dataset.w){close(false);try{SI.visit(v.dataset.w)}catch(x){logErr(x)}}else visit(v.dataset.v);return}
   const a=e.target.closest('.mbk button');if(a){const c=a.closest('.mbc'),p=c.querySelector('.mbr');p.textContent=tr(a.dataset.a==='b'?'mbBetterR':'mbSlowR');p.hidden=false;c.querySelector('.mbk').hidden=true;return}
   const q=e.target.closest('.mbq:not(.no)');if(q){const o=q.classList.toggle('open');q.setAttribute('aria-expanded',o)}});
 $b.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.mbq:not(.no)')){e.preventDefault();e.target.click()}});
@@ -333,7 +333,8 @@ function open(){
   try{sfx('island')}catch(e){logErr(e)}
   setTimeout(()=>{try{$x.focus({preventScroll:true})}catch(e){logErr(e)}},350)}
 function close(goHome){$o.hidden=true;if(goHome&&typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}
-function visit(d){if(!S.e[d])return;close(false);try{detail(d)}catch(e){logErr(e)}}
+function toWither(){close(false);try{if(window.WI)WI.open();else if(typeof home==='function')(typeof homeSoft==='function'?homeSoft():home())}catch(e){logErr(e)}}
+function visit(d){if(!S.e[d])return;if(S.e[d].sh){toWither();return}close(false);try{detail(d)}catch(e){logErr(e)}}
 $x.onclick=()=>close(true);
 $sh.onclick=()=>{shuf++;render()};
 $o.addEventListener('pointerdown',e=>{if(e.target===$o)close(true)});

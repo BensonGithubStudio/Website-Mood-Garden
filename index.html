@@ -246,6 +246,22 @@ body.sleeping>*:not(#sl):not(script){display:none!important}
 .logo,#date,nav,.fab.sec,.toast{background:var(--lg-spec),var(--lg-s)}
 .toast{background:var(--lg-spec),rgba(255,255,255,.5)}
 #card{border-radius:26px;transform:none}
+/* ===== 資訊卡：手機版不擠到左邊按鈕；空間不足時只壓縮描述文字（描述區自己滾動，卡片本身不滾動） =====
+   --cb＝卡片離底部的距離、--cmax＝不頂到上方 UI 的上限、--ccap＝再額外限制的最高高度（手機 330px／電腦 420px）（扣掉上方 logo／日期或選單列，不會頂到畫面外）。
+   左邊「佈置花園／小禮物」按鈕佔 16～68px，所以手機版右邊對齊、左邊至少留 78px。 */
+#card{--cb:calc(env(safe-area-inset-bottom,0px) + 86px);--cmax:calc(100vh - var(--cb) - env(safe-area-inset-top,0px) - 72px);
+  --ccap:min(330px,46vh);bottom:var(--cb);max-height:min(var(--cmax),var(--ccap));overflow:hidden}
+#card:not([hidden]){display:flex;flex-direction:column}
+#card>*{flex:none}
+@supports(height:1dvh){#card{--cmax:calc(100dvh - var(--cb) - env(safe-area-inset-top,0px) - 72px);--ccap:min(330px,46dvh)}}
+#card p{flex:0 1 auto;min-height:3.2em;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;word-break:break-word}
+@media(max-width:559px){#card{width:min(310px,calc(100% - 94px))}}
+@media(min-width:1000px){
+  #card{--cb:90px;--ccap:min(420px,60vh);--cmax:calc(100vh - var(--cb) - env(safe-area-inset-top,0px) - 88px)}
+  @supports(height:1dvh){#card{--cmax:calc(100dvh - var(--cb) - env(safe-area-inset-top,0px) - 88px);--ccap:min(420px,60dvh)}}
+  #card p{scrollbar-width:none;-ms-overflow-style:none}
+  #card p::-webkit-scrollbar{display:none;width:0;height:0}
+}
 .scrim{background:rgba(70,88,110,.24);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 /* 選單列的滑動圓塊：帶粉色的磨砂玻璃 */
 #pill{background:linear-gradient(rgba(255,255,255,.78),rgba(245,199,213,.78));border:1px solid rgba(255,255,255,.8);box-shadow:0 4px 12px rgba(242,155,181,.38),inset 0 1.5px 1px #fff,inset 0 -1px 2px rgba(255,255,255,.45)}
