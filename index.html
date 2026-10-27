@@ -1375,7 +1375,8 @@ const DECOR=[
   n:{zh:'迷你鞦韆',en:'Mini Swing',ja:'ミニブランコ',ko:'미니 그네'},
   ico:'<path d="M7 34 12 6M33 34 28 6" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M10 6h20" stroke="#8A5E3B" stroke-width="3" stroke-linecap="round"/><path d="M16 7v18M24 7v18" stroke="#6B5848" stroke-width="1.4"/><rect x="13" y="25" width="14" height="4" rx="1.5" fill="#C98F5B"/>',
   m(g){const wd='#8A5E3B';bx(g,CYL,wd,-.3,.28,0,.025,.56,.025);bx(g,CYL,wd,.3,.28,0,.025,.56,.025);bx(g,CYL,wd,0,.57,0,.025,.66,.025,0,0,Math.PI/2);
-  const pv=new THREE.Group();pv.position.y=.56;g.add(pv);bx(pv,CYL,'#6B5848',-.1,-.2,0,.006,.4,.006);bx(pv,CYL,'#6B5848',.1,-.2,0,.006,.4,.006);bx(pv,BOXG,'#C98F5B',0,-.41,0,.26,.025,.1);g.userData.sw=pv}},
+  const pv=new THREE.Group();pv.position.y=.56;g.add(pv);bx(pv,CYL,'#6B5848',-.1,-.2,0,.006,.4,.006);bx(pv,CYL,'#6B5848',.1,-.2,0,.006,.4,.006);bx(pv,BOXG,'#C98F5B',0,-.41,0,.26,.025,.1);g.userData.sw=pv},
+  tick(g,t,dt,o){const pv=g.userData.sw;if(pv)pv.rotation.z=Math.sin(t*1.4+o.x)*.16}},
 /* No.03 */ {k:'mushroom',r:.36,
   n:{zh:'蘑菇屋',en:'Mushroom House',ja:'キノコの家',ko:'버섯 집'},
   ico:'<rect x="15" y="20" width="10" height="14" rx="3" fill="#F6EBD9"/><path d="M5 22a15 13 0 0130 0z" fill="#E5574F"/><circle cx="13" cy="16" r="2.4" fill="#fff"/><circle cx="22" cy="12" r="2" fill="#fff"/><circle cx="28" cy="18" r="1.8" fill="#fff"/><rect x="18" y="27" width="4" height="7" rx="1.5" fill="#7A5236"/>',
@@ -1398,7 +1399,8 @@ const DECOR=[
   n:{zh:'風車',en:'Windmill',ja:'風車',ko:'풍차'},
   ico:'<path d="M13 35 16 17h8l3 18z" fill="#F3E6CF"/><path d="M14 17 20 9l6 8z" fill="#C4604F"/><rect x="18" y="28" width="5" height="7" fill="#7A5236"/><g transform="translate(20 17)"><path d="M0 0-3-14h6zM0 0 3 14h-6zM0 0-14 3v-6zM0 0 14-3v6z" fill="#fff" stroke="#d9cfbe" stroke-width=".8"/></g><circle cx="20" cy="17" r="2" fill="#8A5E3B"/>',
   m(g){bx(g,CYLT,'#F3E6CF',0,.3,0,.17,.6,.17);bx(g,CONE,'#C4604F',0,.69,0,.2,.2,.2);bx(g,BOXG,'#7A5236',0,.1,.15,.09,.18,.02);
-  const pv=new THREE.Group();pv.position.set(0,.55,.3);g.add(pv);bx(g,BOXG,'#8A5E3B',0,.55,.2,.03,.03,.2);bx(pv,SPH,'#8A5E3B',0,0,0,.035,.035,.035);for(let i=0;i<4;i++){const a=new THREE.Group();a.rotation.z=i*Math.PI/2;pv.add(a);bx(a,BOXG,'#8A5E3B',0,.16,0,.02,.32,.012);bx(a,BOXG,'#FFFFFF',.035,.18,.004,.06,.22,.008)}g.userData.bl=pv}},
+  const pv=new THREE.Group();pv.position.set(0,.55,.3);g.add(pv);bx(g,BOXG,'#8A5E3B',0,.55,.2,.03,.03,.2);bx(pv,SPH,'#8A5E3B',0,0,0,.035,.035,.035);for(let i=0;i<4;i++){const a=new THREE.Group();a.rotation.z=i*Math.PI/2;pv.add(a);bx(a,BOXG,'#8A5E3B',0,.16,0,.02,.32,.012);bx(a,BOXG,'#FFFFFF',.035,.18,.004,.06,.22,.008)}g.userData.bl=pv},
+  tick(g,t,dt,o){const pv=g.userData.bl;if(pv)pv.rotation.z-=dt*(.35+(WX.wind||0)*1.1)}},
 /* No.08 */ {k:'lantern',r:.2,
   n:{zh:'小燈籠',en:'Little Lantern',ja:'小さなランタン',ko:'작은 등불'},
   ico:'<rect x="19" y="4" width="2.6" height="32" rx="1" fill="#6B5848"/><path d="M21 7h8" stroke="#6B5848" stroke-width="2.4"/><rect x="25" y="9" width="9" height="12" rx="3.5" fill="#FFD27A" stroke="#E9A93E" stroke-width="1.2"/><rect x="26" y="7.6" width="7" height="2.4" rx="1" fill="#C4604F"/>',
@@ -1412,7 +1414,8 @@ const DECOR=[
   n:{zh:'噴水池',en:'Fountain',ja:'噴水',ko:'분수'},
   ico:'<path d="M5 28h30l-3 7H8z" fill="#CFC8BC"/><rect x="5" y="25" width="30" height="4" rx="2" fill="#E3DDD2"/><rect x="18.5" y="14" width="3" height="11" fill="#CFC8BC"/><path d="M12 14h16l-3 3H15z" fill="#E3DDD2"/><path d="M20 12v-3M16 13l-3-3M24 13l3-3" stroke="#8CC8E8" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="20" cy="27" rx="11" ry="1.6" fill="#8CC8E8"/>',
   m(g){const s='#CFC8BC';bx(g,CYL,s,0,.07,0,.42,.14,.42);bx(g,CYL,'#8CC8E8',0,.138,0,.36,.02,.36);bx(g,CYL,s,0,.24,0,.05,.2,.05);bx(g,CYL,s,0,.35,0,.16,.04,.16);bx(g,CYL,'#8CC8E8',0,.372,0,.13,.012,.13);
-  g.userData.dr=[];for(let i=0;i<8;i++){const d=mk(SPH,'#CDEBFF',[0,.4,0],[.018,.022,.018],null,DROPM);d.castShadow=false;g.add(d);g.userData.dr.push(d)}}},
+  g.userData.dr=[];for(let i=0;i<8;i++){const d=mk(SPH,'#CDEBFF',[0,.4,0],[.018,.022,.018],null,DROPM);d.castShadow=false;g.add(d);g.userData.dr.push(d)}},
+  tick(g,t,dt,o){const dr=g.userData.dr;if(!dr)return;dr.forEach((d,i)=>{const ph=(t*.9+i/8)%1,a=i/8*6.283+ph*.8,rr=ph*.2;d.position.set(Math.cos(a)*rr,.42+.14*Math.sin(ph*Math.PI)-.3*ph*ph,Math.sin(a)*rr)})}},
 /* No.11 */ {k:'mailbox',r:.2,
   n:{zh:'小郵筒',en:'Mailbox',ja:'ポスト',ko:'우체통'},
   ico:'<rect x="18" y="20" width="3" height="16" fill="#8A6A4A"/><rect x="9" y="11" width="22" height="12" rx="5" fill="#E86A5C"/><rect x="29" y="5" width="2.2" height="9" fill="#FFD54A"/><rect x="29" y="5" width="6" height="4" fill="#FFD54A"/><rect x="12" y="15" width="8" height="2" rx="1" fill="#fff" opacity=".7"/>',
@@ -1630,8 +1633,6 @@ function step(t,dt,rm){try{
   for(const o of DEC){const u=o.g.userData;
     if(u.ryT!=null){const df=u.ryT-o.g.rotation.y;if(rm||Math.abs(df)<.002)o.g.rotation.y=u.ryT;else o.g.rotation.y+=df*Math.min(1,dt*12)}
     if(u.pop!=null){u.pop+=dt/.6;const x=Math.min(1,u.pop),ob=1+2.70158*Math.pow(x-1,3)+1.70158*Math.pow(x-1,2);o.g.scale.setScalar(Math.max(.001,ob));if(x>=1){u.pop=null;o.g.scale.setScalar(1)}}
-    if(!rm){if(u.sw)u.sw.rotation.z=Math.sin(t*1.4+o.x)*.16;if(u.bl)u.bl.rotation.z-=dt*(.35+(WX.wind||0)*1.1);
-      if(u.dr)u.dr.forEach((d,i)=>{const ph=(t*.9+i/8)%1,a=i/8*6.283+ph*.8,rr=ph*.2;d.position.set(Math.cos(a)*rr,.42+.14*Math.sin(ph*Math.PI)-.3*ph*ph,Math.sin(a)*rr)})}
     {const d0=DBY[o.k];if(!rm&&d0&&d0.tick)d0.tick(o.g,t,dt,o)}
     if(u.gl){const dv=window.dfv==null?1:window.dfv;u.gl.material.opacity=.1+.5*(1-dv)}}
   if(t-gT>2){gT=t;giftTick()}
@@ -1728,7 +1729,7 @@ function frame(){if(SLP.on){fh=true;return}requestAnimationFrame(frame);
     P.seed.visible=P.t<1.1;P.seed.position.y=Math.max(.05,2-P.t*2.2)+f.position.y;
     if(sparkle){const a=sparkle.geometry.attributes.position;for(let i=0;i<a.count;i++)a.setY(i,a.getY(i)+dt*.4);a.needsUpdate=true;sparkle.material.opacity=Math.max(0,Math.min(1,(P.t-.9)*2,(5-P.t)))}
     if(P.t>3.9&&!P.toast){P.toast=1;sfx('bloom');toast(tr('bloomed'))}
-    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;home()}}
+    if(P.t>5){scene.remove(P.seed,P.hole,sparkle);sparkle=null;setGrow(f,1);P=null;radG=Math.min(64,radG*1.75)}}
   if(ok)R.render(scene,cam)}
 if(ok)frame();
 
