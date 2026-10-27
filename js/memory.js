@@ -39,7 +39,7 @@ I18N.add('en',{
   mf_h:'A happy memory…',mf_l:'A memory of feeling loved…',mf_c:'A calm moment…',mf_e:'A day you were excited…',
   mf_s:'You were sad once…',mf_a:'You were anxious once…',mf_f:'The first flower you planted…'});
 I18N.add('zh',{
-  mbT:'回憶佈告欄',mbSub:n=>n?'翻出了 '+n+' 則回憶':'',mbMore:'換一批',mbVisit:'看看那朵花',mbInWi:'在凋零小島',
+  mbT:'回憶佈告欄',mbSub:n=>n?'翻出了 '+n+' 則回憶':'',mbMore:'換一批',mbVisit:'看看那朵花',mbInWi:'在凋零小島中',
   mbE0:'佈告欄還空空的',mbE1:'先種下幾朵花吧。時間過去之後，回憶會一則一則貼到這裡。',
   mbSoon:n=>'再過 '+n+' 天，就會貼上第一則「一週前的今天」。',
   mbAgo:n=>n<2?'昨天':n<14?n+' 天前':n<60?Math.round(n/7)+' 週前':n<365?Math.round(n/30)+' 個月前':Math.round(n/365)+' 年前',
@@ -258,7 +258,7 @@ function pick(e){
   try{
     if(typeof arrange!=='undefined'&&arrange){hint.hov=false;return false}
     mv2.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);rc.setFromCamera(mv2,cam);
-    const h=rc.intersectObject(hit,false).length>0;hint.hov=h;hovT=performance.now();return h}
+    const r=rc.intersectObject(hit,false)[0],h=!!r;hint.hov=h;hovT=performance.now();return h?r.distance:false}
   catch(err){return false}
 }
 

@@ -453,7 +453,7 @@ const rc=new T.Raycaster(),mv2=new T.Vector2();
 function pick(e){try{
   if(typeof arrange!=='undefined'&&arrange){hint.hov=false;return false}
   mv2.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);rc.setFromCamera(mv2,cam);
-  const h=rc.intersectObject(hit,false).length>0;hint.hov=h;hovT=performance.now();return h}catch(err){return false}}
+  const r=rc.intersectObject(hit,false)[0],h=!!r;hint.hov=h;hovT=performance.now();return h?r.distance:false}catch(err){return false}}
 
 /* ---------- 對外的小介面 ---------- */
 window.HOMEI={pick,open,close,play,stop:()=>stop(true),step:moveStep,

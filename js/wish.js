@@ -276,8 +276,9 @@ function shovel(id){const e=S.w[id];if(!e||e.sh)return;const f=wf[id];e.sh=Date.
 /* ---------- 移動（佈置花園模式）：只能在這座島上 ---------- */
 const rc=new T.Raycaster(),mv2=new T.Vector2();
 function ray(e){mv2.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);rc.setFromCamera(mv2,cam)}
-function pickId(e){const list=[];for(const id in wf){const u=wf[id].userData;list.push(u.hb);if(u.dp)list.push(u.dp)}
-  if(!list.length)return null;ray(e);const h=rc.intersectObjects(list,false)[0];if(!h)return null;
+let pdist=Infinity;
+function pickId(e){pdist=Infinity;const list=[];for(const id in wf){const u=wf[id].userData;list.push(u.hb);if(u.dp)list.push(u.dp)}
+  if(!list.length)return null;ray(e);const h=rc.intersectObjects(list,false)[0];if(!h)return null;pdist=h.distance;
   let o=h.object;while(o&&!(o.userData&&o.userData.wid))o=o.parent;return o?o.userData.wid:null}
 function ground(e){ray(e);const o=rc.ray.origin,d=rc.ray.direction;if(d.y>-.01)return null;
   let k=-(o.y-ISY)/d.y,x=o.x+d.x*k,z=o.z+d.z*k;const k2=(gy(x,z)-o.y)/d.y;return{x:o.x+d.x*k2,z:o.z+d.z*k2}}
@@ -435,6 +436,9 @@ function click(e){try{
   const id=pickId(e);if(id){sfx('flower');card(id);return true}
   if(typeof arrange!=='undefined'&&arrange)return false;
   ray(e);if(rc.intersectObject(hit,false).length){openPanel();return true}}catch(err){logErr(err)}return false}
+/* 回報命中距離給 input.js 比較：星願花 tight（精準）、島的大範圍 loose（寬鬆），沒點到回傳 null */
+function dist(e){try{if(pickId(e))return{d:pdist,tight:true};if(typeof arrange!=='undefined'&&arrange)return null;
+  ray(e);const r=rc.intersectObject(hit,false)[0];return r?{d:r.distance,tight:false}:null}catch(err){return null}}
 const cv0=$('c');
 cv0.addEventListener('pointermove',e=>{if(e.buttons||sd)return;try{hovId=pickId(e)}catch(x){hovId=null}});
 cv0.addEventListener('pointerleave',()=>{hovId=null});
@@ -497,7 +501,7 @@ requestAnimationFrame(step);
 function syncFlowers(){
   for(const id in wf){const e=S.w[id];if(!e||e.sh)removeNow(id)}
   for(const id of wids())if(!wf[id])addFlower(id,1)}
-window.SI={pick,click,down,move,up,cancel,dragging:()=>!!sd,visit,icon:wfIcon,dfmt,
+window.SI={pick,click,dist,down,move,up,cancel,dragging:()=>!!sd,visit,icon:wfIcon,dfmt,
   past:pastIds,                                                  /* 曾經的願望（回憶佈告欄也用這份） */
   sig(){return pastIds().map(i=>'|w'+i+(S.w[i].sh||0)+(S.w[i].ach||0)+(S.w[i].pg==null?'':S.w[i].pg)).join('')},
   /* 同步：雲端傳來一朵花的新狀態 */

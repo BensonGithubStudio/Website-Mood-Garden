@@ -505,6 +505,8 @@ function spawnGift(p,from){const g=new THREE.Group(),pal=['#F5C7D5','#B9D8EB','#
   const to={x:p.x,y:gh(p.x,p.z),z:p.z};g.position.set(from.x,from.y,from.z);g.scale.setScalar(.4);scene.add(g);
   GIFTS.push({id:p.id,g,gl,hb,from:{x:from.x,y:from.y+.2,z:from.z},to,t:S.rm?9:0,i:Math.random()*6})}
 function pickGift(e){if(!GIFTS.length)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(GIFTS.map(o=>o.hb),false)[0];return h?h.object.userData.gid:null}
+function hitGift(e){if(!GIFTS.length)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(GIFTS.map(o=>o.hb),false)[0];return h?{id:h.object.userData.gid,d:h.distance}:null}
+function hitDecor(e){if(!DEC.length)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(DEC.map(o=>o.g),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.did)o=o.parent;return o?{id:o.userData.did,d:h.distance}:null}
 function pickDecor(e){if(!DEC.length)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(DEC.map(o=>o.g),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.did)o=o.parent;return o?o.userData.did:null}
 function openGift(gid){const g=G(),i=g.pend.findIndex(p=>p.id===gid);if(i<0)return;const p=g.pend[i];g.pend.splice(i,1);
   const j=GIFTS.findIndex(o=>o.id===gid);if(j>=0){const o=GIFTS[j],q={x:o.to.x,y:o.to.y+.2,z:o.to.z};burst('spark',q,6);burst('heart',q,3);scene.remove(o.g);GIFTS.splice(j,1)}
@@ -608,5 +610,5 @@ window.giveGift=k=>giftDeliver(1,k);
 
 /* ---- 開站時還原：已放在花園裡的裝飾品、還沒拆的禮物 ---- */
 if(ok){const g=G();g.decor.forEach(o=>{if(o.p)spawnDecor(o,false)});g.pend.forEach(p=>spawnGift(p,{x:p.x,y:gh(p.x,p.z),z:p.z}))}
-return{step,refresh:gbRefresh,pickGift,openGift,pickDecor,decorCard,down:dragDown,move:dragMove,up:dragUp,cancel:dragCancel,active:()=>!!dd,sync:syncG,mrg:mrgRemote,wipe}
+return{step,refresh:gbRefresh,pickGift,openGift,pickDecor,hitGift,hitDecor,decorCard,down:dragDown,move:dragMove,up:dragUp,cancel:dragCancel,active:()=>!!dd,sync:syncG,mrg:mrgRemote,wipe}
 })();

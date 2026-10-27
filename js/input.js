@@ -16,10 +16,36 @@
 
 /* ---------- camera input ---------- */
 const cv=$('c'),pts=new Map(),ray=new THREE.Raycaster(),mv=new THREE.Vector2();let pd=0,moved=0,pinch=0;
-function pick(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?o.userData.date:null}
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;panV.x=panV.z=0;panning=true;panT=performance.now();const lb=e.pointerType!='mouse'||e.button==0;if(arrange&&lb&&pts.size==1&&window.SI&&SI.down(e))return;if(arrange&&lb&&pts.size==1&&!pick(e)){const di=GF.pickDecor(e);if(di){GF.down(di);return}}if(arrange&&lb&&pts.size==1){const d=pick(e);if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
+function pickFlowerD(e){mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);const h=ray.intersectObjects(Object.values(flowers),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.date)o=o.parent;return o?{date:o.userData.date,d:h.distance}:null}
+function pick(e){const r=pickFlowerD(e);return r?r.date:null}
+/* ---------- 命中判斷：點到什麼就是什麼（誰離鏡頭最近就是誰） ----------
+   每個候選都回報「射線命中的距離」，分兩級：
+   ・tight（精準）：花朵、禮物、裝飾品、星願花、小動物的本體附近。
+   ・loose（寬鬆）：各座小島那種大範圍的隱形點擊區、小動物外圍比較大的點擊範圍。
+   先比級別（精準的優先），同級別再比距離（近的優先）。
+   所以花朵前面有小動物就點小動物、小動物在花朵後面就點花朵；島的大範圍不會搶走前景的東西。
+   小動物的點擊球很大（為了好點），這裡用「球心離鏡頭的深度」比較，並要求射線離本體 CORE 以內才算精準。 */
+const CORE=.45,_cv=new THREE.Vector3();
+function crHit(e){let cg=null;try{cg=pickCr(e)}catch(x){return null}if(!cg)return null;ray.setFromCamera(mv,cam);
+  const hb=(cg.userData&&cg.userData.hb)||(cg.isObject3D?cg:null);if(!hb)return{v:cg,d:0,tight:true};
+  hb.getWorldPosition(_cv);const o=ray.ray.origin,r=ray.ray.direction;
+  const d=(_cv.x-o.x)*r.x+(_cv.y-o.y)*r.y+(_cv.z-o.z)*r.z;
+  return{v:cg,d:d>0?d:0,tight:ray.ray.distanceSqToPoint(_cv)<CORE*CORE}}
+function hitTest(e){
+  const c=[],add=(k,v,d,tight)=>{if(d!=null&&isFinite(d))c.push({k,v,d,t:tight?0:1})};
+  mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);
+  const cg=crHit(e);
+  ray.setFromCamera(mv,cam);                                  /* pickCr 可能動過射線，重設一次 */
+  if(cg)add('cr',cg.v,cg.d,cg.tight);
+  const g=GF.hitGift(e);if(g)add('gift',g.id,g.d,true);
+  const dc=GF.hitDecor(e);if(dc)add('decor',dc.id,dc.d,true);
+  const f=pickFlowerD(e);if(f)add('flower',f.date,f.d,true);
+  if(window.SI){SI.pick(e);const s=SI.dist(e);if(s)add('si',null,s.d,s.tight)}   /* SI.pick 順便更新島上提示的懸停光暈 */
+  [['rv',window.RV],['mb',window.MB],['wi',window.WI],['home',window.HOMEI]].forEach(([k,m])=>{if(!m)return;const d=m.pick(e);if(typeof d=='number')add(k,null,d,false)});
+  c.sort((a,b)=>a.t-b.t||a.d-b.d);return c[0]||null}
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;panV.x=panV.z=0;panning=true;panT=performance.now();const lb=e.pointerType!='mouse'||e.button==0;if(arrange&&lb&&pts.size==1){const b=hitTest(e);if(b&&b.k=='si'&&SI.down(e))return;if(b&&b.k=='decor'){GF.down(b.v);return}const d=b&&b.k=='flower'?b.v:null;if(d){slideDrop(d);drag=d;dm=0;hover=null;const f0=flowers[d];dragO={x:f0.position.x,z:f0.position.z};dragOK=true;selRing.material.color.set('#F29BB5');selRing.visible=true;selRing.position.set(f0.position.x,f0.position.y+.05,f0.position.z);return}}if(pts.size==2){const[a,b]=[...pts.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
 cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
-  if(!p){const d=pick(e),cg=pickCr(e);hover=d;cv.style.cursor=(d||cg||GF.pickGift(e)||GF.pickDecor(e)||(window.RV&&RV.pick(e))||(window.MB&&MB.pick(e))||(window.WI&&WI.pick(e))||(window.SI&&SI.pick(e))||(window.HOMEI&&HOMEI.pick(e)))?'pointer':'grab';return}
+  if(!p){const b=hitTest(e);hover=b&&b.k=='flower'?b.v:null;cv.style.cursor=b?'pointer':'grab';return}
   if(GF.active()){GF.move(e);pts.set(e.pointerId,e);return}
   if(window.SI&&SI.dragging()){SI.move(e);pts.set(e.pointerId,e);return}
   if(drag){flowerMove(e);  pts.set(e.pointerId,e);return}
@@ -28,7 +54,10 @@ cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);
 cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;if(performance.now()-panT>90||moved<6||drag)panV.x=panV.z=0}if(GF.active()){panV.x=panV.z=0;GF.up();return}if(window.SI&&SI.dragging()){panV.x=panV.z=0;SI.up();return}if(drag){const d=drag,f=flowers[d],en=S.e[d];drag=null;selRing.visible=false;
     if(f&&en){if(dm>2&&dragOK){en.x=f.position.x;en.z=f.position.z;f.position.y=gh(en.x,en.z);save();sfx('move');toast(tr('moved'))}
       else{slideBack(d,dragO);camBack();if(dm>2){sfx('deny');toast(tr('badSpot'))}}}      /* 不合法：滑回原本的位置，並提示 */
-    return}if(moved<6&&!pts.size&&(e.pointerType!='mouse'||e.button==0)){const gf=GF.pickGift(e);if(gf){GF.openGift(gf);return}const dc=GF.pickDecor(e);if(dc){GF.decorCard(dc);return}const cg=pickCr(e);if(cg){pokeG(cg);return}const d=pick(e);if(d){sfx('flower');detail(d)}else if(window.SI&&SI.click(e)){}else if(window.RV&&RV.pick(e)){RV.open()}else if(window.MB&&MB.pick(e)){MB.open()}else if(window.WI&&WI.pick(e)){WI.open()}else if(window.HOMEI&&HOMEI.pick(e)){HOMEI.open()}else $('card').hidden=true}});
+    return}if(moved<6&&!pts.size&&(e.pointerType!='mouse'||e.button==0)){const b=hitTest(e);let hd=false;
+    if(b){hd=true;switch(b.k){case'gift':GF.openGift(b.v);break;case'decor':GF.decorCard(b.v);break;case'cr':pokeG(b.v);break;case'flower':sfx('flower');detail(b.v);break;
+      case'si':hd=!!SI.click(e);break;case'rv':RV.open();break;case'mb':MB.open();break;case'wi':WI.open();break;case'home':HOMEI.open();break}}
+    if(!hd)$('card').hidden=true}});
 cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size){panning=false;panV.x=panV.z=0}if(drag){const d=drag;drag=null;selRing.visible=false;slideBack(d,dragO);camBack()}if(GF.active()){GF.cancel();camBack()}if(window.SI&&SI.dragging()){SI.cancel();camBack()}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 const lpSet=e=>({clientX:e.clientX,clientY:e.clientY,pointerId:e.pointerId,pointerType:e.pointerType});
