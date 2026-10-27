@@ -3560,7 +3560,7 @@ function step(now){
     q.seed.visible=q.t<1.1;q.seed.position.y=Math.max(.05,2-q.t*2.2)+q.y;
     const a=q.sp.geometry.attributes.position;for(let k=0;k<a.count;k++)a.setY(k,a.getY(k)+dt*.4);a.needsUpdate=true;q.sp.material.opacity=Math.max(0,Math.min(1,(q.t-.9)*2,(5-q.t)));
     if(q.t>3.9&&!q.bloom){q.bloom=true;sfx('bloom')}
-    if(q.t>5){scene.remove(q.hole,q.seed,q.sp);plants.splice(i,1);setGrowW(f,1);f.userData.gr=1;if(!sd&&!anyOverlay()&&$('card').hidden)home()}}
+    if(q.t>5){scene.remove(q.hole,q.seed,q.sp);plants.splice(i,1);setGrowW(f,1);f.userData.gr=1;if(!sd&&!anyOverlay()&&$('card').hidden)radG=Math.min(64,radG*1.75)}}
   /* 每朵花 */
   for(const id in wf){const f=wf[id],u=f.userData;
     if(u.ryT!=null){const df=u.ryT-f.rotation.y;if(rm||Math.abs(df)<.002)f.rotation.y=u.ryT;else f.rotation.y+=df*Math.min(1,dt*12)}
