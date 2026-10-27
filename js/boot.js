@@ -15,20 +15,73 @@
  * ============================================================================ */
 
 /* ---------- boot ---------- */
-if(ok)ents().forEach(([d])=>addFlower(d,1));
-$('obc').innerHTML=['happy','calm','loved','sad'].map(k=>`<span>${face(k,22)} ${M[k].n}</span>`).join('');
-document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-label',b.lastChild.textContent.trim()));
-const closeOb=()=>{$('ob').hidden=true;S.ob=1;save()};
-$('go').onclick=()=>{closeOb();openModal()};$('skip').onclick=closeOb;if(S.ob)$('ob').hidden=true;
-applyLang();show('garden');window.pillReady=true;setWeather(curWx(),true);if(window.applyTime){applyTime();setInterval(()=>{if(!SLP.on)applyTime()},30000)}
-(()=>{
-  const ld=$('ld'),m=$('ldm'),bar=document.querySelector('.ldb'),msgs=tr('ld'),t0=Date.now();let i=0,ready=false,gone=false;
-  const say=()=>{m.textContent=msgs[i++%msgs.length]};say();
-  const tm=setInterval(say,2600),sk=setTimeout(()=>done(),20000);   /* 音檔載入太久也不要卡住：20 秒後直接顯示「進入花園」 */
+if (ok) ents().forEach(([d]) => addFlower(d, 1));
+$('obc').innerHTML = ['happy', 'calm', 'loved', 'sad'].map(k => `<span>${face(k,22)} ${M[k].n}</span>`).join('');
+document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-label', b.lastChild.textContent.trim()));
+const closeOb = () => {
+  $('ob').hidden = true;
+  S.ob = 1;
+  save()
+};
+$('go').onclick = () => {
+  closeOb();
+  openModal()
+};
+$('skip').onclick = closeOb;
+if (S.ob) $('ob').hidden = true;
+applyLang();
+show('garden');
+window.pillReady = true;
+setWeather(curWx(), true);
+if (window.applyTime) {
+  applyTime();
+  setInterval(() => {
+    if (!SLP.on) applyTime()
+  }, 30000)
+}
+(() => {
+  const ld = $('ld'),
+    m = $('ldm'),
+    bar = document.querySelector('.ldb'),
+    msgs = tr('ld'),
+    t0 = Date.now();
+  let i = 0,
+    ready = false,
+    gone = false;
+  const say = () => {
+    m.textContent = msgs[i++ % msgs.length]
+  };
+  say();
+  const tm = setInterval(say, 2600),
+    sk = setTimeout(() => done(), 20000); /* 音檔載入太久也不要卡住：20 秒後直接顯示「進入花園」 */
   /* 點擊「進入花園」= 使用者手勢，瀏覽器才允許播放音效與背景音 */
-  const enter=()=>{if(gone)return;gone=true;clearInterval(tm);clearTimeout(sk);ld.classList.add('out');setTimeout(()=>{ld.hidden=true},500)};
-  const done=()=>{if(ready||gone)return;ready=true;clearInterval(tm);clearTimeout(sk);
-    setTimeout(()=>{if(gone)return;m.textContent=tr('ldReady');bar.hidden=true;$('lde').hidden=false;$('lde').focus({preventScroll:true})},Math.max(0,900-(Date.now()-t0)))};
-  $('lde').onclick=enter;
-  sndPreload((d,n)=>{bar.firstElementChild.style.width=(d/n*100)+'%'}).then(done,done);
+  const enter = () => {
+    if (gone) return;
+    gone = true;
+    clearInterval(tm);
+    clearTimeout(sk);
+    ld.classList.add('out');
+    setTimeout(() => {
+      ld.hidden = true
+    }, 500)
+  };
+  const done = () => {
+    if (ready || gone) return;
+    ready = true;
+    clearInterval(tm);
+    clearTimeout(sk);
+    setTimeout(() => {
+      if (gone) return;
+      m.textContent = tr('ldReady');
+      bar.hidden = true;
+      $('lde').hidden = false;
+      $('lde').focus({
+        preventScroll: true
+      })
+    }, Math.max(0, 900 - (Date.now() - t0)))
+  };
+  $('lde').onclick = enter;
+  sndPreload((d, n) => {
+    bar.firstElementChild.style.width = (d / n * 100) + '%'
+  }).then(done, done);
 })();

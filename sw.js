@@ -64,7 +64,9 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE).then((cache) =>
-      Promise.allSettled(PRECACHE.map((url) => cache.add(new Request(url, { cache: 'reload' }))))
+      Promise.allSettled(PRECACHE.map((url) => cache.add(new Request(url, {
+        cache: 'reload'
+      }))))
     )
   );
 });
@@ -98,7 +100,9 @@ self.addEventListener('fetch', (event) => {
 async function networkFirst(req) {
   const cache = await caches.open(CACHE);
   try {
-    const res = await fetch(req, { cache: 'no-cache' });
+    const res = await fetch(req, {
+      cache: 'no-cache'
+    });
     if (res && res.ok) cache.put(req, res.clone());
     return res;
   } catch (err) {
@@ -114,7 +118,9 @@ async function networkFirst(req) {
 async function networkFirstAsset(req) {
   const cache = await caches.open(CACHE);
   try {
-    const res = await fetch(req, { cache: 'no-cache' });
+    const res = await fetch(req, {
+      cache: 'no-cache'
+    });
     if (res && res.ok) cache.put(req, res.clone());
     return res;
   } catch (err) {
