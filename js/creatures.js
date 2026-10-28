@@ -12,7 +12,7 @@
  * 提供給其他檔案：beeStep、cr、CONE、CT、CM、arrange、drag、dm、dragOK、
  *   dragO、slides、selRing、flowersOf、makeCr、syncCr、crStep、slideBack、
  *   slideDrop、slideStep、setArrange
- * 載入順序：第 16 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 16 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 function beeStep(b, dt, t) {

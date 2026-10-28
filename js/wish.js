@@ -11,7 +11,7 @@
  *   three-utils.js、flower-care.js、camera.js、creatures.js、weather.js、
  *   particles.js、loop.js、ui-shell.js、withered-island.js
  * 提供給其他檔案：SI
- * 載入順序：第 30 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 30 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ===== 星願島 =====
@@ -1831,7 +1831,7 @@
     toast(tr('swPlanted'))
   }
   $p.onclick = submit;
-  const anyOverlay = () => ['rvm', 'mbo', 'wio', 'swo', 'swq', 'modal', 'dlg', 'gmod', 'hmo'].some(k => {
+  const anyOverlay = () => ['rvm', 'mbo', 'wio', 'swo', 'swq', 'modal', 'dlg', 'gmod', 'hmo', 'nmo'].some(k => {
     const el = document.getElementById(k);
     return el && !el.hidden
   });

@@ -9,7 +9,7 @@
  * 需要先載入：log.js、audio.js、state.js、icons.js、i18n.js、world.js、
  *   three-utils.js、camera.js、creatures.js、particles.js、ui-shell.js
  * 提供給其他檔案：HOMEI
- * 載入順序：第 31 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 31 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ===== 小動物之家（第五座小島）=====
@@ -960,7 +960,7 @@
     $x = document.getElementById('hmx'),
     $bs = document.getElementById('hmbs'),
     chip = $('hoc');
-  const ovl = () => ['rvm', 'mbo', 'wio', 'swo', 'swq', 'modal', 'dlg', 'gmod', 'hmo'].some(k => {
+  const ovl = () => ['rvm', 'mbo', 'wio', 'swo', 'swq', 'modal', 'dlg', 'gmod', 'hmo', 'nmo'].some(k => {
     const el = document.getElementById(k);
     return el && !el.hidden
   });

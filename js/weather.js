@@ -9,7 +9,7 @@
  * 需要先載入：audio.js、state.js、world.js、three-utils.js、garden-scene.js
  * 提供給其他檔案：DROPM、WT、WXK、WX、wxT、curWx、setWeather、wxm、rbG、
  *   colorFlutter、FROGS、wxFrame
- * 載入順序：第 17 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 17 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 const DROPM = new THREE.MeshStandardMaterial({

@@ -15,7 +15,7 @@
  *   WATER_EPOCH、matureOf、thirstyOf、hrsLeft、minsLeftW、WITHER_HOURS、
  *   WITHER_MS、witherAt、withered、shoveled、witherLeftTxt、flowerBaby、
  *   flowerWither、flower、setStage、matT、stageStep
- * 載入順序：第 12 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 12 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 function addFace(g, k, H) {

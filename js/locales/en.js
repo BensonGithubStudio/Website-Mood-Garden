@@ -9,7 +9,7 @@
  *   ・各功能自己的翻譯（禮物紙條、星願島、回憶等）仍放在對應功能的檔案裡。
  *
  * 需要先載入：i18n.js
- * 載入順序：第 6 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 6 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 I18N.add('en', {
@@ -176,4 +176,17 @@ I18N.add('en', {
   saveFail: "Couldn't save to this device (storage may be full or blocked). Recent changes may be lost.",
   gdFullT: 'The gardens are full',
   gdFull: 'There is no room left in either garden. Delete or dig up a flower, or collect some decorations, to make space for a new one.'
+});
+
+I18N.add('en', {
+  nmHi: n => 'Hi, ' + n,
+  nmAsk: 'What should we call you?',
+  nmPh: 'Your name (optional)',
+  nmT: 'Your name',
+  nmChg: 'Change name',
+  nmSave: 'Save',
+  nmHintC: 'Synced to your Google Drive',
+  nmHintL: 'Sign in with Google in Settings to sync across devices',
+  nmSaved: 'Name updated',
+  nmSavedC: 'Name updated, syncing to the cloud'
 });

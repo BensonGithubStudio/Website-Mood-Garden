@@ -10,7 +10,7 @@
  * 需要先載入：state.js、world.js、three-utils.js
  * 提供給其他檔案：spare、bf、cl、sparkle、P、hover、HEMI、SUN、GR、GRS、WMB、
  *   GLOW、mts、MOON、glowF、applyTime、dfv、sunDir、sunE
- * 載入順序：第 14 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 14 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 const spare = [],

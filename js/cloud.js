@@ -13,7 +13,7 @@
  *   three-utils.js、flower-care.js、creatures.js、weather.js、gifts.js、
  *   ui-shell.js、views.js、boot.js
  * 提供給其他檔案：GOOGLE_CLIENT_ID、cloud
- * 載入順序：第 26 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 26 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ===== 雲端同步（Google 登入 + 使用者自己的 Google 雲端硬碟「應用程式資料夾」）=====
@@ -251,6 +251,7 @@ window.cloud = (() => {
     S.wx = null;
     S.wxd = null;
     S.out = null;
+    S.nm = null;
     try {
       window.HOMEI && HOMEI.refresh()
     } catch (e) {
@@ -386,7 +387,8 @@ window.cloud = (() => {
         for (const d in j.w || {})
           if (!(d in R.w) || ts(j.w[d]) > ts(R.w[d])) R.w[d] = j.w[d];
         for (const d in j.wdel || {}) R.wdel[d] = Math.max(R.wdel[d] || 0, j.wdel[d]);
-        if (j.o && (!R.o || (j.o.u || 0) > (R.o.u || 0))) R.o = j.o
+        if (j.o && (!R.o || (j.o.u || 0) > (R.o.u || 0))) R.o = j.o;
+        if (j.n && j.n.v && (!R.n || (j.n.u || 0) > (R.n.u || 0))) R.n = j.n
       }
       const out = {
         v: 1,
@@ -463,6 +465,21 @@ window.cloud = (() => {
             dirty = true
           }
         })
+      }
+      /* 名字（S.nm）：只有一筆，比較更新時間，較新的贏 */
+      {
+        const ln = S.nm,
+          rn = R.n,
+          lu = ln ? ln.u || 0 : 0,
+          ru = rn ? rn.u || 0 : 0;
+        if (ru > lu) {
+          touched = true;
+          S.nm = JSON.parse(JSON.stringify(rn));
+          out.n = rn
+        } else if (lu > ru) {
+          dirty = true;
+          out.n = ln
+        } else if (rn) out.n = rn
       }
       /* 出門狀態：只有一筆，比較更新時間，較新的贏 */
       {

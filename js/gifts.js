@@ -13,7 +13,7 @@
  *   three-utils.js、flower-care.js、garden-scene.js、camera.js、
  *   creatures.js、weather.js、particles.js
  * 提供給其他檔案：GF、DEC、GIFTP、giveGift
- * 載入順序：第 19 個（共 32 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 19 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ---------- 小動物的禮物：紙條與裝飾品 ----------
@@ -1611,7 +1611,7 @@ window.GF = (function() {
 
   function giftReady() {
     const ld = $('ld');
-    return !!ld && (ld.hidden || ld.classList.contains('out')) && $('ob').hidden && $('modal').hidden && $('dlg').hidden && $('gmod').hidden && document.body.dataset.v === 'garden' && !arrange && !drag && !dd && !P && !document.hidden
+    return !!ld && (ld.hidden || ld.classList.contains('out')) && $('ob').hidden && $('modal').hidden && $('dlg').hidden && $('gmod').hidden && !(window.NM && NM.isOpen()) && document.body.dataset.v === 'garden' && !arrange && !drag && !dd && !P && !document.hidden
   }
 
   function giftSpotOK(x, z) {
