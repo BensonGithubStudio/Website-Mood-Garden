@@ -11,7 +11,7 @@
  * 需要先載入：audio.js、state.js、icons.js、i18n.js、world.js、
  *   flower-care.js、garden-scene.js、weather.js、ui-shell.js、views.js
  * 提供給其他檔案：closeOb、pillReady
- * 載入順序：第 24 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 24 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ---------- boot ---------- */

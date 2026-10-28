@@ -9,7 +9,7 @@
  *
  * 需要先載入：state.js
  * 提供給其他檔案：dk、today、fmt、ents、ic、SV、face、pet、flo
- * 載入順序：第 4 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 4 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 const dk = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');

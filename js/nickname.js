@@ -16,7 +16,7 @@
  * 需要先載入：state.js、icons.js、i18n.js（含 locales）、ui-shell.js、views.js、
  *   boot.js、cloud.js
  * 提供給其他檔案：NM（paint、name、open、isOpen）
- * 載入順序：第 32 個（共 33 個），在 animal-home.js 之後、pwa.js 之前。
+ * 載入順序：第 32 個（共 34 個），在 animal-home.js 之後、pwa.js 之前。
  *   順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 

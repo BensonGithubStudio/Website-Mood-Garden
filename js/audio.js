@@ -14,7 +14,7 @@
  *   ambCur、ambTok、sfxOn、ambOn、sndVolSync、acx、sndPreload、sfx、sndFade、
  *   wbGet、wbStart、elStart、ambApply、ambient、slA、slKey、slUrl、slStart、
  *   slStop
- * 載入順序：第 2 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 2 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ===== 音效系統 =====

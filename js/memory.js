@@ -10,7 +10,7 @@
  * 需要先載入：log.js、audio.js、state.js、icons.js、i18n.js、world.js、
  *   three-utils.js、camera.js、creatures.js、weather.js、views.js、river.js
  * 提供給其他檔案：MB
- * 載入順序：第 28 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 28 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ===== 回憶小島 + 佈告欄 =====

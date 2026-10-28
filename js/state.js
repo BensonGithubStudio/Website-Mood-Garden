@@ -13,7 +13,7 @@
  * 需要先載入：log.js
  * 提供給其他檔案：$、esc、M、TAGS、KEY、S、SCHEMA、MIGRATIONS、wStamp、
  *   wApply、wDrop、wClear、persistState、save
- * 載入順序：第 3 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 3 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 const $ = id => document.getElementById(id),

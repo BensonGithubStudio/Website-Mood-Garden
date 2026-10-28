@@ -1,0 +1,88 @@
+/* ============================================================================
+ * css/hello.css — 手機版問候面板（.hello）的展開／收合
+ * ----------------------------------------------------------------------------
+ * 這份檔案在做什麼：
+ *   手機版（寬度 759px 以下）預設只顯示標題一行（「你的花已經種下了！」），
+ *   下方的標籤區（.hx）收合；內容有變動時、或使用者點擊時展開（.hello.ex）。
+ *   展開／收合用 grid-template-rows 0fr ↔ 1fr 做高度過渡，內容淡入淡出共用
+ *   同一條曲線，看起來是同一個動作。
+ *   電腦版（760px 以上）不收合，維持原本的樣子。
+ *
+ * 相關程式：js/hello-card.js（決定何時展開與收合）、index.html（.hx／.hxi 結構）
+ * 載入順序：第 17 個（共 19 個），放在 nickname.css 之後、press.css 之前。
+ * ============================================================================ */
+
+@media(max-width:759px) {
+  .hello {
+    --hx-ease: cubic-bezier(.2, .9, .3, 1);
+    position: fixed;
+    padding-bottom: 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: padding-bottom .45s var(--hx-ease)
+  }
+
+  .hello.ex {
+    padding-bottom: 18px
+  }
+
+  /* 標題下方的間距跟著展開一起長出來，收合時不留空白 */
+  .hello h1 {
+    margin-bottom: 0;
+    transition: margin-bottom .45s var(--hx-ease)
+  }
+
+  .hello.ex h1 {
+    margin-bottom: 12px
+  }
+
+  .hx {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .42s var(--hx-ease)
+  }
+
+  .hello.ex .hx {
+    grid-template-rows: 1fr;
+    transition-duration: .5s
+  }
+
+  .hxi {
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity .2s ease, transform .42s var(--hx-ease), visibility 0s .42s
+  }
+
+  .hello.ex .hxi {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity .4s ease .1s, transform .5s var(--hx-ease), visibility 0s
+  }
+
+  .hello h1:focus-visible {
+    outline: 2px solid #F29BB5;
+    outline-offset: 4px;
+    border-radius: 8px
+  }
+}
+
+body.rm .hello,
+body.rm .hello h1,
+body.rm .hx,
+body.rm .hxi {
+  transition: none !important
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+  .hello,
+  .hello h1,
+  .hx,
+  .hxi {
+    transition: none !important
+  }
+}

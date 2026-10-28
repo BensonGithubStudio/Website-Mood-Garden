@@ -12,7 +12,7 @@
  *   creatures.js、weather.js、gifts.js、ui-shell.js
  * 提供給其他檔案：refresh、detail、rotateFlower、ed、sel、tg2、openModal、
  *   cm、renderCal、renderIns、renderSet
- * 載入順序：第 23 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 23 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 function refresh() {

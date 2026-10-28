@@ -12,7 +12,7 @@
  * 需要先載入：world.js、garden-scene.js
  * 提供給其他檔案：th、ph、thG、phG、rad、radG、tg、tgG、resize、GQP、
  *   homeCalc、homeRad、home、homeSoft、GQU、GQmin、GQrip、GQsh、applyGQ
- * 載入順序：第 15 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 15 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 let th = .75,

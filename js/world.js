@@ -12,7 +12,7 @@
  * 提供給其他檔案：R、ok、gqNow、scene、cam、flowers、gh、G1R、BASE2、GAP、
  *   rho2、G2、MX、BA、BB、BW、STAR、HOMEP、PANX、WXB、inG1、inG2、onBridge、
  *   deckY、surf、walk、zoneAt、at2、WM、BN…等共 40 項
- * 載入順序：第 10 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 10 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ---------- 3D ---------- */

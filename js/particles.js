@@ -11,7 +11,7 @@
  *   creatures.js
  * 提供給其他檔案：parts、ACT、PMS、WDROP、burst、partStep、pickCr、pokeG、
  *   actStep、PAN_GAIN、panV、panT、panning、clock
- * 載入順序：第 18 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 18 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 const parts = [],

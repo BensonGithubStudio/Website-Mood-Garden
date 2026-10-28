@@ -39,6 +39,7 @@ const PRECACHE = [
   './css/sleep.css',
   './css/liquid-glass.css',
   './css/nickname.css',
+  './css/hello.css',
   './css/press.css',
   './css/quality.css',
   // 程式碼：新增或改名 js／css 檔時，記得同步更新這份清單（沒列到也能運作，只是第一次離線開啟會缺檔）
@@ -74,6 +75,7 @@ const PRECACHE = [
   './js/wish.js',
   './js/animal-home.js',
   './js/nickname.js',
+  './js/hello-card.js',
   './js/pwa.js',
   './icons/icon-192.png',
   './icons/icon-512.png',

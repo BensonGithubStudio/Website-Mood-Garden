@@ -12,7 +12,7 @@
  * 提供給其他檔案：setThirst、waterFx、water、DBR、SHV、WPAL、debris、
  *   witherFx、witherStep、shovelFlower、pickPos、gardenFull、addFlower、ez、
  *   setGrow
- * 載入順序：第 13 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 13 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ---------- 澆水：口渴的小花苗頭上會浮出水滴，點花（或水滴）→ 詳情卡 → 按澆水鈕 ---------- */

@@ -13,7 +13,7 @@
  *   three-utils.js、flower-care.js、creatures.js、weather.js、gifts.js、
  *   ui-shell.js、views.js、boot.js
  * 提供給其他檔案：GOOGLE_CLIENT_ID、cloud
- * 載入順序：第 26 個（共 33 個）。順序由 index.html 決定，請勿隨意調換。
+ * 載入順序：第 26 個（共 34 個）。順序由 index.html 決定，請勿隨意調換。
  * ============================================================================ */
 
 /* ===== 雲端同步（Google 登入 + 使用者自己的 Google 雲端硬碟「應用程式資料夾」）=====
