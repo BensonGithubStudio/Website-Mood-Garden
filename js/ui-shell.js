@@ -170,3 +170,8 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.da
     if (e.target.closest('button')) pop()
   })
 })();
+
+/* 觸控：iOS Safari 需要有 touchstart 監聽，按鈕的 :active（按壓動畫）才會在按下瞬間生效 */
+document.addEventListener('touchstart', () => {}, {
+  passive: true
+});
