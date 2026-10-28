@@ -136,11 +136,14 @@ nav button {
   border-radius: 99px;
   background: var(--pink);
   box-shadow: 0 3px 10px #f29bb544;
-  transition: transform .45s cubic-bezier(.34, 1.4, .5, 1), width .35s
+  will-change: transform, width;
+  transition: transform var(--nav-dur) var(--nav-ease), width var(--nav-dur) var(--nav-ease)
 }
 
 @media(prefers-reduced-motion:reduce) {
-  #pill {
+
+  #pill,
+  nav button .ms {
     transition: none
   }
 }
@@ -148,8 +151,23 @@ nav button {
 /* 選單 bar 點擊彈跳：nav 靠 translateX(-50%) 置中，所以關鍵影格必須把 translateX(-50%) 一起寫進 transform，
    縮放才會以 bar 的正中央為中心（若改用獨立的 scale 屬性，縮放會疊在位移之後，中心點會偏到右邊）。
    動畫在「一次完整點擊」後由 JS 觸發，跑完固定時長（--nav-pop-dur）才收尾，與按住多久無關 */
+/* 選單 bar 動畫的統一參數：
+   滑塊（#pill）的位移與寬度用同一條曲線、同一個時長（--nav-dur／--nav-ease，與面板進場的彈性曲線同一家族），
+   bar 的彈跳（--nav-pop-dur）略長一點點，兩者幾乎同時落定；彈跳的峰值落在約 36%（≈230ms），
+   正好是滑塊衝到目標位置的時刻，看起來是同一個動作 */
 nav {
-  --nav-pop-dur: 680ms
+  --nav-dur: .46s;
+  --nav-ease: cubic-bezier(.2, .9, .3, 1.12);
+  --nav-pop-dur: 640ms
+}
+
+nav button .ms {
+  transition: scale .22s cubic-bezier(.34, 1.56, .5, 1)
+}
+
+nav button:active .ms {
+  scale: .86;
+  transition-duration: .08s
 }
 
 @keyframes navpop {
@@ -157,12 +175,12 @@ nav {
     transform: translateX(-50%) scale(1)
   }
 
-  38% {
-    transform: translateX(-50%) scale(1.075)
+  36% {
+    transform: translateX(-50%) scale(1.04)
   }
 
   68% {
-    transform: translateX(-50%) scale(.985)
+    transform: translateX(-50%) scale(.992)
   }
 
   100% {

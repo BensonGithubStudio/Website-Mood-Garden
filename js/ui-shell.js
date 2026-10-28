@@ -145,25 +145,38 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.da
 (function() {
   const nv = document.querySelector('nav');
   if (!nv) return;
-  /* 用 Web Animations API：每次點擊疊加一段新的動畫，既有動畫不會被取消或重置；
-     省略 0% 關鍵影格，新動畫會從「當下的縮放值」開始，快速連點也不會跳回原點 */
+  /* 用 Web Animations API：每次點擊疊加一段新的動畫，既有動畫不會被取消或重置 */
   const T = 'translateX(-50%) ',
     mq = window.matchMedia ? matchMedia('(prefers-reduced-motion:reduce)') : null;
 
   function pop() {
     if (S.rm || (mq && mq.matches) || !nv.animate) return;
+    /* 時長讀 CSS 的 --nav-pop-dur，與滑塊（#pill）的參數集中在 hud.css 一起調整 */
+    const cs = getComputedStyle(nv),
+      d = parseFloat(cs.getPropertyValue('--nav-pop-dur')) || 640;
+    let cur = 1;
+    try {
+      cur = new DOMMatrix(cs.transform).a || 1
+    } catch (e) {}
+    /* 每一段各自指定緩動，峰值（36%）對上滑塊抵達目標的時刻；起點用「當下的縮放值」，快速連點不會跳回原點 */
     nv.animate([{
-      transform: T + 'scale(1.075)',
-      offset: .38
+      transform: T + 'scale(' + cur + ')',
+      offset: 0,
+      easing: 'cubic-bezier(.2,.8,.3,1)'
     }, {
-      transform: T + 'scale(.985)',
-      offset: .68
+      transform: T + 'scale(1.04)',
+      offset: .36,
+      easing: 'cubic-bezier(.4,0,.3,1)'
+    }, {
+      transform: T + 'scale(.992)',
+      offset: .68,
+      easing: 'cubic-bezier(.4,0,.3,1)'
     }, {
       transform: T + 'scale(1)',
       offset: 1
     }], {
-      duration: 1100,
-      easing: 'cubic-bezier(.3,.7,.4,1)'
+      duration: d,
+      easing: 'linear'
     })
   }
   nv.addEventListener('click', e => {

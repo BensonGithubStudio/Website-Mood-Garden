@@ -4,7 +4,7 @@
  * 這份檔案在做什麼：
  *   ・按壓動畫：按下去快速縮小（.08s），放開時帶一點彈性回彈（.22s），套用在
  *     左下角／右下角的三顆浮動按鈕（#fab、#arr、#gb）、花朵與裝飾品資訊卡
- *     （#card）的按鈕，以及各島嶼介面（#rvm、#mbo、#wio、#swo、#swq、#hmo）的按鈕。
+ *     （#card）的按鈕，心情視窗、確認視窗與名字視窗（#modal、#dlg、#nmo）的按鈕，以及各島嶼介面（#rvm、#mbo、#wio、#swo、#swq、#hmo）的按鈕。
  *     下方選單列（nav button）刻意不套用，維持原本的處理方式。
  *   ・用獨立的 scale 屬性，不會蓋掉按鈕原本的 transform（置中、位移等）。
  *   ・觸控裝置沒有真正的 hover，手指離開後 hover 效果會卡住，這裡把它關掉。
@@ -14,14 +14,30 @@
  * 載入順序：第 17 個（共 18 個），放在 nickname.css 之後、quality.css 之前。
  * ============================================================================ */
 
-:is(#fab, #arr, #gb, #card button, :is(#rvm, #mbo, #wio, #swo, #swq, #hmo) button):not(.hmq, :disabled) {
+/* 資訊卡、心情視窗與確認視窗的按鈕、島嶼介面的按鈕 */
+:is(#card button, #modal .btn, #dlg .btn, #nmo .btn, :is(#rvm, #mbo, #wio, #swo, #swq, #hmo) button):not(.hmq, :disabled) {
   transition: scale .22s cubic-bezier(.34, 1.56, .5, 1), transform .2s, box-shadow .2s, background-color .2s;
   touch-action: manipulation
 }
 
-:is(#fab, #arr, #gb, #card button, :is(#rvm, #mbo, #wio, #swo, #swq, #hmo) button):not(.hmq, :disabled):active {
+:is(#card button, #modal .btn, #dlg .btn, #nmo .btn, :is(#rvm, #mbo, #wio, #swo, #swq, #hmo) button):not(.hmq, :disabled):active {
   scale: .93;
   transition-duration: .08s, .2s, .2s, .2s
+}
+
+/* 三顆浮動按鈕：花園分頁的淡入淡出（hud.css 的 .fab.g）要一起寫進來，否則會被這裡的 transition 蓋掉 */
+:is(#fab, #arr, #gb) {
+  transition: scale .22s cubic-bezier(.34, 1.56, .5, 1), transform .2s, opacity .4s ease .1s, translate .45s cubic-bezier(.2, .9, .3, 1) .1s, visibility 0s;
+  touch-action: manipulation
+}
+
+:is(#fab, #arr, #gb):active {
+  scale: .93;
+  transition: scale .08s, transform .2s, opacity .4s ease .1s, translate .45s cubic-bezier(.2, .9, .3, 1) .1s, visibility 0s
+}
+
+body:not([data-v=garden]) :is(#fab, #arr, #gb) {
+  transition: scale .22s cubic-bezier(.34, 1.56, .5, 1), transform .2s, opacity .22s ease, translate .3s ease, visibility 0s .22s
 }
 
 /* 觸控：不要有卡住的 hover */
@@ -36,7 +52,7 @@
 
 @media(prefers-reduced-motion:reduce) {
 
-  :is(#fab, #arr, #gb, #card button, :is(#rvm, #mbo, #wio, #swo, #swq, #hmo) button) {
+  :is(#fab, #arr, #gb, #card button, #modal .btn, #dlg .btn, #nmo .btn, :is(#rvm, #mbo, #wio, #swo, #swq, #hmo) button) {
     transition: none
   }
 }
